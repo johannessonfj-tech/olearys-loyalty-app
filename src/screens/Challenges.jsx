@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Trophy, Target, Pizza, Star, Clock, Coins } from 'lucide-react'
+import { Trophy, Target, Star, Clock, Coins } from 'lucide-react'
 
 const TABS = [
-  { id: 'unlocked', label: 'Unlocked', count: 3 },
+  { id: 'unlocked', label: 'Unlocked', count: 2 },
   { id: 'active', label: 'Active', count: 1 },
   { id: 'finished', label: 'Finished', count: 0 },
   { id: 'fame', label: 'Hall of Fame', count: null },
@@ -26,15 +26,6 @@ const CHALLENGES = [
     desc: 'Play 10 bowling rounds for 3000 points and a special prize',
     points: 3000,
     Icon: Target,
-    tab: 'unlocked',
-  },
-  {
-    id: 3,
-    type: 'activity',
-    title: 'Pizza Party',
-    desc: 'Order 3 pizzas in a single visit and earn bonus points',
-    points: 1500,
-    Icon: Pizza,
     tab: 'unlocked',
   },
   {

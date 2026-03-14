@@ -7,14 +7,18 @@ const MATCHES = [
   { id: '2', home: 'Barcelona', away: 'Real Madrid', time: '21:00', status: 'upcoming' },
   { id: '3', home: 'Liverpool', away: 'Man City', time: 'LIVE', status: 'live' },
   { id: '4', home: 'PSG', away: 'Bayern Munich', time: '20:45', status: 'upcoming' },
+  { id: '5', home: 'Juventus', away: 'AC Milan', time: 'FT 2–1', status: 'finished' },
 ]
 
 function MatchCard({ match, prediction, expanded, onToggle, onPredict, tempScore, onTempChange }) {
+  const isFinished = match.status === 'finished'
+
   return (
-    <div className="border border-brand-gray-300 rounded-2xl overflow-hidden transition-all duration-200">
+    <div className={`border rounded-2xl overflow-hidden transition-all duration-200 ${isFinished ? 'border-brand-gray-100 opacity-60' : 'border-brand-gray-300'}`}>
       <button
-        onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 text-left cursor-pointer"
+        onClick={() => !isFinished && onToggle()}
+        className={`w-full flex items-center justify-between p-4 text-left ${isFinished ? 'cursor-default' : 'cursor-pointer'}`}
+        disabled={isFinished}
       >
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-0.5">
@@ -25,14 +29,17 @@ function MatchCard({ match, prediction, expanded, onToggle, onPredict, tempScore
                 <span className="text-[10px] font-bold text-red-500">LIVE</span>
               </span>
             )}
+            {isFinished && (
+              <span className="text-[10px] font-medium text-brand-gray-500 bg-brand-gray-100 px-2 py-0.5 rounded-full">Finished</span>
+            )}
           </div>
-          <p className="font-semibold text-sm text-brand-black">{match.home} vs {match.away}</p>
+          <p className={`font-semibold text-sm ${isFinished ? 'text-brand-gray-500' : 'text-brand-black'}`}>{match.home} vs {match.away}</p>
         </div>
         {prediction ? (
           <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-primary/10 text-green-primary text-xs font-bold">
             <Check size={12} /> {prediction.home}–{prediction.away}
           </span>
-        ) : (
+        ) : isFinished ? null : (
           expanded ? <ChevronUp size={18} className="text-brand-gray-500" /> : <ChevronDown size={18} className="text-brand-gray-500" />
         )}
       </button>

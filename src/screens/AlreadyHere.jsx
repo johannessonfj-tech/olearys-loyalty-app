@@ -14,7 +14,7 @@ const features = [
     id: 'play',
     Icon: Gamepad2,
     label: 'Play Game',
-    description: '3 Kamp · 5 Kamp',
+    description: '3 Kamp · 5 Kamp · Bowling Bingo',
     path: '/play',
   },
   {

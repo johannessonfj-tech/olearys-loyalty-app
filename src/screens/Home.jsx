@@ -5,7 +5,7 @@ const TIERS = [
   { name: 'Regular', pct: 10, Icon: Award },
   { name: 'Starter', pct: 33, Icon: Shield },
   { name: 'All Star', pct: 62, Icon: Trophy },
-  { name: 'MVP', pct: 100, Icon: Star },
+  { name: 'MVP', pct: 95, Icon: Star },
 ]
 const CURRENT_TIER = 'All Star'
 const NEXT_TIER = 'MVP'
@@ -30,8 +30,8 @@ function ProgressBar() {
   const filledPct = Math.min(((PROGRESS_PCT - firstPct) / (lastPct - firstPct)) * 100, 100)
 
   return (
-    <div className="mt-6 mb-2">
-      <div className="relative" style={{ height: 90 }}>
+    <div className="mt-6 mb-2 overflow-visible">
+      <div className="relative overflow-visible" style={{ height: 90 }}>
         {/* Track line — thick, runs between first and last icon centers */}
         <div
           className="absolute h-[5px] bg-brand-gray-300 rounded-full"
