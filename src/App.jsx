@@ -16,34 +16,46 @@ import ChallengeDetail from './screens/ChallengeDetail'
 export default function App() {
   return (
     <BrowserRouter>
-      {/* Outer centering shell — gray background */}
-      <div className="min-h-dvh bg-gray-100 flex items-start justify-center">
-        {/* Mobile frame — 390px wide */}
+      {/* Desktop: center the phone on a gray bg */}
+      <div className="min-h-screen bg-[#e8e8e8] flex items-center justify-center p-4">
+        {/* iPhone shell */}
         <div
-          className="relative bg-white flex flex-col overflow-hidden shadow-2xl"
-          style={{ width: '390px', minHeight: '100dvh' }}
+          className="relative bg-black rounded-[50px] shadow-2xl overflow-hidden flex flex-col"
+          style={{ width: 393, height: 852, border: '8px solid #1a1a1a' }}
         >
+          {/* Status bar area */}
+          <div className="h-12 bg-white flex items-end justify-center pb-1 relative z-20">
+            {/* Dynamic Island */}
+            <div className="w-[120px] h-[32px] bg-black rounded-full absolute top-1" />
+          </div>
+
           {/* Scrollable screen content */}
-          <main className="flex-1 overflow-y-auto overflow-x-hidden pb-20">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/book" element={<Book />} />
-              <Route path="/here" element={<AlreadyHere />} />
-              <Route path="/challenges" element={<Challenges />} />
-              <Route path="/wallet" element={<Wallet />} />
-              <Route path="/benefits" element={<TierBenefits />} />
-              <Route path="/book/:matchId" element={<MatchBooking />} />
-              <Route path="/play" element={<PlayGame />} />
-              <Route path="/play/:id" element={<GameDetail />} />
-              <Route path="/play/bowling-bingo" element={<BowlingBingo />} />
-              <Route path="/predict" element={<PredictMatch />} />
-              <Route path="/challenges/:id" element={<ChallengeDetail />} />
-            </Routes>
+          <main className="flex-1 bg-white overflow-y-auto overflow-x-hidden relative">
+            <div className="pb-20">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/book" element={<Book />} />
+                <Route path="/here" element={<AlreadyHere />} />
+                <Route path="/challenges" element={<Challenges />} />
+                <Route path="/wallet" element={<Wallet />} />
+                <Route path="/benefits" element={<TierBenefits />} />
+                <Route path="/book/:matchId" element={<MatchBooking />} />
+                <Route path="/play" element={<PlayGame />} />
+                <Route path="/play/:id" element={<GameDetail />} />
+                <Route path="/play/bowling-bingo" element={<BowlingBingo />} />
+                <Route path="/predict" element={<PredictMatch />} />
+                <Route path="/challenges/:id" element={<ChallengeDetail />} />
+              </Routes>
+            </div>
           </main>
 
-          {/* Fixed bottom nav inside the mobile frame */}
-          <div className="absolute bottom-0 left-0 right-0">
+          {/* Bottom nav pinned inside phone */}
+          <div className="bg-white relative z-20">
             <BottomNav />
+            {/* Home indicator bar */}
+            <div className="flex justify-center pb-2 pt-1">
+              <div className="w-32 h-1 bg-brand-black/20 rounded-full" />
+            </div>
           </div>
         </div>
       </div>
