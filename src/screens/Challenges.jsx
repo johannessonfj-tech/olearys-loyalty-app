@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Trophy, Target, Star, Clock, Coins, Award } from 'lucide-react'
+import { Trophy, Target, Star, Clock, Coins, Award, MapPin, HelpCircle } from 'lucide-react'
 
 const TABS = [
   { id: 'unlocked', label: 'Unlocked', count: 3 },
-  { id: 'active', label: 'Active', count: 1 },
+  { id: 'active', label: 'Active', count: 2 },
   { id: 'finished', label: 'Finished', count: 0 },
   { id: 'fame', label: 'Hall of Fame', count: null },
 ]
@@ -30,6 +30,15 @@ const CHALLENGES = [
     tab: 'unlocked',
   },
   {
+    id: 6,
+    type: 'activity',
+    title: 'Globetrotter',
+    desc: "Visit 10 O'Learys locations and win 2000 points",
+    points: 2000,
+    Icon: MapPin,
+    tab: 'unlocked',
+  },
+  {
     id: 5,
     type: 'progress',
     title: 'Burger Ronaldo',
@@ -37,16 +46,19 @@ const CHALLENGES = [
     current: 7,
     target: 15,
     points: 2000,
-    tab: 'unlocked',
+    unit: 'burgers',
+    tab: 'active',
   },
   {
-    id: 4,
-    type: 'sports',
-    title: 'Champions League Night',
-    desc: "Watch 2 Champions League matches at O'Learys to unlock exclusive rewards",
-    daysLeft: 14,
-    points: 2000,
-    sponsor: 'Heineken',
+    id: 7,
+    type: 'progress',
+    title: 'Professional Quizzer',
+    desc: 'Participate in 10 quizzes and win 4000 points',
+    current: 4,
+    target: 10,
+    points: 4000,
+    unit: 'quizzes',
+    Icon: HelpCircle,
     tab: 'active',
   },
 ]
@@ -56,17 +68,29 @@ const HALL_OF_FAME = {
     { name: 'Daniel Andersson', tier: 'MVP', score: '52 325', color: '#ffdc1e' },
     { name: 'Yousef Ali', tier: 'MVP', score: '48 362', color: '#e0e0e0' },
     { name: 'Bengt Jönsson', tier: 'MVP', score: '47 301', color: '#f4c28c' },
-    { name: 'Klara Andersson', tier: null, score: '32 552', color: null },
+    { name: 'Klara Andersson', tier: 'All-Star', score: '32 552', color: null },
+    { name: 'Erik Svensson', tier: 'All-Star', score: '29 840', color: null },
+    { name: 'Maria Lindqvist', tier: 'Starter', score: '27 115', color: null },
+    { name: 'Johan Berg', tier: 'All-Star', score: '24 990', color: null },
+    { name: 'Sara Nilsson', tier: 'Starter', score: '22 610', color: null },
+    { name: 'Andreas Holm', tier: 'MVP', score: '21 455', color: null },
+    { name: 'Lina Persson', tier: 'All-Star', score: '19 820', color: null },
   ],
   bowling: [
     { name: 'Andrea Andersson', tier: 'Starter', rounds: 21, score: '300', color: '#ffdc1e' },
     { name: 'Kabas Ali', tier: 'MVP', rounds: 19, score: '300', color: '#e0e0e0' },
     { name: 'Klara Jönsson', tier: 'All-Star', rounds: 20, score: '275', color: '#f4c28c' },
-    { name: 'Klara Andersson', tier: null, rounds: 20, score: '270', color: null },
+    { name: 'Klara Andersson', tier: 'Starter', rounds: 20, score: '270', color: null },
+    { name: 'Petri Kuivamaki', tier: 'MVP', rounds: 18, score: '265', color: null },
+    { name: 'Godwin Okoko', tier: 'All-Star', rounds: 17, score: '258', color: null },
+    { name: 'Antonio Pimentel', tier: 'Starter', rounds: 16, score: '250', color: null },
+    { name: 'Jani Laitinen', tier: 'MVP', rounds: 15, score: '245', color: null },
+    { name: 'Nafidz Razak', tier: 'All-Star', rounds: 14, score: '240', color: null },
+    { name: 'Iheanyi Mgobeahurike', tier: 'Starter', rounds: 13, score: '232', color: null },
   ],
 }
 
-function SportsChallengeCard({ c, onClick }) {
+function SportsChallengeCard({ c, onJoin, onDetails }) {
   return (
     <div className="rounded-2xl overflow-hidden border border-brand-gray-300">
       <div className="relative h-32 flex items-center justify-center bg-[#1a2637]">
@@ -92,8 +116,8 @@ function SportsChallengeCard({ c, onClick }) {
         <h3 className="font-bold text-sm leading-snug text-brand-black">{c.title}</h3>
         <p className="text-xs text-brand-gray-500 mt-1.5 leading-relaxed">{c.desc}</p>
         <div className="flex gap-2 mt-4">
-          <button className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-green-primary cursor-pointer transition-transform duration-200 active:scale-[0.97]">Join</button>
-          <button onClick={onClick} className="flex-1 py-2.5 rounded-lg text-sm font-semibold border border-brand-gray-300 text-brand-black cursor-pointer transition-transform duration-200 active:scale-[0.97]">Details</button>
+          <button onClick={onJoin} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-green-primary cursor-pointer transition-transform duration-200 active:scale-[0.97]">Join</button>
+          <button onClick={onDetails} className="flex-1 py-2.5 rounded-lg text-sm font-semibold border border-brand-gray-300 text-brand-black cursor-pointer transition-transform duration-200 active:scale-[0.97]">Details</button>
         </div>
       </div>
     </div>
@@ -110,7 +134,6 @@ function ActivityChallengeCard({ c, onClick }) {
         <div className="flex-1 pr-4">
           <h3 className="font-bold text-lg text-white leading-tight">{c.title}</h3>
           <p className="text-white/80 text-xs mt-2 leading-relaxed">{c.desc}</p>
-          <button className="mt-4 py-2 px-5 rounded-lg text-sm font-semibold text-white border border-white/40 cursor-pointer">Join</button>
         </div>
         <Icon size={40} className="text-white/40" />
       </div>
@@ -140,7 +163,7 @@ function ProgressChallengeCard({ c, onClick }) {
             <span className="text-[10px] font-bold text-green-primary bg-green-primary/10 px-1.5 py-0.5 rounded-full">{c.current}</span>
             <span className="text-[10px] font-bold text-brand-gray-500 bg-brand-gray-100 px-1.5 py-0.5 rounded-full">{c.target}</span>
           </div>
-          <p className="text-center text-xs text-brand-gray-500 mt-1">{c.current} / {c.target} burgers</p>
+          <p className="text-center text-xs text-brand-gray-500 mt-1">{c.current} / {c.target} {c.unit || 'items'}</p>
         </div>
         <div className="mt-3 flex items-center justify-center gap-6">
           <div className="flex items-center gap-1">
@@ -191,6 +214,7 @@ function HallOfFame() {
       <table className="w-full">
         <thead>
           <tr className="text-[10px] uppercase text-brand-gray-500 tracking-wider">
+            <th className="text-left py-2">#</th>
             <th className="text-left py-2">Name</th>
             {showRounds && <th className="text-right py-2">Rounds</th>}
             <th className="text-right py-2">Score</th>
@@ -199,6 +223,9 @@ function HallOfFame() {
         <tbody>
           {data.map((p, i) => (
             <tr key={i}>
+              <td className="py-3 w-8 px-1" style={p.color ? { backgroundColor: p.color + '40' } : undefined}>
+                <span className="text-sm font-semibold text-brand-black">{i + 1}</span>
+              </td>
               <td className="py-3" style={p.color ? { backgroundColor: p.color + '40' } : undefined}>
                 <div className="flex items-center gap-3 px-2">
                   <div className="w-10 h-10 rounded-lg bg-brand-gray-300 flex items-center justify-center flex-shrink-0">
@@ -234,7 +261,7 @@ export default function Challenges() {
   return (
     <div className="pb-4">
       {/* Tabs */}
-      <div className="flex border-b border-brand-gray-300 px-4 pt-10 gap-1 overflow-x-auto no-scrollbar">
+      <div className="flex border-b border-brand-gray-300 px-4 pt-4 gap-1 overflow-x-auto no-scrollbar">
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -267,7 +294,14 @@ export default function Challenges() {
             </div>
           ) : (
             filtered.map((c) => {
-              if (c.type === 'sports') return <SportsChallengeCard key={c.id} c={c} onClick={() => navigate(`/challenges/${c.id}`)} />
+              if (c.type === 'sports') return (
+                <SportsChallengeCard
+                  key={c.id}
+                  c={c}
+                  onJoin={() => navigate(`/challenges/${c.id}?joined=true`)}
+                  onDetails={() => navigate(`/challenges/${c.id}`)}
+                />
+              )
               if (c.type === 'progress') return <ProgressChallengeCard key={c.id} c={c} onClick={() => navigate(`/challenges/${c.id}`)} />
               return <ActivityChallengeCard key={c.id} c={c} onClick={() => navigate(`/challenges/${c.id}`)} />
             })
