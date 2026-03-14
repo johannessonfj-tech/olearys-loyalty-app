@@ -31,7 +31,7 @@ const BOOKED_SLOTS = ['18.00', '19.00']
 function MatchDetail({ match, guests, onContinue }) {
   const [specialRequest, setSpecialRequest] = useState('')
   return (
-    <div className="pb-24">
+    <div className="pb-2">
       <div className="rounded-b-3xl overflow-hidden relative" style={{ background: 'linear-gradient(180deg, #1a3a2a 0%, #0d1f15 100%)' }}>
         <div className="absolute inset-0 opacity-20" style={{ background: 'radial-gradient(ellipse at 50% 30%, #2d5a3d 0%, transparent 60%)' }} />
         <div className="relative px-5 pt-4 pb-8 text-center">
@@ -63,7 +63,7 @@ function MatchDetail({ match, guests, onContinue }) {
           <textarea value={specialRequest} onChange={(e) => setSpecialRequest(e.target.value)} placeholder="e.g. any allergies, specific game, team you support" rows={2} className="w-full rounded-xl border border-brand-gray-300 px-3 py-2.5 text-sm outline-none focus:border-green-primary resize-none" />
         </div>
       </div>
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] bg-white border-t border-brand-gray-100 px-5 py-4">
+      <div className="sticky bottom-0 bg-white border-t border-brand-gray-100 px-5 py-4 z-10">
         <button onClick={() => onContinue(specialRequest)} className="w-full py-4 rounded-2xl text-sm font-bold cursor-pointer active:scale-[0.97] transition-transform" style={{ backgroundColor: '#ffdc1e', color: '#3c3c3c' }}>Continue</button>
       </div>
     </div>
@@ -73,7 +73,7 @@ function MatchDetail({ match, guests, onContinue }) {
 /* ── Phase 2: Select Activities ── */
 function SelectActivities({ match, guests, cart, onAdd, onReview }) {
   return (
-    <div className="pb-24">
+    <div className="pb-2">
       <div className="bg-green-primary px-5 pt-4 pb-5 rounded-b-2xl">
         <p className="text-white/70 text-xs">{guests} guests, {match.fullDate}</p>
         <p className="text-white font-bold text-base">Select activities</p>
@@ -97,7 +97,7 @@ function SelectActivities({ match, guests, cart, onAdd, onReview }) {
         ))}
       </div>
       {cart.length > 0 && (
-        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] bg-white border-t border-brand-gray-100 px-5 py-4">
+        <div className="sticky bottom-0 bg-white border-t border-brand-gray-100 px-5 py-4 z-10">
           <button onClick={onReview} className="w-full py-4 rounded-2xl text-sm font-bold cursor-pointer active:scale-[0.97] transition-transform" style={{ backgroundColor: '#ffdc1e', color: '#3c3c3c' }}>Review booking request ({cart.length})</button>
         </div>
       )}
@@ -113,7 +113,7 @@ function ActivityDetail({ activity, guests, match, onAdd }) {
   const timeRange = selectedTime ? `${selectedTime} – ${(parseFloat(selectedTime) + duration).toFixed(2)}` : ''
 
   return (
-    <div className="pb-24">
+    <div className="pb-2">
       <div className="h-48 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%)' }}>
         <div className="absolute inset-0 flex items-center justify-center"><CircleDot size={48} className="text-white/20" /></div>
       </div>
@@ -165,7 +165,7 @@ function ActivityDetail({ activity, guests, match, onAdd }) {
           </div>
         )}
       </div>
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] bg-white border-t border-brand-gray-100 px-5 py-4">
+      <div className="sticky bottom-0 bg-white border-t border-brand-gray-100 px-5 py-4 z-10">
         <button onClick={() => selectedTime && onAdd({ ...activity, selectedTime, duration, totalPrice: price })} disabled={!selectedTime}
           className={`w-full py-4 rounded-2xl text-sm font-bold cursor-pointer active:scale-[0.97] transition-transform ${selectedTime ? '' : 'opacity-50'}`}
           style={{ backgroundColor: selectedTime ? '#ffdc1e' : '#e0e0e0', color: '#3c3c3c' }}>Add to booking</button>
@@ -183,7 +183,7 @@ function Checkout({ match, guests, cart, onConfirm, onBack, onRemove }) {
   const total = subtotal - discount + (insurance ? 4 : 0)
 
   return (
-    <div className="pb-28">
+    <div className="pb-2">
       <div className="bg-green-dark px-5 pt-12 pb-4 flex items-center justify-between -mt-16">
         <p className="text-white font-bold italic text-lg">O'LEARYS</p>
         <button onClick={onBack} className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center cursor-pointer"><X size={16} className="text-white" /></button>
@@ -232,7 +232,7 @@ function Checkout({ match, guests, cart, onConfirm, onBack, onRemove }) {
         </div>
         <p className="text-[10px] text-brand-gray-500">By completing this booking you accept our <span className="underline">booking terms</span> and <span className="underline">privacy policy</span>.</p>
       </div>
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] bg-white border-t border-brand-gray-100 px-5 py-4">
+      <div className="sticky bottom-0 bg-white border-t border-brand-gray-100 px-5 py-4 z-10">
         <button onClick={onConfirm} className="w-full py-4 rounded-2xl text-sm font-bold cursor-pointer active:scale-[0.97] transition-transform" style={{ backgroundColor: '#ffdc1e', color: '#3c3c3c' }}>Confirm booking</button>
       </div>
     </div>
