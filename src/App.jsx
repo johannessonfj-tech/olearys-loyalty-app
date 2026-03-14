@@ -6,6 +6,8 @@ import Book from './screens/Book'
 import AlreadyHere from './screens/AlreadyHere'
 import Challenges from './screens/Challenges'
 import Wallet from './screens/Wallet'
+import WalletCardDetail from './screens/WalletCardDetail'
+import OrderHistory from './screens/OrderHistory'
 import TierBenefits from './screens/TierBenefits'
 import PlayGame from './screens/PlayGame'
 import GameDetail from './screens/GameDetail'
@@ -58,6 +60,9 @@ export default function App() {
                 <Route path="/here" element={<AlreadyHere />} />
                 <Route path="/challenges" element={<Challenges />} />
                 <Route path="/wallet" element={<Wallet />} />
+                <Route path="/wallet/vouchers" element={<WalletCardDetail />} />
+                <Route path="/wallet/history" element={<OrderHistory />} />
+                <Route path="/wallet/:type/:id" element={<WalletCardDetail />} />
                 <Route path="/benefits" element={<TierBenefits />} />
                 <Route path="/book/happening/:happeningId" element={<HappeningDetail />} />
                 <Route path="/book/party/:partyType" element={<PartyDetail />} />
