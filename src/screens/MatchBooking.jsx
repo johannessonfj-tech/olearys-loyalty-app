@@ -281,24 +281,19 @@ export default function MatchBooking() {
   const navigate = useNavigate()
   const match = MATCHES_DB[matchId] || MATCHES_DB['arsenal-everton']
 
-  const [phase, setPhase] = useState('match')
+  // Skip match detail — go straight to activities with table reservation in cart
+  const [phase, setPhase] = useState('activities')
   const [guests] = useState(4)
-  const [cart, setCart] = useState([])
+  const [cart, setCart] = useState([{ name: 'Table reservation', selectedTime: null, duration: null, totalPrice: 0 }])
   const [selectedActivity, setSelectedActivity] = useState(null)
-
-  const handleMatchContinue = () => {
-    setCart([{ name: 'Table reservation', selectedTime: null, duration: null, totalPrice: 0 }])
-    setPhase('activities')
-  }
 
   return (
     <div className="min-h-dvh flex flex-col bg-white">
       {phase !== 'checkout' && phase !== 'confirmation' && (
         <div className="px-4 pt-12 pb-2 flex items-center gap-3">
-          <button onClick={() => { if (phase === 'match') navigate(-1); else if (phase === 'detail') setPhase('activities'); else if (phase === 'activities') setPhase('match'); }} className="w-11 h-11 flex items-center justify-center cursor-pointer -ml-2" aria-label="Go back"><ChevronLeft size={24} className="text-brand-black" /></button>
+          <button onClick={() => { if (phase === 'activities') navigate(-1); else if (phase === 'detail') setPhase('activities'); }} className="w-11 h-11 flex items-center justify-center cursor-pointer -ml-2" aria-label="Go back"><ChevronLeft size={24} className="text-brand-black" /></button>
         </div>
       )}
-      {phase === 'match' && <MatchDetail match={match} guests={guests} onContinue={handleMatchContinue} />}
       {phase === 'activities' && <SelectActivities match={match} guests={guests} cart={cart} onAdd={(a) => { setSelectedActivity(a); setPhase('detail') }} onReview={() => setPhase('checkout')} />}
       {phase === 'detail' && selectedActivity && <ActivityDetail activity={selectedActivity} guests={guests} match={match} onAdd={(a) => { setCart((c) => [...c, a]); setSelectedActivity(null); setPhase('activities') }} />}
       {phase === 'checkout' && <Checkout match={match} guests={guests} cart={cart} onConfirm={() => setPhase('confirmation')} onBack={() => setPhase('activities')} onRemove={(i) => setCart((c) => c.filter((_, idx) => idx !== i))} />}
