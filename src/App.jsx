@@ -12,6 +12,7 @@ import BowlingBingo from './screens/BowlingBingo'
 import MatchBooking from './screens/MatchBooking'
 import PredictMatch from './screens/PredictMatch'
 import ChallengeDetail from './screens/ChallengeDetail'
+import MyBookings from './screens/MyBookings'
 
 export default function App() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
                 <Route path="/play/bowling-bingo" element={<BowlingBingo />} />
                 <Route path="/predict" element={<PredictMatch />} />
                 <Route path="/challenges/:id" element={<ChallengeDetail />} />
+              <Route path="/my-bookings" element={<MyBookings />} />
               </Routes>
             </div>
           </main>
