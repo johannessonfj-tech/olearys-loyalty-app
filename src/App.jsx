@@ -5,6 +5,7 @@ import Book from './screens/Book'
 import AlreadyHere from './screens/AlreadyHere'
 import Challenges from './screens/Challenges'
 import Wallet from './screens/Wallet'
+import TierBenefits from './screens/TierBenefits'
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
               <Route path="/here" element={<AlreadyHere />} />
               <Route path="/challenges" element={<Challenges />} />
               <Route path="/wallet" element={<Wallet />} />
+              <Route path="/benefits" element={<TierBenefits />} />
             </Routes>
           </main>
 

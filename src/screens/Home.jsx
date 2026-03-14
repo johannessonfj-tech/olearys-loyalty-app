@@ -1,18 +1,11 @@
-import { useState, useEffect } from 'react'
-import { ChevronRight, X, Gift, Tag, Percent, Trophy, Star } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ChevronRight, Gift, Tag, Percent, Trophy } from 'lucide-react'
 
 const TIERS = ['Regular', 'All Star', 'MVP']
 const CURRENT_TIER = 'All Star'
 const NEXT_TIER = 'MVP'
 const POINTS = 58231
 const PROGRESS_PCT = 68
-
-const BENEFITS = [
-  { id: 1, title: 'Birthday bonus', desc: 'Double points on your birthday month.' },
-  { id: 2, title: 'Priority booking', desc: 'Skip the queue — book tables up to 7 days in advance.' },
-  { id: 3, title: 'Exclusive events', desc: 'Access to All Star member-only match nights.' },
-  { id: 4, title: 'Free drink upgrade', desc: 'Free size upgrade on any drink, once per visit.' },
-]
 
 const DEALS = [
   { id: 1, label: '2-for-1 Burgers', sub: 'Valid Mon–Thu', dark: false },
@@ -66,52 +59,8 @@ function ProgressBar() {
   )
 }
 
-function BenefitsModal({ onClose }) {
-  useEffect(() => {
-    document.body.classList.add('modal-open')
-    return () => document.body.classList.remove('modal-open')
-  }, [])
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Your benefits"
-    >
-      <div
-        className="bg-white w-full max-w-[390px] rounded-t-2xl p-6 pb-10 animate-[slideUp_300ms_ease-out]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-brand-black">Your benefits</h2>
-          <button
-            onClick={onClose}
-            className="w-11 h-11 flex items-center justify-center rounded-full bg-brand-gray-100 cursor-pointer"
-            aria-label="Close benefits"
-          >
-            <X size={18} />
-          </button>
-        </div>
-        <div className="space-y-3">
-          {BENEFITS.map((b) => (
-            <div key={b.id} className="p-4 rounded-xl border border-brand-gray-300">
-              <p className="font-semibold text-sm text-brand-black">{b.title}</p>
-              <p className="text-xs text-brand-gray-500 mt-0.5">{b.desc}</p>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 text-center">
-          <span className="text-xs text-brand-gray-500">Benefits for All Star members</span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function Home() {
-  const [showBenefits, setShowBenefits] = useState(false)
+  const navigate = useNavigate()
 
   return (
     <div className="px-4 pt-10 pb-4">
@@ -129,7 +78,6 @@ export default function Home() {
             </span>
           </div>
         </div>
-        {/* Avatar / sports card */}
         <div className="w-14 rounded-xl overflow-hidden border-2 border-green-primary flex items-center justify-center bg-brand-gray-100"
           style={{ minHeight: '72px', minWidth: '56px' }}
         >
@@ -143,9 +91,9 @@ export default function Home() {
       {/* Progress */}
       <ProgressBar />
 
-      {/* See your benefits */}
+      {/* See your benefits — navigates to /benefits */}
       <button
-        onClick={() => setShowBenefits(true)}
+        onClick={() => navigate('/benefits')}
         className="w-full mt-4 py-2.5 rounded-full border border-green-primary text-green-primary font-medium text-sm cursor-pointer transition-transform duration-200 active:scale-[0.97]"
         aria-label="See your benefits"
       >
@@ -212,8 +160,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {showBenefits && <BenefitsModal onClose={() => setShowBenefits(false)} />}
     </div>
   )
 }
