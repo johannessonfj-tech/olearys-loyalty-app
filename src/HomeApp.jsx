@@ -1,10 +1,13 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import Home from './screens/Home'
 import TierBenefits from './screens/TierBenefits'
+import DealDetail from './screens/DealDetail'
+import AllRewards from './screens/AllRewards'
+import ClaimReward from './screens/ClaimReward'
 
 export default function HomeApp() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="min-h-dvh bg-gray-100 flex items-start justify-center">
         <div
           className="relative bg-white flex flex-col overflow-hidden shadow-2xl"
@@ -14,10 +17,14 @@ export default function HomeApp() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/benefits" element={<TierBenefits />} />
+              <Route path="/deals/:dealId" element={<DealDetail />} />
+              <Route path="/deals" element={<Home />} />
+              <Route path="/rewards" element={<AllRewards />} />
+              <Route path="/rewards/:rewardId" element={<ClaimReward />} />
             </Routes>
           </main>
         </div>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
