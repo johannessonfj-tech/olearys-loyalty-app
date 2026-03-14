@@ -11,6 +11,7 @@ import GameDetail from './screens/GameDetail'
 import BowlingBingo from './screens/BowlingBingo'
 import MatchBooking from './screens/MatchBooking'
 import PredictMatch from './screens/PredictMatch'
+import ChallengeDetail from './screens/ChallengeDetail'
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
               <Route path="/play/:id" element={<GameDetail />} />
               <Route path="/play/bowling-bingo" element={<BowlingBingo />} />
               <Route path="/predict" element={<PredictMatch />} />
+              <Route path="/challenges/:id" element={<ChallengeDetail />} />
             </Routes>
           </main>
 
