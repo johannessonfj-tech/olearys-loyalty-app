@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 const DEALS = [
   { id: 'sunday', name: 'Half Price Sunday', sub: 'Activities at 50% off', image: '/images/deal-sunday.png' },
   { id: 'burger', name: '2 for 1 Burger', sub: 'Limited time only', image: '/images/deal-burger.png' },
-  { id: 'happy-hour', name: 'Extended Happy Hour', sub: 'Fri & Sat', image: '/images/deal-3.png' },
 ]
 
 export default function AllDeals() {

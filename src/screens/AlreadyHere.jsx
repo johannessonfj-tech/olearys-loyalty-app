@@ -1,125 +1,135 @@
-import { useState } from 'react'
-import { MapPin, Tv, UtensilsCrossed, Wine, IceCreamCone, ShoppingCart, Plus } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { MapPin, ShoppingBag, Gamepad2, Trophy, X, ChevronRight } from 'lucide-react'
 
-const CATEGORIES = [
-  { id: 'food', label: 'Food', Icon: UtensilsCrossed },
-  { id: 'drinks', label: 'Drinks', Icon: Wine },
-  { id: 'watch', label: 'Watch Menu', Icon: Tv },
-  { id: 'desserts', label: 'Desserts', Icon: IceCreamCone },
+const features = [
+  {
+    id: 'order',
+    Icon: ShoppingBag,
+    label: 'Order',
+    description: 'Order food & drinks',
+    action: 'sheet',
+  },
+  {
+    id: 'play',
+    Icon: Gamepad2,
+    label: 'Play Game',
+    description: '3 Kamp · 5 Kamp · Bowling Bingo',
+    path: '/play',
+  },
+  {
+    id: 'predict',
+    Icon: Trophy,
+    label: 'Predict Match',
+    description: 'Predict the scores',
+    path: '/predict',
+  },
 ]
 
-const POPULAR = [
-  { id: 1, name: "O'Learys Burger", price: '189 kr', Icon: UtensilsCrossed },
-  { id: 2, name: 'Nachos Grande', price: '129 kr', Icon: UtensilsCrossed },
-  { id: 3, name: 'IPA Draft', price: '89 kr', Icon: Wine },
-  { id: 4, name: 'Loaded Fries', price: '99 kr', Icon: UtensilsCrossed },
-]
-
-export default function AlreadyHere() {
-  const [table, setTable] = useState('')
-  const [orderType, setOrderType] = useState('dine-in')
-  const [cart, setCart] = useState([])
-
-  const addToCart = (item) => setCart((c) => [...c, item])
+function OrderUnavailableSheet({ onClose }) {
+  useEffect(() => {
+    document.body.classList.add('modal-open')
+    return () => document.body.classList.remove('modal-open')
+  }, [])
 
   return (
-    <div className="pb-24">
-      {/* Location banner */}
-      <div className="px-4 pt-10 pb-5 bg-brand-gray-100">
-        <div className="flex items-center gap-2 mb-1">
-          <MapPin size={16} className="text-green-primary" />
-          <p className="text-sm text-brand-gray-500">You're at</p>
-        </div>
-        <h1 className="text-xl font-bold text-brand-black">O'Learys Östermalm</h1>
-
-        <div className="mt-4">
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="Table number (optional)"
-            value={table}
-            onChange={(e) => setTable(e.target.value)}
-            className="w-full h-11 rounded-xl border border-brand-gray-300 px-3 text-sm bg-white outline-none focus:border-green-primary transition-colors duration-200"
-            aria-label="Table number"
-          />
-        </div>
-
-        <div className="mt-3 flex rounded-xl border border-brand-gray-300 overflow-hidden bg-white p-1 gap-1">
-          {['dine-in', 'takeaway'].map((t) => (
-            <button
-              key={t}
-              onClick={() => setOrderType(t)}
-              className={`flex-1 py-2 text-sm font-medium rounded-lg capitalize cursor-pointer transition-colors duration-200 ${
-                orderType === t ? 'bg-green-primary text-white' : 'text-brand-gray-500'
-              }`}
-              aria-pressed={orderType === t}
-            >
-              {t === 'dine-in' ? 'Dine in' : 'Takeaway'}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Category grid */}
-      <div className="px-4 mt-5">
-        <h2 className="text-base font-bold mb-3 text-brand-black">What are you looking for?</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {CATEGORIES.map(({ id, label, Icon }) => (
-            <button
-              key={id}
-              className="h-24 rounded-2xl border border-brand-gray-300 bg-white flex flex-col items-center justify-center gap-2 cursor-pointer transition-transform duration-200 active:scale-[0.97]"
-              aria-label={label}
-            >
-              <div className="w-10 h-10 rounded-full bg-green-light/30 flex items-center justify-center">
-                <Icon size={20} className="text-green-primary" />
-              </div>
-              <span className="text-sm font-medium text-brand-black">{label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Popular picks */}
-      <div className="mt-7 px-4">
-        <h2 className="text-base font-bold mb-3 text-brand-black">Popular picks</h2>
-        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
-          {POPULAR.map((item) => (
-            <div
-              key={item.id}
-              className="flex-shrink-0 w-36 border border-brand-gray-300 rounded-xl bg-white p-3"
-            >
-              <div className="w-10 h-10 rounded-full bg-brand-gray-100 flex items-center justify-center mb-2">
-                <item.Icon size={20} className="text-green-primary" />
-              </div>
-              <p className="font-semibold text-sm leading-tight text-brand-black">{item.name}</p>
-              <p className="text-xs mt-0.5 font-medium text-green-primary">{item.price}</p>
-              <button
-                onClick={() => addToCart(item)}
-                className="mt-2 w-full py-1.5 rounded-lg text-xs font-semibold text-white bg-green-primary cursor-pointer transition-transform duration-200 active:scale-[0.97] flex items-center justify-center gap-1"
-                aria-label={`Add ${item.name} to cart`}
-              >
-                <Plus size={12} /> Add
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Floating cart */}
-      {cart.length > 0 && (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[358px] z-10">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Order unavailable"
+    >
+      <div
+        className="bg-white w-full max-w-[390px] rounded-t-2xl p-6 pb-10 animate-[slideUp_300ms_ease-out]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-bold text-brand-black">Order unavailable</h2>
           <button
-            className="w-full py-4 rounded-2xl flex items-center justify-between px-5 shadow-lg text-white font-semibold text-sm bg-green-primary cursor-pointer transition-transform duration-200 active:scale-[0.97]"
-            aria-label={`View order with ${cart.length} items`}
+            onClick={onClose}
+            className="w-11 h-11 flex items-center justify-center rounded-full bg-brand-gray-100 cursor-pointer"
+            aria-label="Close"
           >
-            <div className="flex items-center gap-2">
-              <ShoppingCart size={18} />
-              <span>{cart.length} item{cart.length > 1 ? 's' : ''}</span>
-            </div>
-            <span>View order</span>
+            <X size={18} />
           </button>
         </div>
-      )}
+
+        <div className="flex flex-col items-center text-center py-4">
+          <div className="w-16 h-16 rounded-full bg-green-primary/10 flex items-center justify-center mb-4">
+            <ShoppingBag size={28} className="text-green-primary" />
+          </div>
+          <p className="text-sm text-brand-black leading-relaxed max-w-[280px]">
+            Not available for this O'Learys unfortunately. Please order from the waiter or bar.
+          </p>
+        </div>
+
+        <button
+          onClick={onClose}
+          className="w-full mt-4 py-3.5 rounded-2xl bg-brand-black text-white text-sm font-bold cursor-pointer transition-transform duration-200 active:scale-[0.97]"
+        >
+          Got it
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export default function AlreadyHere() {
+  const navigate = useNavigate()
+  const [showOrderSheet, setShowOrderSheet] = useState(false)
+
+  const handleFeature = (feature) => {
+    if (feature.action === 'sheet') {
+      setShowOrderSheet(true)
+    } else if (feature.path) {
+      navigate(feature.path)
+    }
+  }
+
+  return (
+    <div className="min-h-[80dvh] flex flex-col px-5 pb-24 pt-12">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl tracking-widest text-green-primary font-bold">O'LEARYS</h1>
+        <p className="text-sm text-brand-gray-500 mt-1">Sports · Food · Fun</p>
+      </div>
+
+      {/* Location selector */}
+      <button
+        className="mb-8 flex items-center gap-3 rounded-xl border border-brand-gray-300 bg-white px-4 py-3.5 text-left cursor-pointer transition-colors duration-200 active:border-green-primary"
+        aria-label="Select your O'Learys location"
+      >
+        <MapPin size={20} className="text-green-primary flex-shrink-0" />
+        <div className="flex-1">
+          <p className="text-[11px] text-brand-gray-500">Your location</p>
+          <p className="text-sm font-medium text-brand-black">Select your O'Learys →</p>
+        </div>
+      </button>
+
+      {/* Feature cards */}
+      <div className="flex flex-col gap-4">
+        {features.map((feature, i) => (
+          <button
+            key={feature.id}
+            onClick={() => handleFeature(feature)}
+            className="flex items-center gap-4 rounded-2xl border border-brand-gray-300 bg-white p-5 text-left cursor-pointer transition-all duration-200 active:scale-[0.98] active:border-green-primary"
+            style={{ animationDelay: `${i * 80}ms` }}
+            aria-label={feature.label}
+          >
+            <div className="w-12 h-12 rounded-xl bg-green-primary/10 flex items-center justify-center flex-shrink-0">
+              <feature.Icon size={24} className="text-green-primary" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-brand-black">{feature.label}</p>
+              <p className="text-sm text-brand-gray-500">{feature.description}</p>
+            </div>
+            <ChevronRight size={18} className="text-brand-gray-500" />
+          </button>
+        ))}
+      </div>
+
+      {showOrderSheet && <OrderUnavailableSheet onClose={() => setShowOrderSheet(false)} />}
     </div>
   )
 }
