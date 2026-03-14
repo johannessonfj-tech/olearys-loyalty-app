@@ -1,18 +1,18 @@
 import { useState } from 'react'
-import { MapPin, Tv, UtensilsCrossed, Wine, IceCream, ShoppingCart } from 'lucide-react'
+import { MapPin, Tv, UtensilsCrossed, Wine, IceCreamCone, ShoppingCart, Plus } from 'lucide-react'
 
 const CATEGORIES = [
   { id: 'food', label: 'Food', Icon: UtensilsCrossed },
   { id: 'drinks', label: 'Drinks', Icon: Wine },
   { id: 'watch', label: 'Watch Menu', Icon: Tv },
-  { id: 'desserts', label: 'Desserts', Icon: IceCream },
+  { id: 'desserts', label: 'Desserts', Icon: IceCreamCone },
 ]
 
 const POPULAR = [
-  { id: 1, name: 'O\'Learys Burger', price: '189 kr', emoji: '🍔' },
-  { id: 2, name: 'Nachos Grande', price: '129 kr', emoji: '🧀' },
-  { id: 3, name: 'IPA Draft', price: '89 kr', emoji: '🍺' },
-  { id: 4, name: 'Loaded Fries', price: '99 kr', emoji: '🍟' },
+  { id: 1, name: "O'Learys Burger", price: '189 kr', Icon: UtensilsCrossed },
+  { id: 2, name: 'Nachos Grande', price: '129 kr', Icon: UtensilsCrossed },
+  { id: 3, name: 'IPA Draft', price: '89 kr', Icon: Wine },
+  { id: 4, name: 'Loaded Fries', price: '99 kr', Icon: UtensilsCrossed },
 ]
 
 export default function AlreadyHere() {
@@ -21,45 +21,38 @@ export default function AlreadyHere() {
   const [cart, setCart] = useState([])
 
   const addToCart = (item) => setCart((c) => [...c, item])
-  const cartTotal = cart.reduce((sum) => sum + 1, 0)
 
   return (
     <div className="pb-24">
       {/* Location banner */}
-      <div
-        className="px-4 pt-10 pb-5"
-        style={{ backgroundColor: '#f5f5f5' }}
-      >
+      <div className="px-4 pt-10 pb-5 bg-brand-gray-100">
         <div className="flex items-center gap-2 mb-1">
-          <MapPin size={16} color="#2d9b87" />
-          <p className="text-sm text-gray-500">You're at</p>
+          <MapPin size={16} className="text-green-primary" />
+          <p className="text-sm text-brand-gray-500">You're at</p>
         </div>
-        <h1 className="text-xl font-bold" style={{ color: '#3c3c3c' }}>O'Learys Östermalm</h1>
+        <h1 className="text-xl font-bold text-brand-black">O'Learys Östermalm</h1>
 
-        {/* Table number */}
-        <div className="mt-4 flex gap-2 items-center">
+        <div className="mt-4">
           <input
             type="text"
             inputMode="numeric"
             placeholder="Table number (optional)"
             value={table}
             onChange={(e) => setTable(e.target.value)}
-            className="flex-1 h-11 rounded-xl border border-gray-200 px-3 text-sm bg-white outline-none focus:border-green-primary"
-            style={{ '--tw-border-opacity': 1 }}
+            className="w-full h-11 rounded-xl border border-brand-gray-300 px-3 text-sm bg-white outline-none focus:border-green-primary transition-colors duration-200"
+            aria-label="Table number"
           />
         </div>
 
-        {/* Order type toggle */}
-        <div className="mt-3 flex rounded-xl border border-gray-200 overflow-hidden bg-white p-1 gap-1">
+        <div className="mt-3 flex rounded-xl border border-brand-gray-300 overflow-hidden bg-white p-1 gap-1">
           {['dine-in', 'takeaway'].map((t) => (
             <button
               key={t}
               onClick={() => setOrderType(t)}
-              className="flex-1 py-2 text-sm font-medium rounded-lg capitalize transition-all"
-              style={{
-                backgroundColor: orderType === t ? '#2d9b87' : 'transparent',
-                color: orderType === t ? '#fff' : '#9e9e9e',
-              }}
+              className={`flex-1 py-2 text-sm font-medium rounded-lg capitalize cursor-pointer transition-colors duration-200 ${
+                orderType === t ? 'bg-green-primary text-white' : 'text-brand-gray-500'
+              }`}
+              aria-pressed={orderType === t}
             >
               {t === 'dine-in' ? 'Dine in' : 'Takeaway'}
             </button>
@@ -69,20 +62,18 @@ export default function AlreadyHere() {
 
       {/* Category grid */}
       <div className="px-4 mt-5">
-        <h2 className="text-base font-bold mb-3" style={{ color: '#3c3c3c' }}>What are you looking for?</h2>
+        <h2 className="text-base font-bold mb-3 text-brand-black">What are you looking for?</h2>
         <div className="grid grid-cols-2 gap-3">
           {CATEGORIES.map(({ id, label, Icon }) => (
             <button
               key={id}
-              className="h-24 rounded-2xl border border-gray-200 bg-white flex flex-col items-center justify-center gap-2 transition-all active:scale-95 active:border-green-primary"
+              className="h-24 rounded-2xl border border-brand-gray-300 bg-white flex flex-col items-center justify-center gap-2 cursor-pointer transition-transform duration-200 active:scale-[0.97]"
+              aria-label={label}
             >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: '#f0faf8' }}
-              >
-                <Icon size={20} color="#2d9b87" />
+              <div className="w-10 h-10 rounded-full bg-green-light/30 flex items-center justify-center">
+                <Icon size={20} className="text-green-primary" />
               </div>
-              <span className="text-sm font-medium" style={{ color: '#3c3c3c' }}>{label}</span>
+              <span className="text-sm font-medium text-brand-black">{label}</span>
             </button>
           ))}
         </div>
@@ -90,22 +81,24 @@ export default function AlreadyHere() {
 
       {/* Popular picks */}
       <div className="mt-7 px-4">
-        <h2 className="text-base font-bold mb-3" style={{ color: '#3c3c3c' }}>Popular picks</h2>
+        <h2 className="text-base font-bold mb-3 text-brand-black">Popular picks</h2>
         <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
           {POPULAR.map((item) => (
             <div
               key={item.id}
-              className="flex-shrink-0 w-36 border border-gray-200 rounded-xl bg-white p-3"
+              className="flex-shrink-0 w-36 border border-brand-gray-300 rounded-xl bg-white p-3"
             >
-              <div className="text-3xl mb-2">{item.emoji}</div>
-              <p className="font-semibold text-sm leading-tight" style={{ color: '#3c3c3c' }}>{item.name}</p>
-              <p className="text-xs mt-0.5 font-medium" style={{ color: '#2d9b87' }}>{item.price}</p>
+              <div className="w-10 h-10 rounded-full bg-brand-gray-100 flex items-center justify-center mb-2">
+                <item.Icon size={20} className="text-green-primary" />
+              </div>
+              <p className="font-semibold text-sm leading-tight text-brand-black">{item.name}</p>
+              <p className="text-xs mt-0.5 font-medium text-green-primary">{item.price}</p>
               <button
                 onClick={() => addToCart(item)}
-                className="mt-2 w-full py-1.5 rounded-lg text-xs font-semibold text-white active:scale-95 transition-transform"
-                style={{ backgroundColor: '#2d9b87' }}
+                className="mt-2 w-full py-1.5 rounded-lg text-xs font-semibold text-white bg-green-primary cursor-pointer transition-transform duration-200 active:scale-[0.97] flex items-center justify-center gap-1"
+                aria-label={`Add ${item.name} to cart`}
               >
-                Add
+                <Plus size={12} /> Add
               </button>
             </div>
           ))}
@@ -114,14 +107,14 @@ export default function AlreadyHere() {
 
       {/* Floating cart */}
       {cart.length > 0 && (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[358px]">
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[358px] z-10">
           <button
-            className="w-full py-4 rounded-2xl flex items-center justify-between px-5 shadow-lg text-white font-semibold text-sm active:scale-95 transition-transform"
-            style={{ backgroundColor: '#2d9b87' }}
+            className="w-full py-4 rounded-2xl flex items-center justify-between px-5 shadow-lg text-white font-semibold text-sm bg-green-primary cursor-pointer transition-transform duration-200 active:scale-[0.97]"
+            aria-label={`View order with ${cart.length} items`}
           >
             <div className="flex items-center gap-2">
               <ShoppingCart size={18} />
-              <span>{cartTotal} item{cartTotal > 1 ? 's' : ''}</span>
+              <span>{cart.length} item{cart.length > 1 ? 's' : ''}</span>
             </div>
             <span>View order</span>
           </button>

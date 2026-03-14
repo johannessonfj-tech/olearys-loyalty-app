@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import { ChevronRight, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { ChevronRight, X, Gift, Tag, Percent, Trophy, Star } from 'lucide-react'
 
 const TIERS = ['Regular', 'All Star', 'MVP']
 const CURRENT_TIER = 'All Star'
 const NEXT_TIER = 'MVP'
 const POINTS = 58231
-const PROGRESS_PCT = 68 // % toward next tier
+const PROGRESS_PCT = 68
 
 const BENEFITS = [
   { id: 1, title: 'Birthday bonus', desc: 'Double points on your birthday month.' },
@@ -15,52 +15,48 @@ const BENEFITS = [
 ]
 
 const DEALS = [
-  { id: 1, label: '2-for-1 Burgers', sub: 'Valid Mon–Thu', color: '#2d9b87' },
-  { id: 2, label: 'Happy Hour +1h', sub: 'Fri & Sat', color: '#23695a' },
-  { id: 3, label: 'Match Day Platter', sub: 'All Premier League', color: '#2d9b87' },
+  { id: 1, label: '2-for-1 Burgers', sub: 'Valid Mon–Thu', dark: false },
+  { id: 2, label: 'Happy Hour +1h', sub: 'Fri & Sat', dark: true },
+  { id: 3, label: 'Match Day Platter', sub: 'All Premier League', dark: false },
 ]
 
 const REDEEM = [
-  { id: 1, label: 'Free Beer', pts: '500 pts', color: '#f5f5f5' },
-  { id: 2, label: 'Loaded Fries', pts: '350 pts', color: '#f5f5f5' },
-  { id: 3, label: '10% off bill', pts: '800 pts', color: '#f5f5f5' },
+  { id: 1, label: 'Free Beer', pts: '500 pts', Icon: Gift },
+  { id: 2, label: 'Loaded Fries', pts: '350 pts', Icon: Tag },
+  { id: 3, label: '10% off bill', pts: '800 pts', Icon: Percent },
 ]
 
 function ProgressBar() {
   const tierCount = TIERS.length
   return (
     <div className="mt-4">
-      <p className="text-sm text-gray-500 mb-2">Your progress to {NEXT_TIER}</p>
-      <div className="relative h-4 rounded-full bg-gray-200">
+      <p className="text-sm text-brand-gray-500 mb-2">Your progress to {NEXT_TIER}</p>
+      <div className="relative h-4 rounded-full bg-brand-gray-100">
         <div
-          className="absolute left-0 top-0 h-4 rounded-full transition-all"
-          style={{ width: `${PROGRESS_PCT}%`, backgroundColor: '#2d9b87' }}
+          className="absolute left-0 top-0 h-4 rounded-full bg-green-primary transition-all duration-300"
+          style={{ width: `${PROGRESS_PCT}%` }}
         />
-        {/* Milestone dots */}
         {TIERS.map((tier, i) => {
           const pct = i === 0 ? 0 : i === tierCount - 1 ? 100 : Math.round((i / (tierCount - 1)) * 100)
           const reached = PROGRESS_PCT >= pct
           return (
             <div
               key={tier}
-              className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center"
+              className="absolute top-1/2 -translate-y-1/2"
               style={{ left: `calc(${pct}% - 8px)` }}
             >
               <div
-                className="w-4 h-4 rounded-full border-2 border-white"
-                style={{ backgroundColor: reached ? '#2d9b87' : '#e0e0e0' }}
+                className={`w-4 h-4 rounded-full border-2 border-white ${reached ? 'bg-green-primary' : 'bg-brand-gray-300'}`}
               />
             </div>
           )
         })}
       </div>
-      {/* Tier labels */}
       <div className="flex justify-between mt-1">
         {TIERS.map((t) => (
           <span
             key={t}
-            className="text-[10px] font-medium"
-            style={{ color: t === CURRENT_TIER ? '#2d9b87' : '#9e9e9e' }}
+            className={`text-[10px] font-medium ${t === CURRENT_TIER ? 'text-green-primary' : 'text-brand-gray-500'}`}
           >
             {t}
           </span>
@@ -71,25 +67,43 @@ function ProgressBar() {
 }
 
 function BenefitsModal({ onClose }) {
+  useEffect(() => {
+    document.body.classList.add('modal-open')
+    return () => document.body.classList.remove('modal-open')
+  }, [])
+
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
-      <div className="bg-white w-full max-w-[390px] rounded-t-2xl p-6 pb-10">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Your benefits"
+    >
+      <div
+        className="bg-white w-full max-w-[390px] rounded-t-2xl p-6 pb-10 animate-[slideUp_300ms_ease-out]"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold" style={{ color: '#3c3c3c' }}>Your benefits</h2>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">
-            <X size={16} />
+          <h2 className="text-lg font-bold text-brand-black">Your benefits</h2>
+          <button
+            onClick={onClose}
+            className="w-11 h-11 flex items-center justify-center rounded-full bg-brand-gray-100 cursor-pointer"
+            aria-label="Close benefits"
+          >
+            <X size={18} />
           </button>
         </div>
         <div className="space-y-3">
           {BENEFITS.map((b) => (
-            <div key={b.id} className="p-4 rounded-xl border border-gray-200">
-              <p className="font-semibold text-sm" style={{ color: '#3c3c3c' }}>{b.title}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{b.desc}</p>
+            <div key={b.id} className="p-4 rounded-xl border border-brand-gray-300">
+              <p className="font-semibold text-sm text-brand-black">{b.title}</p>
+              <p className="text-xs text-brand-gray-500 mt-0.5">{b.desc}</p>
             </div>
           ))}
         </div>
         <div className="mt-4 text-center">
-          <span className="text-xs text-gray-400">Benefits for All Star members</span>
+          <span className="text-xs text-brand-gray-500">Benefits for All Star members</span>
         </div>
       </div>
     </div>
@@ -104,28 +118,24 @@ export default function Home() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-base text-gray-500">Good evening,</p>
-          <h1 className="text-2xl font-bold mt-0.5" style={{ color: '#3c3c3c' }}>Daniel Svantesson</h1>
+          <p className="text-base text-brand-gray-500">Good evening,</p>
+          <h1 className="text-2xl font-bold mt-0.5 text-brand-black">Daniel Svantesson</h1>
           <div className="flex items-center gap-2 mt-2">
-            <span
-              className="px-3 py-1 rounded-full text-xs font-semibold text-white"
-              style={{ backgroundColor: '#2d9b87' }}
-            >
+            <span className="px-3 py-1 rounded-full text-xs font-semibold text-white bg-green-primary">
               All Star
             </span>
-            <span className="text-sm font-medium" style={{ color: '#3c3c3c' }}>
+            <span className="text-sm font-medium text-brand-black">
               ◇ {POINTS.toLocaleString('sv-SE')} Bonus Points
             </span>
           </div>
         </div>
         {/* Avatar / sports card */}
-        <div
-          className="w-14 h-18 rounded-xl overflow-hidden border-2 flex items-center justify-center"
-          style={{ borderColor: '#2d9b87', minHeight: '72px', minWidth: '56px', backgroundColor: '#f5f5f5' }}
+        <div className="w-14 rounded-xl overflow-hidden border-2 border-green-primary flex items-center justify-center bg-brand-gray-100"
+          style={{ minHeight: '72px', minWidth: '56px' }}
         >
           <div className="text-center px-1">
-            <div className="text-2xl">⚽</div>
-            <div className="text-[8px] font-bold mt-0.5" style={{ color: '#2d9b87' }}>ALL STAR</div>
+            <Trophy size={24} className="text-green-primary mx-auto" />
+            <div className="text-[8px] font-bold mt-0.5 text-green-primary">ALL STAR</div>
           </div>
         </div>
       </div>
@@ -136,8 +146,8 @@ export default function Home() {
       {/* See your benefits */}
       <button
         onClick={() => setShowBenefits(true)}
-        className="w-full mt-4 py-2.5 rounded-full border font-medium text-sm transition-colors active:scale-95"
-        style={{ borderColor: '#2d9b87', color: '#2d9b87', backgroundColor: 'transparent' }}
+        className="w-full mt-4 py-2.5 rounded-full border border-green-primary text-green-primary font-medium text-sm cursor-pointer transition-transform duration-200 active:scale-[0.97]"
+        aria-label="See your benefits"
       >
         See your benefits
       </button>
@@ -145,8 +155,8 @@ export default function Home() {
       {/* Deals */}
       <section className="mt-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-bold" style={{ color: '#3c3c3c' }}>Deal</h2>
-          <button className="flex items-center gap-0.5 text-sm" style={{ color: '#2d9b87' }}>
+          <h2 className="text-base font-bold text-brand-black">Deal</h2>
+          <button className="flex items-center gap-0.5 text-sm text-green-primary cursor-pointer" aria-label="See all deals">
             See all <ChevronRight size={14} />
           </button>
         </div>
@@ -154,8 +164,10 @@ export default function Home() {
           {DEALS.map((d) => (
             <div
               key={d.id}
-              className="flex-shrink-0 w-32 h-36 rounded-xl flex flex-col justify-between p-3 cursor-pointer active:scale-95 transition-transform"
-              style={{ backgroundColor: d.color }}
+              className={`flex-shrink-0 w-32 h-36 rounded-xl flex flex-col justify-between p-3 cursor-pointer transition-transform duration-200 active:scale-[0.97] ${d.dark ? 'bg-green-dark' : 'bg-green-primary'}`}
+              role="button"
+              tabIndex={0}
+              aria-label={d.label}
             >
               <div />
               <div>
@@ -175,8 +187,8 @@ export default function Home() {
       {/* Redeem with points */}
       <section className="mt-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-bold" style={{ color: '#3c3c3c' }}>Redeem with points</h2>
-          <button className="flex items-center gap-0.5 text-sm" style={{ color: '#2d9b87' }}>
+          <h2 className="text-base font-bold text-brand-black">Redeem with points</h2>
+          <button className="flex items-center gap-0.5 text-sm text-green-primary cursor-pointer" aria-label="See all redemption options">
             See all <ChevronRight size={14} />
           </button>
         </div>
@@ -184,15 +196,17 @@ export default function Home() {
           {REDEEM.map((r) => (
             <div
               key={r.id}
-              className="flex-shrink-0 w-32 h-32 rounded-xl border border-gray-200 flex flex-col justify-between p-3 cursor-pointer active:scale-95 transition-transform"
-              style={{ backgroundColor: r.color }}
+              className="flex-shrink-0 w-32 h-32 rounded-xl border border-brand-gray-300 bg-brand-gray-100 flex flex-col justify-between p-3 cursor-pointer transition-transform duration-200 active:scale-[0.97]"
+              role="button"
+              tabIndex={0}
+              aria-label={`Redeem ${r.label} for ${r.pts}`}
             >
-              <div className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-lg">
-                🎁
+              <div className="w-8 h-8 rounded-full bg-white border border-brand-gray-300 flex items-center justify-center">
+                <r.Icon size={16} className="text-green-primary" />
               </div>
               <div>
-                <p className="font-semibold text-sm" style={{ color: '#3c3c3c' }}>{r.label}</p>
-                <p className="text-xs mt-0.5 font-medium" style={{ color: '#2d9b87' }}>{r.pts}</p>
+                <p className="font-semibold text-sm text-brand-black">{r.label}</p>
+                <p className="text-xs mt-0.5 font-medium text-green-primary">{r.pts}</p>
               </div>
             </div>
           ))}

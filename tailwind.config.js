@@ -12,10 +12,18 @@ export default {
         brand: {
           black: '#3c3c3c',
           yellow: '#ffdc1e',
+          gray: {
+            100: '#f5f5f5',
+            300: '#e0e0e0',
+            500: '#9e9e9e',
+          },
         },
       },
       fontFamily: {
         sans: ['Jost', 'sans-serif'],
+      },
+      transitionDuration: {
+        DEFAULT: '200ms',
       },
     },
   },
