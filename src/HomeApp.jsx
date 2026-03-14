@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom'
 import Home from './screens/Home'
 import TierBenefits from './screens/TierBenefits'
 import DealDetail from './screens/DealDetail'
+import AllDeals from './screens/AllDeals'
 import AllRewards from './screens/AllRewards'
 import ClaimReward from './screens/ClaimReward'
 
@@ -18,7 +19,7 @@ export default function HomeApp() {
               <Route path="/" element={<Home />} />
               <Route path="/benefits" element={<TierBenefits />} />
               <Route path="/deals/:dealId" element={<DealDetail />} />
-              <Route path="/deals" element={<Home />} />
+              <Route path="/deals" element={<AllDeals />} />
               <Route path="/rewards" element={<AllRewards />} />
               <Route path="/rewards/:rewardId" element={<ClaimReward />} />
             </Routes>

@@ -9,8 +9,15 @@ const TIERS = [
     visits: '0',
     bgFrom: '#96beaf',
     bgTo: '#96beaf',
-    cardBg: 'bg-green-light',
-    textColor: 'text-brand-black',
+    current: false,
+  },
+  {
+    id: 'starter',
+    name: 'Starter',
+    points: '5 000',
+    visits: '3',
+    bgFrom: '#7ab8a5',
+    bgTo: '#6aab97',
     current: false,
   },
   {
@@ -20,8 +27,6 @@ const TIERS = [
     visits: '10',
     bgFrom: '#2d9b87',
     bgTo: '#23695a',
-    cardBg: '',
-    textColor: 'text-white',
     current: true,
   },
   {
@@ -31,8 +36,6 @@ const TIERS = [
     visits: '25',
     bgFrom: '#23695a',
     bgTo: '#1a4d3f',
-    cardBg: '',
-    textColor: 'text-white',
     current: false,
   },
 ]
@@ -41,89 +44,86 @@ const BENEFITS = [
   {
     Icon: Gift,
     label: 'Discount from O\'Learys & partners',
-    values: ['5%', '10%', '15%'],
+    values: ['—', '3%', '5%', '10%'],
   },
   {
     Icon: Star,
     label: 'Earn & spend points',
-    values: ['✓', '✓', '✓'],
+    values: ['✓', '✓', '✓', '✓'],
   },
   {
     Icon: Share2,
     label: 'Point sharing',
-    values: ['—', '✓', '✓'],
+    values: ['—', '—', '✓', '✓'],
   },
   {
     Icon: Utensils,
     label: 'Free birthday meal',
-    values: ['—', '1 meal', '1 meal + dessert'],
+    values: ['—', '—', '1 meal', '1 meal + dessert'],
   },
   {
     Icon: CalendarCheck,
     label: 'Priority booking',
-    values: ['—', '3 days ahead', '7 days ahead'],
+    values: ['—', '—', '3 days ahead', '7 days ahead'],
   },
   {
     Icon: Trophy,
     label: 'Exclusive match events',
-    values: ['—', '✓', 'VIP access'],
+    values: ['—', '—', '✓', 'VIP access'],
   },
   {
     Icon: Ticket,
     label: 'Free bowling rounds / month',
-    values: ['—', '1 round', '3 rounds'],
+    values: ['—', '—', '1 round', '3 rounds'],
   },
   {
     Icon: Percent,
     label: 'Discount on activities',
-    values: ['—', '10%', '20%'],
+    values: ['—', '5%', '10%', '20%'],
   },
   {
     Icon: TrendingUp,
     label: 'Bonus points multiplier',
-    values: ['1x', '1.5x', '2x'],
+    values: ['1x', '1x', '1.5x', '2x'],
   },
   {
     Icon: Crown,
     label: 'VIP lounge access',
-    values: ['—', '—', '✓'],
+    values: ['—', '—', '—', '✓'],
   },
 ]
 
 function TierCard({ tier }) {
-  const isLight = tier.id === 'regular'
+  const isLight = tier.id === 'regular' || tier.id === 'starter'
   return (
     <div
-      className="flex-shrink-0 w-[200px] h-[120px] rounded-2xl p-4 relative overflow-hidden flex flex-col justify-between"
+      className="flex-shrink-0 w-[180px] h-[110px] rounded-2xl p-4 relative overflow-hidden flex flex-col justify-between"
       style={{
         background: `linear-gradient(135deg, ${tier.bgFrom} 0%, ${tier.bgTo} 100%)`,
       }}
     >
-      {/* Decorative wave */}
-      <div className="absolute bottom-0 left-0 right-0 h-10 opacity-20">
-        <svg viewBox="0 0 200 40" fill="none" className="w-full h-full">
-          <path d="M0 20C30 10 60 30 100 20C140 10 170 30 200 20V40H0V20Z" fill="white" />
+      <div className="absolute bottom-0 left-0 right-0 h-8 opacity-20">
+        <svg viewBox="0 0 200 32" fill="none" className="w-full h-full">
+          <path d="M0 16C30 8 60 24 100 16C140 8 170 24 200 16V32H0V16Z" fill="white" />
         </svg>
       </div>
-
       <div>
-        <p className={`text-xs font-medium ${isLight ? 'text-brand-black/60' : 'text-white/70'}`}>O'Learys</p>
-        <p className={`text-base font-bold ${isLight ? 'text-brand-black' : 'text-white'}`}>{tier.name}</p>
+        <p className={`text-[10px] font-medium ${isLight ? 'text-brand-black/60' : 'text-white/70'}`}>O'Learys</p>
+        <p className={`text-sm font-bold ${isLight ? 'text-brand-black' : 'text-white'}`}>{tier.name}</p>
       </div>
-
       <div className="flex items-center justify-between relative">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
-            <Star size={12} className={isLight ? 'text-brand-black/50' : 'text-white/70'} />
-            <span className={`text-xs font-medium ${isLight ? 'text-brand-black/70' : 'text-white/80'}`}>{tier.points}</span>
+            <Star size={10} className={isLight ? 'text-brand-black/50' : 'text-white/70'} />
+            <span className={`text-[10px] font-medium ${isLight ? 'text-brand-black/70' : 'text-white/80'}`}>{tier.points}</span>
           </div>
           <div className="flex items-center gap-1">
-            <CalendarCheck size={12} className={isLight ? 'text-brand-black/50' : 'text-white/70'} />
-            <span className={`text-xs font-medium ${isLight ? 'text-brand-black/70' : 'text-white/80'}`}>{tier.visits}</span>
+            <CalendarCheck size={10} className={isLight ? 'text-brand-black/50' : 'text-white/70'} />
+            <span className={`text-[10px] font-medium ${isLight ? 'text-brand-black/70' : 'text-white/80'}`}>{tier.visits}</span>
           </div>
         </div>
         {tier.current && (
-          <span className="bg-brand-yellow text-brand-black text-[10px] font-bold px-2 py-0.5 rounded-full">
+          <span className="bg-brand-yellow text-brand-black text-[9px] font-bold px-2 py-0.5 rounded-full">
             MY LEVEL
           </span>
         )}
@@ -160,47 +160,49 @@ export default function TierBenefits() {
         </div>
       </div>
 
-      {/* Benefits comparison */}
-      <div className="flex-1 bg-white rounded-t-3xl -mt-2 pt-6 px-0">
+      {/* Benefits comparison — horizontally scrollable */}
+      <div className="flex-1 bg-white rounded-t-3xl -mt-2 pt-6">
         <div className="overflow-x-auto no-scrollbar">
-          <div className="min-w-[600px]">
-            {/* Column headers (sticky tier names) */}
-            <div className="flex px-4 pb-3 border-b border-brand-gray-300">
-              <div className="w-[200px] flex-shrink-0" />
-              {TIERS.map((tier) => (
-                <div key={tier.id} className="w-[200px] flex-shrink-0 text-center">
-                  <span className={`text-sm font-bold ${tier.current ? 'text-green-primary' : 'text-brand-black'}`}>
-                    {tier.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Benefit rows */}
-            {BENEFITS.map((b, idx) => (
-              <div key={idx} className="flex items-center px-4 py-4 border-b border-brand-gray-100">
-                {/* Benefit name */}
-                <div className="w-[200px] flex-shrink-0 flex items-start gap-3 pr-4">
-                  <b.Icon size={20} className="text-green-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-brand-black leading-snug">{b.label}</span>
-                </div>
-                {/* Tier values */}
-                {b.values.map((val, i) => (
-                  <div key={i} className="w-[200px] flex-shrink-0 text-center">
-                    <span
-                      className={`text-sm font-semibold ${
-                        val === '—' ? 'text-brand-gray-500' :
-                        val.includes('%') || val.includes('x') ? 'text-green-primary' :
-                        'text-brand-black'
-                      }`}
-                    >
-                      {val}
+          <table className="w-full" style={{ minWidth: 700 }}>
+            <thead>
+              <tr className="border-b border-brand-gray-300">
+                <th className="w-[160px] min-w-[160px] px-4 pb-3 text-left" />
+                {TIERS.map((tier) => (
+                  <th key={tier.id} className="w-[130px] min-w-[130px] px-2 pb-3 text-center">
+                    <span className={`text-sm font-bold ${tier.current ? 'text-green-primary' : 'text-brand-black'}`}>
+                      {tier.name}
                     </span>
-                  </div>
+                  </th>
                 ))}
-              </div>
-            ))}
-          </div>
+              </tr>
+            </thead>
+            <tbody>
+              {BENEFITS.map((b, idx) => (
+                <tr key={idx} className="border-b border-brand-gray-100">
+                  <td className="px-4 py-4">
+                    <div className="flex items-start gap-2">
+                      <b.Icon size={18} className="text-green-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-xs text-brand-black leading-snug">{b.label}</span>
+                    </div>
+                  </td>
+                  {b.values.map((val, i) => (
+                    <td key={i} className="px-2 py-4 text-center">
+                      <span
+                        className={`text-sm font-semibold ${
+                          val === '—' ? 'text-brand-gray-300' :
+                          val === '✓' ? 'text-green-primary' :
+                          (val.includes('%') || val.includes('x')) ? 'text-green-primary' :
+                          'text-brand-black'
+                        }`}
+                      >
+                        {val}
+                      </span>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

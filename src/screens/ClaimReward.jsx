@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ChevronLeft, ChevronDown, Clock, Check } from 'lucide-react'
+import { ChevronLeft, ChevronDown, Clock } from 'lucide-react'
+import CelebrationOverlay from '../components/CelebrationOverlay'
 
 const REWARDS_DATA = {
   'bowling': {
@@ -49,25 +50,23 @@ export default function ClaimReward() {
   const { rewardId } = useParams()
   const navigate = useNavigate()
   const [activated, setActivated] = useState(false)
-  const [showToast, setShowToast] = useState(false)
+  const [showCelebration, setShowCelebration] = useState(false)
   const [showTerms, setShowTerms] = useState(false)
 
   const reward = REWARDS_DATA[rewardId] || REWARDS_DATA['bowling']
 
   const handleActivate = () => {
-    setActivated(true)
-    setShowToast(true)
-    setTimeout(() => setShowToast(false), 3000)
+    setShowCelebration(true)
   }
 
   return (
     <div className="min-h-dvh flex flex-col bg-white relative">
-      {/* Toast */}
-      {showToast && (
-        <div className="absolute top-12 left-4 right-4 z-50 bg-green-primary text-white rounded-xl px-4 py-3 flex items-center gap-2 shadow-lg animate-[fadeIn_200ms_ease-out]">
-          <Check size={18} />
-          <span className="text-sm font-medium">Added to your O'Learys wallet!</span>
-        </div>
+      {/* Celebration overlay */}
+      {showCelebration && (
+        <CelebrationOverlay
+          message="Added to your O'Learys wallet!"
+          onDone={() => { setShowCelebration(false); setActivated(true) }}
+        />
       )}
 
       {/* Header */}

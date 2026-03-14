@@ -1,16 +1,27 @@
 import { useNavigate } from 'react-router-dom'
-import { ChevronRight, Trophy, Plus } from 'lucide-react'
+import { ChevronRight, Plus, Star, Shield, Trophy, Award } from 'lucide-react'
 
-const TIERS = ['Regular', 'All Star', 'MVP']
+// Tiers with their position on the bar (0-100%) and icons
+const TIERS = [
+  { name: 'Regular', pct: 10, Icon: Award },
+  { name: 'Starter', pct: 33, Icon: Shield },
+  { name: 'All Star', pct: 62, Icon: Trophy },
+  { name: 'MVP', pct: 100, Icon: Star },
+]
 const CURRENT_TIER = 'All Star'
 const NEXT_TIER = 'MVP'
 const POINTS = 58231
-const PROGRESS_PCT = 68
+const PROGRESS_PCT = 72
+
+const CURRENT_BENEFITS = [
+  { label: '5% DISCOUNT', check: true },
+  { label: 'Earn 1.5x ON POINTS', check: true },
+]
 
 const DEALS = [
-  { id: 'sunday', title: 'HALF PRICE SUNDAY DEAL', subtitle: 'HALF PRICE ACTIVITIES', cta: "LET'S PLAY", image: '/images/deal-sunday.png' },
-  { id: 'burger', title: '2 FOR 1 BURGER', subtitle: 'LIMITED TIME ONLY', cta: "LET'S PLAY", image: '/images/deal-burger.png' },
-  { id: 'happy-hour', title: 'EXTENDED HAPPY HOUR', subtitle: 'FRIDAY & SATURDAY', cta: "LET'S PLAY", image: '/images/deal-3.png' },
+  { id: 'sunday', image: '/images/deal-sunday.png' },
+  { id: 'burger', image: '/images/deal-burger.png' },
+  { id: 'happy-hour', image: '/images/deal-3.png' },
 ]
 
 const REDEEM = [
@@ -20,31 +31,58 @@ const REDEEM = [
 ]
 
 function ProgressBar() {
-  const tierCount = TIERS.length
   return (
-    <div className="mt-4">
-      <p className="text-sm text-brand-gray-500 mb-2">Your progress to {NEXT_TIER}</p>
-      <div className="relative h-4 rounded-full bg-brand-gray-100">
+    <div className="mt-6 px-2">
+      {/* Bar with icons */}
+      <div className="relative">
+        {/* Track */}
+        <div className="absolute top-1/2 left-0 right-0 h-[3px] -translate-y-1/2 bg-brand-gray-300 rounded-full" />
         <div
-          className="absolute left-0 top-0 h-4 rounded-full bg-green-primary transition-all duration-300"
+          className="absolute top-1/2 left-0 h-[3px] -translate-y-1/2 bg-green-primary rounded-full transition-all duration-300"
           style={{ width: `${PROGRESS_PCT}%` }}
         />
-        {TIERS.map((tier, i) => {
-          const pct = i === 0 ? 0 : i === tierCount - 1 ? 100 : Math.round((i / (tierCount - 1)) * 100)
-          const reached = PROGRESS_PCT >= pct
-          return (
-            <div key={tier} className="absolute top-1/2 -translate-y-1/2" style={{ left: `calc(${pct}% - 8px)` }}>
-              <div className={`w-4 h-4 rounded-full border-2 border-white ${reached ? 'bg-green-primary' : 'bg-brand-gray-300'}`} />
-            </div>
-          )
-        })}
-      </div>
-      <div className="flex justify-between mt-1">
-        {TIERS.map((t) => (
-          <span key={t} className={`text-[10px] font-medium ${t === CURRENT_TIER ? 'text-green-primary' : 'text-brand-gray-500'}`}>
-            {t}
-          </span>
-        ))}
+
+        {/* Tier icons */}
+        <div className="relative flex justify-between" style={{ paddingLeft: '2%', paddingRight: '0%' }}>
+          {TIERS.map((tier) => {
+            const reached = PROGRESS_PCT >= tier.pct
+            const isCurrent = tier.name === CURRENT_TIER
+            const iconSize = isCurrent ? 36 : 28
+            return (
+              <div
+                key={tier.name}
+                className="flex flex-col items-center"
+                style={{ position: 'absolute', left: `${tier.pct}%`, transform: 'translateX(-50%)' }}
+              >
+                <div
+                  className={`rounded-full flex items-center justify-center transition-all ${
+                    isCurrent
+                      ? 'w-12 h-12 bg-green-primary/10 border-2 border-green-primary'
+                      : reached
+                        ? 'w-9 h-9 bg-green-primary/10'
+                        : 'w-9 h-9 bg-brand-gray-100'
+                  }`}
+                >
+                  <tier.Icon
+                    size={isCurrent ? 22 : 16}
+                    className={reached ? 'text-green-primary' : 'text-brand-gray-500'}
+                    fill={isCurrent ? '#2d9b87' : 'none'}
+                    strokeWidth={isCurrent ? 1.5 : 2}
+                  />
+                </div>
+                <span
+                  className={`mt-1.5 text-[10px] font-semibold whitespace-nowrap ${
+                    isCurrent ? 'text-green-primary text-xs' : reached ? 'text-brand-gray-500' : 'text-brand-gray-500'
+                  }`}
+                >
+                  {tier.name}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+        {/* Spacer for icon height */}
+        <div style={{ height: 70 }} />
       </div>
     </div>
   )
@@ -54,27 +92,11 @@ function DealCard({ deal, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="flex-shrink-0 w-[310px] rounded-2xl overflow-hidden cursor-pointer transition-transform duration-200 active:scale-[0.98] relative"
-      aria-label={deal.title}
+      className="flex-shrink-0 w-[310px] rounded-2xl overflow-hidden cursor-pointer transition-transform duration-200 active:scale-[0.98]"
+      aria-label="View deal"
     >
-      {/* Full-bleed image */}
-      <div className="aspect-[16/9] bg-green-primary relative">
-        <img
-          src={deal.image}
-          alt={deal.title}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            e.target.style.display = 'none'
-          }}
-        />
-        {/* Overlay content */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex flex-col justify-end p-4">
-          <p className="text-white font-bold text-lg leading-tight">{deal.title}</p>
-          <p className="text-white/80 text-xs mt-0.5">{deal.subtitle}</p>
-          <span className="mt-2 self-start bg-green-primary text-white text-xs font-bold px-3 py-1.5 rounded-full">
-            {deal.cta}
-          </span>
-        </div>
+      <div className="aspect-[16/9] bg-brand-gray-100">
+        <img src={deal.image} alt="Deal" className="w-full h-full object-cover rounded-2xl" />
       </div>
     </button>
   )
@@ -88,15 +110,7 @@ function RedeemCard({ reward, onClick }) {
       aria-label={`${reward.name} — ${reward.pts} points`}
     >
       <div className="aspect-square rounded-2xl overflow-hidden bg-brand-gray-100 relative">
-        <img
-          src={reward.image}
-          alt={reward.name}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            e.target.style.display = 'none'
-            e.target.parentElement.innerHTML += `<div class="absolute inset-0 flex items-center justify-center bg-green-light/20"><span class="text-green-primary font-bold text-sm">${reward.name}</span></div>`
-          }}
-        />
+        <img src={reward.image} alt={reward.name} className="w-full h-full object-cover" />
         <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center transition-transform duration-200 group-active:scale-90">
           <ChevronRight size={14} className="text-brand-black" />
         </div>
@@ -114,41 +128,51 @@ export default function Home() {
   const navigate = useNavigate()
 
   return (
-    <div className="px-4 pt-10 pb-4">
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-base text-brand-gray-500">Good evening,</p>
-          <h1 className="text-2xl font-bold mt-0.5 text-brand-black">Daniel Svantesson</h1>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="px-3 py-1 rounded-full text-xs font-semibold text-white bg-green-primary">All Star</span>
-            <span className="text-sm font-medium text-brand-black">◇ {POINTS.toLocaleString('sv-SE')} Bonus Points</span>
+    <div className="pb-4">
+      {/* Header card */}
+      <div className="mx-4 mt-10 bg-white rounded-2xl border border-brand-gray-300 p-5 shadow-sm">
+        <p className="text-base text-brand-gray-500">Good evening,</p>
+        <h1 className="text-2xl font-bold mt-0.5 text-brand-black">Daniel Svantesson</h1>
+        <div className="flex items-center gap-1 mt-2">
+          <Star size={16} className="text-green-primary" fill="#2d9b87" />
+          <span className="text-base font-semibold text-brand-black">
+            {POINTS.toLocaleString('sv-SE')} Bonus Points
+          </span>
+        </div>
+
+        {/* Progress bar with icons */}
+        <ProgressBar />
+
+        {/* Benefits chips */}
+        <div className="mt-4">
+          <p className="text-sm font-semibold text-brand-black mb-2">Your benefits:</p>
+          <div className="flex gap-2">
+            {CURRENT_BENEFITS.map((b, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-brand-gray-300 bg-white"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8.5L6.5 12L13 4" stroke="#2d9b87" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span className="text-xs font-bold text-brand-black uppercase">{b.label}</span>
+              </div>
+            ))}
           </div>
         </div>
-        <div className="w-14 rounded-xl overflow-hidden border-2 border-green-primary flex items-center justify-center bg-brand-gray-100"
-          style={{ minHeight: '72px', minWidth: '56px' }}
+
+        {/* See your benefits */}
+        <button
+          onClick={() => navigate('/benefits')}
+          className="w-full mt-4 py-3 rounded-full border-2 border-green-primary text-green-primary font-semibold text-sm cursor-pointer transition-transform duration-200 active:scale-[0.97]"
+          aria-label="See your benefits"
         >
-          <div className="text-center px-1">
-            <Trophy size={24} className="text-green-primary mx-auto" />
-            <div className="text-[8px] font-bold mt-0.5 text-green-primary">ALL STAR</div>
-          </div>
-        </div>
+          See your benefits
+        </button>
       </div>
 
-      {/* Progress */}
-      <ProgressBar />
-
-      {/* See your benefits */}
-      <button
-        onClick={() => navigate('/benefits')}
-        className="w-full mt-4 py-2.5 rounded-full border border-green-primary text-green-primary font-medium text-sm cursor-pointer transition-transform duration-200 active:scale-[0.97]"
-        aria-label="See your benefits"
-      >
-        See your benefits
-      </button>
-
-      {/* Deals — large swipeable cards */}
-      <section className="mt-8">
+      {/* Deals — large image-only swipeable cards */}
+      <section className="mt-8 px-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-bold text-brand-black">Deal</h2>
           <button
@@ -168,8 +192,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Redeem with points — image cards like screenshots */}
-      <section className="mt-8">
+      {/* Redeem with points */}
+      <section className="mt-8 px-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-bold text-brand-black">Redeem with points</h2>
           <button
