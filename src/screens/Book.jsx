@@ -12,8 +12,8 @@ const CATEGORIES = [
   { id: 'play', label: 'Play', Icon: Gamepad2 },
 ]
 
-const DAYS = ['W', 'T', 'F', 'S', 'S', 'M', 'T']
-const DATES = [11, 12, 13, 14, 15, 16, 17]
+const DAYS = ['T', 'F', 'S', 'S', 'M']
+const DATES = [13, 14, 15, 16, 17]
 
 const MATCHES = [
   { id: 'lulea-farjestad', home: 'Luleå HF', away: 'Färjestad BK', league: 'SHL', time: '15:15' },
