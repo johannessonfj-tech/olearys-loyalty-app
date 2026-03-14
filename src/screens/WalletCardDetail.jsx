@@ -86,15 +86,23 @@ const VOUCHER_DATA = {
     itemLabel: 'Valid for 1 free portion of chicken wings',
     birthday: true,
   },
+  3: {
+    title: 'VIP Norrköping Night Club',
+    label: 'VIP ACCESS',
+    desc: 'Exclusive VIP access at O\'Learys Norrköping Night Club. Skip the line, enjoy a reserved VIP area, and get a welcome drink on the house.',
+    color: '#1a1a1a',
+    textWhite: true,
+    expires: '30/JUN/2026',
+    items: 1,
+    itemLabel: 'Valid for 1 VIP night club entry with welcome drink',
+  },
 }
 
 const ALL_VOUCHERS = [
   { id: 1, title: '25 kr off', sub: 'Valid until 31 Mar 2026', dark: false },
   { id: 2, title: 'Free Chicken Wings', sub: 'Birthday treat', dark: true, birthday: true },
-  { id: 3, title: '10% off your bill', sub: 'Valid until 15 Apr 2026', dark: true },
+  { id: 3, title: 'VIP Norrköping Night Club', sub: 'Exclusive VIP access — Valid until 30 Jun 2026', dark: true },
   { id: 4, title: 'Free Nachos', sub: 'Valid until 30 Apr 2026', dark: false },
-  { id: 5, title: 'Free Beer', sub: 'Valid until 31 May 2026', dark: false },
-  { id: 6, title: '50 kr off bowling', sub: 'Valid until 30 Jun 2026', dark: true },
 ]
 
 const GIFT_AMOUNTS = [100, 200, 500, 1000]
@@ -445,7 +453,7 @@ export default function WalletCardDetail() {
   }
 
   const title = isVoucherList
-    ? 'My Vouchers'
+    ? 'My Cards'
     : isVoucher
     ? 'Card Details'
     : isCard

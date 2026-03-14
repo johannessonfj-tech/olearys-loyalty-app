@@ -4,7 +4,7 @@ import { X, QrCode, Coins, Gift, Sun, PartyPopper, Heart, ChevronRight, Receipt 
 
 const VOUCHERS = [
   { id: 1, title: '25 kr off', sub: 'Valid until 31 Mar 2026', dark: false },
-  { id: 2, title: 'Free Chicken Wings', sub: 'Birthday treat — Valid until 15 Apr 2026', dark: true, birthday: true },
+  { id: 3, title: 'VIP Norrköping Night Club', sub: 'Exclusive VIP access — Valid until 30 Jun 2026', dark: true },
 ]
 
 const CARDS = [
@@ -233,7 +233,7 @@ export default function Wallet() {
       {/* Vouchers */}
       <section className="mt-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-bold text-brand-black">My Vouchers</h2>
+          <h2 className="text-base font-bold text-brand-black">My Cards</h2>
           <button
             onClick={() => navigate('/wallet/vouchers')}
             className="text-sm text-green-primary cursor-pointer"
