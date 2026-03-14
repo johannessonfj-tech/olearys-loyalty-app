@@ -7,6 +7,8 @@ import Challenges from './screens/Challenges'
 import Wallet from './screens/Wallet'
 import TierBenefits from './screens/TierBenefits'
 import PlayGame from './screens/PlayGame'
+import GameDetail from './screens/GameDetail'
+import BowlingBingo from './screens/BowlingBingo'
 import PredictMatch from './screens/PredictMatch'
 
 export default function App() {
@@ -29,6 +31,8 @@ export default function App() {
               <Route path="/wallet" element={<Wallet />} />
               <Route path="/benefits" element={<TierBenefits />} />
               <Route path="/play" element={<PlayGame />} />
+              <Route path="/play/:id" element={<GameDetail />} />
+              <Route path="/play/bowling-bingo" element={<BowlingBingo />} />
               <Route path="/predict" element={<PredictMatch />} />
             </Routes>
           </main>
