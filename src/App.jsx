@@ -6,6 +6,8 @@ import AlreadyHere from './screens/AlreadyHere'
 import Challenges from './screens/Challenges'
 import Wallet from './screens/Wallet'
 import TierBenefits from './screens/TierBenefits'
+import PlayGame from './screens/PlayGame'
+import PredictMatch from './screens/PredictMatch'
 
 export default function App() {
   return (
@@ -26,6 +28,8 @@ export default function App() {
               <Route path="/challenges" element={<Challenges />} />
               <Route path="/wallet" element={<Wallet />} />
               <Route path="/benefits" element={<TierBenefits />} />
+              <Route path="/play" element={<PlayGame />} />
+              <Route path="/predict" element={<PredictMatch />} />
             </Routes>
           </main>
 
