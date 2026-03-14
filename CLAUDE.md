@@ -19,6 +19,7 @@ See `DESIGN.md` for all colors, typography, spacing, and component rules.
 - `master` branch — stable base
 - `ui/prototype` branch — all UI work (worktree at `../loyalty-app-ui`)
 - Feature branches: `feature/home-page`, `feature/booking`, `feature/challenges`, `feature/already-here`
+- Worktrees: `../loyalty-app-ui` (ui/prototype), `../loyalty-app-challenges` (feature/challenges)
 
 ## App structure
 ```
@@ -88,10 +89,13 @@ See `DESIGN.md` for all colors, typography, spacing, and component rules.
 - Finished games greyed out (non-interactive)
 
 ### Challenges
-- Tabs: Unlocked (2), Active (1), Finished (0), Hall of Fame
-- Card types: Sports (Matchday Experience), Activity (Bowling King), Progress (Burger Ronaldo 7/15)
-- Challenge Detail pages with leaderboards
-- Hall of Fame: Bonus + Bowling tabs, gold/silver/bronze rows
+- Tabs: Unlocked (3), Active (2), Finished (0), Hall of Fame
+- **Unlocked**: Matchday Experience Liverpool vs Man Utd (sports/Carlsberg), Bowling King (activity), Globetrotter (activity — visit 10 O'Learys, 2000 pts)
+- **Active**: Burger Ronaldo (progress 7/15 burgers, 2000 pts), Professional Quizzer (progress 4/10 quizzes, 4000 pts)
+- Card types: Sports (hero + Join/Details), Activity (green card + icon), Progress (progress bar + achievement)
+- Sports Join button navigates to detail page with auto-enrollment (?joined=true)
+- Challenge Detail pages with leaderboards (sports), step guides (activity), progress bars (progress)
+- Hall of Fame: Bonus + Bowling tabs, 10 entries each, gold/silver/bronze rows
 
 ### Wallet
 - Green gradient loyalty card
