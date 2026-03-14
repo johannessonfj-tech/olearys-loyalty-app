@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Trophy, Target, Star, Clock, Coins, Award } from 'lucide-react'
 
 const TABS = [
-  { id: 'unlocked', label: 'Unlocked', count: 3 },
+  { id: 'unlocked', label: 'Unlocked', count: 2 },
   { id: 'active', label: 'Active', count: 1 },
   { id: 'finished', label: 'Finished', count: 0 },
   { id: 'fame', label: 'Hall of Fame', count: null },
@@ -37,16 +37,6 @@ const CHALLENGES = [
     current: 7,
     target: 15,
     points: 2000,
-    tab: 'unlocked',
-  },
-  {
-    id: 4,
-    type: 'sports',
-    title: 'Champions League Night',
-    desc: "Watch 2 Champions League matches at O'Learys to unlock exclusive rewards",
-    daysLeft: 14,
-    points: 2000,
-    sponsor: 'Heineken',
     tab: 'active',
   },
 ]
@@ -56,13 +46,25 @@ const HALL_OF_FAME = {
     { name: 'Daniel Andersson', tier: 'MVP', score: '52 325', color: '#ffdc1e' },
     { name: 'Yousef Ali', tier: 'MVP', score: '48 362', color: '#e0e0e0' },
     { name: 'Bengt Jönsson', tier: 'MVP', score: '47 301', color: '#f4c28c' },
-    { name: 'Klara Andersson', tier: null, score: '32 552', color: null },
+    { name: 'Klara Andersson', tier: 'All-Star', score: '32 552', color: null },
+    { name: 'Erik Lindström', tier: 'All-Star', score: '28 440', color: null },
+    { name: 'Sara Pettersson', tier: 'Starter', score: '21 103', color: null },
+    { name: 'Mohammed Hassan', tier: 'All-Star', score: '19 875', color: null },
+    { name: 'Lisa Bergman', tier: 'Starter', score: '15 220', color: null },
+    { name: 'Oscar Nilsson', tier: 'Regular', score: '12 640', color: null },
+    { name: 'Fatima Al-Rashid', tier: 'Starter', score: '9 310', color: null },
   ],
   bowling: [
     { name: 'Andrea Andersson', tier: 'Starter', rounds: 21, score: '300', color: '#ffdc1e' },
     { name: 'Kabas Ali', tier: 'MVP', rounds: 19, score: '300', color: '#e0e0e0' },
     { name: 'Klara Jönsson', tier: 'All-Star', rounds: 20, score: '275', color: '#f4c28c' },
-    { name: 'Klara Andersson', tier: null, rounds: 20, score: '270', color: null },
+    { name: 'Klara Andersson', tier: 'Starter', rounds: 20, score: '270', color: null },
+    { name: 'Jonas Ekström', tier: 'All-Star', rounds: 18, score: '265', color: null },
+    { name: 'Amina Yusuf', tier: 'MVP', rounds: 17, score: '258', color: null },
+    { name: 'Henrik Larsson', tier: 'Starter', rounds: 16, score: '245', color: null },
+    { name: 'Sofia Magnusson', tier: 'Regular', rounds: 15, score: '230', color: null },
+    { name: 'David Okafor', tier: 'All-Star', rounds: 14, score: '220', color: null },
+    { name: 'Emma Johansson', tier: 'Starter', rounds: 12, score: '210', color: null },
   ],
 }
 
