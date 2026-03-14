@@ -2,7 +2,7 @@
 
 ## What this is
 High-fidelity interactive prototype for the O'Learys loyalty program app.
-Built as a React web app viewed at 390px mobile width in a browser.
+Built as a React web app displayed in an iPhone 14 Pro frame (393x852) in the browser.
 Used to validate UX flows before native development begins.
 
 ## Tech stack
@@ -16,37 +16,91 @@ Used to validate UX flows before native development begins.
 See `DESIGN.md` for all colors, typography, spacing, and component rules.
 
 ## Git strategy
-- `main` branch — stable base
+- `master` branch — stable base
 - `ui/prototype` branch — all UI work (worktree at `../loyalty-app-ui`)
+- Feature branches: `feature/home-page`, `feature/booking`, `feature/challenges`, `feature/already-here`
 
 ## App structure
 ```
-/           → Home
-/book       → Book
-/here       → Already Here?
-/challenges → Challenges
-/wallet     → Wallet
+/               → Home
+/benefits       → Tier Benefits (comparison table)
+/deals          → All Deals (grid)
+/deals/:id      → Deal Detail + activate
+/rewards        → All Rewards (grid)
+/rewards/:id    → Claim Reward Card
+/book           → Book (matches, calendar, guest picker)
+/book/:matchId  → Match Booking (activities → time → checkout → confirmation)
+/my-bookings    → My Bookings (manage existing booking)
+/here           → Already Here? (Order, Play Game, Predict Match)
+/play           → Play Game (3 Kamp, 5 Kamp, Bowling Bingo)
+/play/:id       → Game Detail (setup → teams → play → results)
+/play/bowling-bingo → Bowling Bingo
+/predict        → Predict Match (score predictions)
+/challenges     → Challenges (Unlocked, Active, Finished, Hall of Fame)
+/challenges/:id → Challenge Detail
+/wallet         → Wallet (loyalty card, QR, vouchers, gift cards)
 ```
 
 ## Screens
 
 ### Home
-Header with user name, tier badge, Bonus Points. Progress bar toward next tier with milestone dots. "See your benefits" pill button. Horizontal scroll deal cards. Horizontal scroll redeem-with-points cards.
+- User greeting + name (Daniel Svantesson)
+- Bonus Points (58,231) with star icon
+- Progress bar with tier icons: Regular → Starter → All Star → MVP
+- Benefits chips: "5% DISCOUNT", "Earn 1.5x ON POINTS"
+- "See your benefits" → Tier Benefits page
+- Deal cards (horizontal swipe, image-only)
+- Redeem with points cards (image-based, tap → claim flow)
+
+### Tier Benefits
+- Green header with back nav
+- Horizontal scroll tier cards (Regular, Starter, All Star, MVP)
+- Benefits comparison table (10 rows, 4 tier columns)
 
 ### Book
-"My bookings" pill + location selector. Guest count + date filter. Category pills (Watch, Eat & Drink, Combo, Party & Events, Play). Week calendar with upcoming games. Match cards with "Book a table" CTA.
+- Location selector (Norrköping / Östermalm dropdown)
+- Category pills: Watch, Eat & Drink, Happenings, Party & Events, Play
+- Guest inputs (tap to type) + total guests badge
+- 5-day calendar with "Pick other date"
+- 8 live matches from olearys.com (SHL, Premier League, Serie A, NHL)
+
+### Match Booking (4-phase flow)
+1. Select Activities — activity list with prices
+2. Activity Detail — time grid, duration picker, price calc
+3. Checkout — cart, cancellation insurance, pre-pay 5% toggle
+4. Confirmation — reference number, venue contact
+
+### My Bookings
+- Luleå HF vs Färjestad BK (confirmed)
+- Leave a comment, modify guests, cancel booking
 
 ### Already Here?
-Location confirmation. Table number input. Category grid (Food, Drinks, Watch Menu, Desserts). Popular picks horizontal scroll. Floating cart button.
+- O'LEARYS header + location selector
+- 3 features: Order (unavailable sheet), Play Game, Predict Match
+
+### Play Game
+- 3 Kamp / 5 Kamp: full 4-phase game (setup → teams → play → results with confetti)
+- Bowling Bingo: 5x5 bingo grid with BINGO detection
+
+### Predict Match
+- 4 upcoming + 1 finished match
+- Expandable cards with score prediction input
+- Finished games greyed out (non-interactive)
 
 ### Challenges
-Tabs: Unlocked / Active / Finished / Hall of Fame. Two card styles: sports/sponsor (dark) and activity (solid green). Join + Details buttons.
+- Tabs: Unlocked (2), Active (1), Finished (0), Hall of Fame
+- Card types: Sports (Matchday Experience), Activity (Bowling King), Progress (Burger Ronaldo 7/15)
+- Challenge Detail pages with leaderboards
+- Hall of Fame: Bonus + Bowling tabs, gold/silver/bronze rows
 
 ### Wallet
-Visual loyalty card (green gradient). "Show QR Code" → full-screen modal. Vouchers horizontal scroll. Buy Gift Card CTA.
+- Green gradient loyalty card
+- QR code full-screen modal
+- Vouchers horizontal scroll
+- Gift card purchase (amount selector)
 
 ## Loyalty tiers
-Regular → All Star → MVP
+Regular → Starter → All Star → MVP
 
 ## Points currency
 Bonus Points
@@ -55,5 +109,8 @@ Bonus Points
 - Font: Jost (swap to Futura LT Pro Book when files available via @font-face)
 - Logo: fetched from https://olearys.com/api/logo/
 - Clean white minimalism — green is the ONLY color accent
-- No dark backgrounds except challenge cards (#23695a)
+- Yellow (#ffdc1e) for booking CTAs
+- iPhone 14 Pro frame with Dynamic Island
+- No dark backgrounds except challenge/booking heroes
 - Language: English
+- All icons: Lucide React SVG (no emojis)

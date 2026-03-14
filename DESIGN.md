@@ -12,9 +12,9 @@
 | Token | Hex | Usage |
 |-------|-----|-------|
 | `green-primary` | `#2d9b87` | CTAs, active nav, progress bar, icons |
-| `green-dark` | `#23695a` | Hover states, dark challenge cards |
+| `green-dark` | `#23695a` | Hover states, dark challenge cards, booking heroes |
 | `green-light` | `#96beaf` | Inactive progress, subtle backgrounds |
-| `yellow` | `#ffdc1e` | Contrast badges, highlights |
+| `yellow` | `#ffdc1e` | Booking CTA buttons, contrast badges, tier highlights |
 | `black` | `#3c3c3c` | All body text and headings |
 | `white` | `#ffffff` | Page backgrounds, card surfaces |
 | `gray-100` | `#f5f5f5` | Section backgrounds |
@@ -53,7 +53,7 @@
 
 ## Cards
 
-- **Border radius:** 12px (cards), 8px (buttons), 999px (pills/badges)
+- **Border radius:** 12px (cards), 8px (buttons), 999px (pills/badges), 50px (phone frame)
 - **Shadow:** `0 2px 8px rgba(0,0,0,0.08)`
 - **Background:** `#ffffff`
 - **Border:** `1px solid #e0e0e0`
@@ -69,7 +69,7 @@
 
 ## Loyalty Tiers
 
-`Regular` → `All Star` → `MVP`
+`Regular` → `Starter` → `All Star` → `MVP`
 
 Points currency: **Bonus Points**
 
@@ -94,15 +94,31 @@ Inactive color: `#9e9e9e`
 
 ## Mobile Frame
 
-- Target width: 390px (iPhone 14)
-- Min-height: 100dvh
-- Content padding: 16px horizontal
+- **Device:** iPhone 14 Pro (393x852)
+- **Bezel:** 8px black with rounded-[50px] corners
+- **Dynamic Island:** 120x32px centered at top
+- **Home indicator:** 128x4px bar at bottom
+- Content scrolls within the fixed phone viewport
+
+---
+
+## CTA Patterns
+
+| Context | Style |
+|---------|-------|
+| Primary actions (green) | `bg-green-primary text-white rounded-lg/2xl` |
+| Booking CTAs (yellow) | `bg-[#ffdc1e] text-[#3c3c3c] rounded-2xl` |
+| Destructive actions | `bg-red-500 text-white` or `border-red-200 text-red-500` |
+| Outline buttons | `border-green-primary text-green-primary rounded-full` |
+| Disabled | `bg-brand-gray-100 text-brand-gray-500` |
 
 ---
 
 ## Anti-patterns (avoid)
 
-- No dark backgrounds on main screens (challenge cards are the exception)
+- No dark backgrounds on main screens (challenge/booking heroes are exceptions)
 - No emoji as icons — use Lucide SVG only
 - No mixing of filled/outline icons at the same hierarchy level
 - No horizontal scroll on the page level — only inside designated scroll containers
+- No `fixed` positioning for CTAs inside phone frame — use `sticky` instead
+- No framer-motion dependency — use CSS transitions/animations
