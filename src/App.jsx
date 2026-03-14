@@ -13,6 +13,10 @@ import MatchBooking from './screens/MatchBooking'
 import PredictMatch from './screens/PredictMatch'
 import ChallengeDetail from './screens/ChallengeDetail'
 import MyBookings from './screens/MyBookings'
+import AllDeals from './screens/AllDeals'
+import AllRewards from './screens/AllRewards'
+import DealDetail from './screens/DealDetail'
+import ClaimReward from './screens/ClaimReward'
 
 export default function App() {
   return (
@@ -47,6 +51,10 @@ export default function App() {
                 <Route path="/predict" element={<PredictMatch />} />
                 <Route path="/challenges/:id" element={<ChallengeDetail />} />
               <Route path="/my-bookings" element={<MyBookings />} />
+              <Route path="/deals" element={<AllDeals />} />
+              <Route path="/deals/:dealId" element={<DealDetail />} />
+              <Route path="/rewards" element={<AllRewards />} />
+              <Route path="/rewards/:rewardId" element={<ClaimReward />} />
               </Routes>
             </div>
           </main>
