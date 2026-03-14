@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Settings, ChevronRight, Tv, UtensilsCrossed, Layers, PartyPopper, Gamepad2 } from 'lucide-react'
 
 const CATEGORIES = [
@@ -19,6 +20,7 @@ const MATCHES = [
 ]
 
 export default function Book() {
+  const navigate = useNavigate()
   const [activeCategory, setActiveCategory] = useState('watch')
   const [selectedDate, setSelectedDate] = useState(15)
 
@@ -145,6 +147,7 @@ export default function Book() {
             <button
               className="mt-3 w-full py-2.5 rounded-lg text-sm font-semibold text-white bg-green-primary cursor-pointer transition-transform duration-200 active:scale-[0.97]"
               aria-label={`Book a table for ${m.home} vs ${m.away}`}
+              onClick={() => navigate(`/book/${m.id}`)}
             >
               Book a table
             </button>

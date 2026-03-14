@@ -9,6 +9,7 @@ import TierBenefits from './screens/TierBenefits'
 import PlayGame from './screens/PlayGame'
 import GameDetail from './screens/GameDetail'
 import BowlingBingo from './screens/BowlingBingo'
+import MatchBooking from './screens/MatchBooking'
 import PredictMatch from './screens/PredictMatch'
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/challenges" element={<Challenges />} />
               <Route path="/wallet" element={<Wallet />} />
               <Route path="/benefits" element={<TierBenefits />} />
+              <Route path="/book/:matchId" element={<MatchBooking />} />
               <Route path="/play" element={<PlayGame />} />
               <Route path="/play/:id" element={<GameDetail />} />
               <Route path="/play/bowling-bingo" element={<BowlingBingo />} />
