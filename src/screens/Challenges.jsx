@@ -71,16 +71,23 @@ const HALL_OF_FAME = {
 function SportsChallengeCard({ c, onClick }) {
   return (
     <div className="rounded-2xl overflow-hidden border border-brand-gray-300">
-      <div className="relative h-32 flex items-center justify-center bg-[#1a2637]">
-        <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(ellipse at center, #2d5a3d 0%, #1a2637 70%)' }} />
-        <div className="relative flex items-center gap-6 px-4">
-          <Trophy size={28} className="text-white/80" />
-          {c.sponsor && (
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-1.5">
-              <p className="text-white font-bold text-sm">{c.sponsor}</p>
-            </div>
-          )}
+      {/* Stadium hero image placeholder */}
+      <div className="relative h-40 overflow-hidden">
+        {/* Layered stadium background */}
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #2d5a3d 0%, #1a3a2a 40%, #0d1f15 100%)' }} />
+        {/* Field lines */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-[60%] left-0 right-0 h-[1px] bg-white" />
+          <div className="absolute top-[60%] left-1/2 -translate-x-1/2 w-20 h-10 border border-white rounded-t-full" style={{ borderBottom: 'none' }} />
         </div>
+        {/* Crowd dots */}
+        <div className="absolute top-0 left-0 right-0 h-12 flex flex-wrap gap-[2px] px-2 pt-2 opacity-20">
+          {Array.from({ length: 60 }).map((_, i) => (
+            <div key={i} className="w-1.5 h-1.5 rounded-full bg-white" />
+          ))}
+        </div>
+
+        {/* Badges */}
         <div className="absolute top-3 left-3 bg-black/50 rounded-full px-2.5 py-1 flex items-center gap-1">
           <Clock size={10} className="text-white" />
           <span className="text-white text-[10px] font-medium">{c.daysLeft} days left</span>
@@ -89,8 +96,19 @@ function SportsChallengeCard({ c, onClick }) {
           <Coins size={10} className="text-white" />
           <span className="text-white text-[10px] font-medium">{c.points.toLocaleString()}</span>
         </div>
+
+        {/* Sponsor circle badge */}
+        {c.sponsor && (
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-10">
+            <div className="w-16 h-16 rounded-full bg-white shadow-lg flex flex-col items-center justify-center border-2 border-brand-gray-100">
+              <p className="text-green-dark font-bold text-[10px] leading-tight">{c.sponsor}</p>
+              <p className="text-brand-gray-500 text-[7px]">0.0% Alc.</p>
+            </div>
+          </div>
+        )}
       </div>
-      <div className="p-4 bg-white">
+
+      <div className={`p-4 bg-white ${c.sponsor ? 'pt-10' : 'pt-4'}`}>
         <h3 className="font-bold text-sm leading-snug text-brand-black">{c.title}</h3>
         <p className="text-xs text-brand-gray-500 mt-1.5 leading-relaxed">{c.desc}</p>
         <div className="flex gap-2 mt-4">
@@ -103,22 +121,40 @@ function SportsChallengeCard({ c, onClick }) {
 }
 
 function ActivityChallengeCard({ c, onClick }) {
-  const Icon = c.Icon || Star
   return (
-    <div className="rounded-2xl p-5 relative overflow-hidden bg-green-primary cursor-pointer active:scale-[0.98] transition-transform" onClick={onClick}>
-      <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-white/10" />
-      <div className="absolute -right-2 -bottom-10 w-20 h-20 rounded-full bg-white/10" />
-      <div className="flex items-start justify-between">
-        <div className="flex-1 pr-4">
-          <h3 className="font-bold text-lg text-white leading-tight">{c.title}</h3>
-          <p className="text-white/80 text-xs mt-2 leading-relaxed">{c.desc}</p>
-          <button className="mt-4 py-2 px-5 rounded-lg text-sm font-semibold text-white border border-white/40 cursor-pointer">Join</button>
+    <div className="rounded-2xl overflow-hidden cursor-pointer active:scale-[0.98] transition-transform" onClick={onClick}>
+      {/* Bowling illustration placeholder */}
+      <div className="relative h-48 overflow-hidden" style={{ background: 'linear-gradient(135deg, #2d9b87 0%, #1a6b5a 100%)' }}>
+        {/* Bowling lane lines */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute bottom-0 left-[20%] w-[1px] h-full bg-white" />
+          <div className="absolute bottom-0 left-[40%] w-[1px] h-full bg-white" />
+          <div className="absolute bottom-0 left-[60%] w-[1px] h-full bg-white" />
+          <div className="absolute bottom-0 left-[80%] w-[1px] h-full bg-white" />
         </div>
-        <Icon size={40} className="text-white/40" />
-      </div>
-      <div className="mt-3 flex items-center gap-1">
-        <Coins size={12} className="text-white/70" />
-        <span className="text-white text-xs font-semibold">{c.points.toLocaleString()} pts</span>
+        {/* Bowling pins */}
+        <div className="absolute right-6 bottom-4 flex flex-col items-center gap-1 opacity-30">
+          <div className="flex gap-1">
+            <div className="w-3 h-6 bg-white rounded-full" />
+          </div>
+          <div className="flex gap-1">
+            <div className="w-3 h-6 bg-white rounded-full" />
+            <div className="w-3 h-6 bg-white rounded-full" />
+          </div>
+          <div className="flex gap-1">
+            <div className="w-3 h-6 bg-white rounded-full" />
+            <div className="w-3 h-6 bg-white rounded-full" />
+            <div className="w-3 h-6 bg-white rounded-full" />
+          </div>
+        </div>
+        {/* Ball */}
+        <div className="absolute right-24 bottom-6 w-10 h-10 rounded-full bg-white/20 border-2 border-white/30" />
+
+        {/* Text content */}
+        <div className="relative p-5 flex flex-col justify-end h-full">
+          <h3 className="font-bold text-2xl text-white leading-tight">{c.title}</h3>
+          <p className="text-white/80 text-sm mt-2 leading-relaxed max-w-[200px]">{c.desc}</p>
+        </div>
       </div>
     </div>
   )
@@ -128,15 +164,35 @@ function ProgressChallengeCard({ c, onClick }) {
   const pct = Math.round((c.current / c.target) * 100)
   return (
     <div className="rounded-2xl overflow-hidden border border-brand-gray-300 cursor-pointer active:scale-[0.98] transition-transform" onClick={onClick}>
-      <div className="p-5 bg-green-dark text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{ background: 'radial-gradient(circle at 50% 100%, white 0%, transparent 50%)' }} />
-        <h3 className="text-xl font-bold text-white uppercase relative">{c.title}</h3>
-        <p className="text-white/70 text-xs mt-1 relative">{c.desc}</p>
+      {/* Burger hero placeholder with goal net */}
+      <div className="relative h-44 overflow-hidden" style={{ background: 'linear-gradient(180deg, #23695a 0%, #1a4d3f 100%)' }}>
+        {/* Goal net lines */}
+        <div className="absolute inset-0 opacity-10">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={`v${i}`} className="absolute top-0 bottom-0 w-[1px] bg-white" style={{ left: `${12 + i * 11}%` }} />
+          ))}
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={`h${i}`} className="absolute left-0 right-0 h-[1px] bg-white" style={{ top: `${20 + i * 18}%` }} />
+          ))}
+        </div>
+        {/* Burger icon placeholder */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="w-20 h-20 rounded-full bg-white/15 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center">
+              <div className="w-10 h-6 rounded-lg bg-amber-600/60 border-t-4 border-amber-400/60" />
+            </div>
+          </div>
+        </div>
+        <div className="absolute bottom-4 left-5 right-5">
+          <h3 className="text-2xl font-bold text-white uppercase">{c.title}</h3>
+          <p className="text-white/70 text-xs mt-1">{c.desc}</p>
+        </div>
       </div>
       <div className="p-4 bg-white">
+        {/* Progress bar */}
         <div className="relative">
           <div className="h-3 rounded-full bg-brand-gray-100">
-            <div className="h-3 rounded-full bg-green-primary" style={{ width: `${pct}%` }} />
+            <div className="h-3 rounded-full bg-green-primary transition-all" style={{ width: `${pct}%` }} />
           </div>
           <div className="flex justify-between mt-1">
             <span className="text-[10px] font-bold text-green-primary bg-green-primary/10 px-1.5 py-0.5 rounded-full">{c.current}</span>
