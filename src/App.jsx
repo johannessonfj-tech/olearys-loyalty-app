@@ -22,6 +22,7 @@ import DealDetail from './screens/DealDetail'
 import ClaimReward from './screens/ClaimReward'
 import PartyDetail from './screens/PartyDetail'
 import HappeningDetail from './screens/HappeningDetail'
+import Highscore from './screens/Highscore'
 
 export default function App() {
   const phoneW = 393
@@ -77,6 +78,7 @@ export default function App() {
                 <Route path="/deals/:dealId" element={<DealDetail />} />
                 <Route path="/rewards" element={<AllRewards />} />
                 <Route path="/rewards/:rewardId" element={<ClaimReward />} />
+                <Route path="/highscore" element={<Highscore />} />
               </Routes>
             </div>
           </main>

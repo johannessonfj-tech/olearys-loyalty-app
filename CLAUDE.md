@@ -16,10 +16,23 @@ Used to validate UX flows before native development begins.
 See `DESIGN.md` for all colors, typography, spacing, and component rules.
 
 ## Git strategy
-- `master` branch — stable base
-- `ui/prototype` branch — all UI work (worktree at `../loyalty-app-ui`)
-- Feature branches: `feature/home-page`, `feature/booking`, `feature/challenges`, `feature/already-here`
-- Worktrees: `../loyalty-app-ui` (ui/prototype), `../loyalty-app-challenges` (feature/challenges)
+- `master` branch — stable base (merge-only, never edit directly in `Loyalty App/`)
+- One worktree per screen, each on its own feature branch:
+
+```
+Builds/
+├── Loyalty App/              ← master (merge point only)
+├── loyalty-app-home/         ← feature/home-page
+├── loyalty-app-book/         ← feature/booking
+├── loyalty-app-already-here/ ← feature/already-here
+├── loyalty-app-challenges/   ← feature/challenges
+└── loyalty-app-wallet/       ← feature/wallet
+```
+
+- Work and commit inside worktree folders — never in `Loyalty App/`
+- Merge into master from `Loyalty App/`: `git merge feature/<branch>`
+- After merging, sync other worktrees: `git rebase master` (from within each worktree)
+- One Claude Code / VS Code window per worktree — never two agents in the same folder
 
 ## App structure
 ```
@@ -40,6 +53,10 @@ See `DESIGN.md` for all colors, typography, spacing, and component rules.
 /challenges     → Challenges (Unlocked, Active, Finished, Hall of Fame)
 /challenges/:id → Challenge Detail
 /wallet         → Wallet (loyalty card, QR, vouchers, gift cards)
+/wallet/vouchers    → All Vouchers
+/wallet/history     → Order History
+/wallet/:type/:id   → Voucher / Pass / Gift Card Detail
+/highscore      → My Highscores
 ```
 
 ## Screens
@@ -52,6 +69,8 @@ See `DESIGN.md` for all colors, typography, spacing, and component rules.
 - "See your benefits" → Tier Benefits page
 - Deal cards (horizontal swipe, image-only)
 - Redeem with points cards (image-based, tap → claim flow)
+- Highscore button + player card thumbnail (top right)
+- Player card modal with Upload Photo / Generate (sport selector) flow → preview with Regenerate / Cancel / Keep
 
 ### Tier Benefits
 - Green header with back nav
@@ -98,10 +117,19 @@ See `DESIGN.md` for all colors, typography, spacing, and component rules.
 - Hall of Fame: Bonus + Bowling tabs, 10 entries each, gold/silver/bronze rows
 
 ### Wallet
-- Green gradient loyalty card
-- QR code full-screen modal
-- Vouchers horizontal scroll
-- Gift card purchase (amount selector)
+- Flippable loyalty card (front: green gradient with name/tier/points, back: baseball player card with stats)
+- "Show QR Code" → full-screen scanning modal
+- Vouchers horizontal scroll → detail pages
+- Buy Cards: Summer Card (499 kr), Family Card (349 kr) with purchase flow + "Send to a friend"
+- Gift Cards by category (Birthday, Thank You, Just Because) with amount selector
+- Order History with spending stats and expandable order details
+
+### Highscore
+- Three arcade games: Bowling, Basketball Arcade, Boxing Arcade
+- Game list with personal best scores
+- Game detail with AI scouting report, score history
+- Log new score form (score, date, venue, photo evidence, honor checkbox)
+- Player card image at bottom
 
 ## Loyalty tiers
 Regular → Starter → All Star → MVP
@@ -116,5 +144,6 @@ Bonus Points
 - Yellow (#ffdc1e) for booking CTAs
 - iPhone 14 Pro frame with Dynamic Island
 - No dark backgrounds except challenge/booking heroes
+- Already Here nav button styled as a baseball with red stitching
 - Language: English
 - All icons: Lucide React SVG (no emojis)
