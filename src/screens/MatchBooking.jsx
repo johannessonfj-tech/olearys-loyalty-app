@@ -178,7 +178,6 @@ function ActivityDetail({ activity, guests, match, onAdd }) {
 function Checkout({ match, guests, cart, onConfirm, onBack, onRemove }) {
   const [insurance, setInsurance] = useState(false)
   const [prePay, setPrePay] = useState(false)
-  const [newsletter, setNewsletter] = useState(false)
   const subtotal = cart.reduce((s, item) => s + (item.totalPrice || 0), 0)
   const discount = prePay ? Math.round(subtotal * 0.05) : 0
   const total = subtotal - discount + (insurance ? 4 : 0)
@@ -231,7 +230,6 @@ function Checkout({ match, guests, cart, onConfirm, onBack, onRemove }) {
           <div><p className="text-xs font-bold text-brand-black uppercase">Pre-pay now <span className="text-green-primary">save 5%</span></p><p className="text-xs text-brand-gray-500 mt-0.5">Pay now and save 5% on your booking</p></div>
           <button onClick={() => setPrePay(!prePay)} className={`w-11 h-6 rounded-full flex items-center px-0.5 cursor-pointer transition-colors ${prePay ? 'bg-green-primary' : 'bg-brand-gray-300'}`}><div className={`w-5 h-5 rounded-full bg-white shadow transition-transform ${prePay ? 'translate-x-5' : ''}`} /></button>
         </div>
-        <label className="flex items-start gap-2 cursor-pointer"><input type="checkbox" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} className="mt-1 w-4 h-4 rounded accent-green-primary" /><span className="text-xs text-brand-gray-500">I want to receive news, offers and inspiration from O'Learys.</span></label>
         <p className="text-[10px] text-brand-gray-500">By completing this booking you accept our <span className="underline">booking terms</span> and <span className="underline">privacy policy</span>.</p>
       </div>
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] bg-white border-t border-brand-gray-100 px-5 py-4">
