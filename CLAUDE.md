@@ -44,7 +44,7 @@ Tabs: Unlocked / Active / Finished / Hall of Fame. Two card styles: sports/spons
 
 ### Wallet
 Visual loyalty card (green gradient). "Show QR Code" → full-screen modal. Vouchers horizontal scroll. Buy Gift Card CTA.
-
+thanks, can yonpx skills add anthropics/claude-code --skill frontend-design
 ## Loyalty tiers
 Regular → All Star → MVP
 
