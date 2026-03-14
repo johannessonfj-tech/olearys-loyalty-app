@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { ChevronLeft, Trophy, Clock, ChevronDown, Award, Target } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { ChevronLeft, Trophy, Clock, Award, Target, MapPin, HelpCircle } from 'lucide-react'
 
 const CHALLENGES = {
   '1': {
@@ -42,13 +42,37 @@ const CHALLENGES = {
     current: 7,
     target: 15,
     points: 2000,
+    unit: 'burgers',
+  },
+  '6': {
+    type: 'activity',
+    title: 'Globetrotter',
+    desc: "Visit 10 O'Learys locations and win 2000 points",
+    steps: ['VISIT 10 LOCATIONS', 'EARN 2000 POINTS', 'UNLOCK ACHIEVEMENT'],
+    prize: "EXCLUSIVE GLOBETROTTER BADGE + 2000 BONUS POINTS",
+    points: 2000,
+    Icon: MapPin,
+  },
+  '7': {
+    type: 'progress',
+    title: 'Professional Quizzer',
+    desc: 'Participate in 10 quizzes and win 4000 points',
+    current: 4,
+    target: 10,
+    points: 4000,
+    unit: 'quizzes',
+    Icon: HelpCircle,
   },
 }
 
-function SportsDetail({ challenge }) {
+function SportsDetail({ challenge, autoJoin }) {
   const [showMore, setShowMore] = useState(false)
   const [tab, setTab] = useState('everyone')
-  const [joined, setJoined] = useState(false)
+  const [joined, setJoined] = useState(autoJoin)
+
+  useEffect(() => {
+    if (autoJoin) setJoined(true)
+  }, [autoJoin])
 
   return (
     <>
@@ -75,7 +99,7 @@ function SportsDetail({ challenge }) {
             joined ? 'bg-brand-gray-100 text-brand-gray-500' : 'bg-green-primary text-white'
           }`}
         >
-          {joined ? 'Joined ✓' : 'Join'}
+          {joined ? 'Joined' : 'Join'}
         </button>
 
         {/* Info rows */}
@@ -154,12 +178,13 @@ function SportsDetail({ challenge }) {
 }
 
 function ActivityDetail({ challenge }) {
+  const Icon = challenge.Icon || Target
   return (
     <>
       <div className="mx-4 rounded-2xl overflow-hidden relative h-32" style={{ background: 'linear-gradient(135deg, #2d9b87 0%, #23695a 100%)' }}>
         <div className="absolute inset-0 opacity-20" style={{ background: 'radial-gradient(circle at 50% 100%, white 0%, transparent 60%)' }} />
         <div className="relative flex items-center justify-center h-full">
-          <Target size={48} className="text-white/40" />
+          <Icon size={48} className="text-white/40" />
         </div>
       </div>
 
@@ -187,7 +212,7 @@ function ActivityDetail({ challenge }) {
         <div className="mt-8 p-5 rounded-2xl bg-brand-gray-100">
           <p className="text-[10px] uppercase tracking-wider text-brand-gray-500 font-bold mb-2">Special Prize Unlocked</p>
           <div className="flex items-center justify-center gap-3">
-            <Target size={28} className="text-green-primary" />
+            <Icon size={28} className="text-green-primary" />
             <p className="text-sm font-bold text-brand-black text-left">{challenge.prize}</p>
           </div>
         </div>
@@ -198,6 +223,7 @@ function ActivityDetail({ challenge }) {
 
 function ProgressDetail({ challenge }) {
   const pct = Math.round((challenge.current / challenge.target) * 100)
+  const Icon = challenge.Icon || Trophy
   return (
     <>
       <div className="mx-4 rounded-2xl overflow-hidden relative" style={{ background: 'linear-gradient(135deg, #2d9b87 0%, #23695a 100%)' }}>
@@ -217,7 +243,7 @@ function ProgressDetail({ challenge }) {
             <span className="text-xs font-bold text-green-primary bg-green-primary/10 px-2 py-0.5 rounded-full">{challenge.current}</span>
             <span className="text-xs font-bold text-brand-gray-500 bg-brand-gray-100 px-2 py-0.5 rounded-full">{challenge.target}</span>
           </div>
-          <p className="text-center text-sm text-brand-gray-500 mt-2">{challenge.current} / {challenge.target} burgers</p>
+          <p className="text-center text-sm text-brand-gray-500 mt-2">{challenge.current} / {challenge.target} {challenge.unit || 'items'}</p>
         </div>
 
         {/* Bottom info */}
@@ -227,7 +253,7 @@ function ProgressDetail({ challenge }) {
             <p className="text-xs font-bold text-brand-black">ACHIEVEMENT</p>
           </div>
           <div className="flex flex-col items-center">
-            <Trophy size={24} className="text-green-primary mb-1" />
+            <Icon size={24} className="text-green-primary mb-1" />
             <p className="text-xs font-bold text-brand-black">{challenge.points.toLocaleString()} POINTS</p>
           </div>
         </div>
@@ -239,6 +265,8 @@ function ProgressDetail({ challenge }) {
 export default function ChallengeDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const autoJoin = searchParams.get('joined') === 'true'
   const challenge = CHALLENGES[id]
 
   if (!challenge) {
@@ -252,14 +280,14 @@ export default function ChallengeDetail() {
 
   return (
     <div className="min-h-dvh flex flex-col bg-white pb-8">
-      <div className="px-4 pt-12 pb-4 flex items-center gap-3">
+      <div className="px-4 pt-4 pb-4 flex items-center gap-3">
         <button onClick={() => navigate(-1)} className="w-11 h-11 flex items-center justify-center cursor-pointer -ml-2" aria-label="Go back">
           <ChevronLeft size={24} className="text-brand-black" />
         </button>
         <h1 className="text-sm font-bold text-brand-black uppercase tracking-wide">Challenge Detail</h1>
       </div>
 
-      {challenge.type === 'sports' && <SportsDetail challenge={challenge} />}
+      {challenge.type === 'sports' && <SportsDetail challenge={challenge} autoJoin={autoJoin} />}
       {challenge.type === 'activity' && <ActivityDetail challenge={challenge} />}
       {challenge.type === 'progress' && <ProgressDetail challenge={challenge} />}
     </div>

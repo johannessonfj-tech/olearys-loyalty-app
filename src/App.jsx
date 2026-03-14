@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import BottomNav from './components/BottomNav'
 import Home from './screens/Home'
@@ -17,16 +18,30 @@ import AllDeals from './screens/AllDeals'
 import AllRewards from './screens/AllRewards'
 import DealDetail from './screens/DealDetail'
 import ClaimReward from './screens/ClaimReward'
+import PartyDetail from './screens/PartyDetail'
+import HappeningDetail from './screens/HappeningDetail'
 
 export default function App() {
+  const phoneW = 393
+  const phoneH = 852
+
+  const getScale = () => Math.min(1, (window.innerHeight - 32) / phoneH, (window.innerWidth - 32) / phoneW)
+  const [scale, setScale] = useState(getScale)
+
+  useEffect(() => {
+    const onResize = () => setScale(getScale())
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
   return (
     <BrowserRouter>
       {/* Desktop: center the phone on a gray bg */}
-      <div className="min-h-screen bg-[#e8e8e8] flex items-center justify-center p-4">
+      <div className="h-screen bg-[#e8e8e8] flex items-center justify-center overflow-hidden">
         {/* iPhone shell */}
         <div
           className="relative bg-black rounded-[50px] shadow-2xl overflow-hidden flex flex-col"
-          style={{ width: 393, height: 852, border: '8px solid #1a1a1a' }}
+          style={{ width: phoneW, height: phoneH, border: '8px solid #1a1a1a', transform: `scale(${scale})`, transformOrigin: 'center center' }}
         >
           {/* Status bar area */}
           <div className="h-12 bg-white flex items-end justify-center pb-1 relative z-20">
@@ -44,17 +59,19 @@ export default function App() {
                 <Route path="/challenges" element={<Challenges />} />
                 <Route path="/wallet" element={<Wallet />} />
                 <Route path="/benefits" element={<TierBenefits />} />
+                <Route path="/book/happening/:happeningId" element={<HappeningDetail />} />
+                <Route path="/book/party/:partyType" element={<PartyDetail />} />
                 <Route path="/book/:matchId" element={<MatchBooking />} />
                 <Route path="/play" element={<PlayGame />} />
                 <Route path="/play/:id" element={<GameDetail />} />
                 <Route path="/play/bowling-bingo" element={<BowlingBingo />} />
                 <Route path="/predict" element={<PredictMatch />} />
                 <Route path="/challenges/:id" element={<ChallengeDetail />} />
-              <Route path="/my-bookings" element={<MyBookings />} />
-              <Route path="/deals" element={<AllDeals />} />
-              <Route path="/deals/:dealId" element={<DealDetail />} />
-              <Route path="/rewards" element={<AllRewards />} />
-              <Route path="/rewards/:rewardId" element={<ClaimReward />} />
+                <Route path="/my-bookings" element={<MyBookings />} />
+                <Route path="/deals" element={<AllDeals />} />
+                <Route path="/deals/:dealId" element={<DealDetail />} />
+                <Route path="/rewards" element={<AllRewards />} />
+                <Route path="/rewards/:rewardId" element={<ClaimReward />} />
               </Routes>
             </div>
           </main>
