@@ -42,9 +42,15 @@ Builds/
 /deals/:id      → Deal Detail + activate
 /rewards        → All Rewards (grid)
 /rewards/:id    → Claim Reward Card
-/book           → Book (matches, calendar, guest picker)
-/book/:matchId  → Match Booking (activities → time → checkout → confirmation)
-/my-bookings    → My Bookings (manage existing booking)
+/book           → Book (5-tab booking hub: Watch, Eat & Drink, Happenings, Party & Events, Play)
+/book/:matchId  → Match Booking (select activities → activity detail → checkout → payment → confirmation)
+/book/package/:packageId → Package Detail (multi-step time selection, addons, add to booking)
+/book/package-checkout   → Checkout from package/happening (reuses MatchBooking checkout flow)
+/book/events    → All Events (full list, filterable by category)
+/book/parties   → All Party & Event types (list view)
+/book/happening/:happeningId → Happening Detail (seating time, addons, add to booking)
+/book/party/:partyType       → Party Detail (packages, guests, date picker, inquiry)
+/my-bookings    → My Bookings (Upcoming + Requests tabs)
 /here           → Already Here? (Order, Play Game, Predict Match)
 /play           → Play Game (3 Kamp, 5 Kamp, Bowling Bingo)
 /play/:id       → Game Detail (setup → teams → play → results)
@@ -57,6 +63,7 @@ Builds/
 /wallet/history     → Order History
 /wallet/:type/:id   → Voucher / Pass / Gift Card Detail
 /highscore      → My Highscores
+/settings       → Settings
 ```
 
 ## Screens
@@ -77,22 +84,67 @@ Builds/
 - Horizontal scroll tier cards (Regular, Starter, All Star, MVP)
 - Benefits comparison table (10 rows, 4 tier columns)
 
-### Book
+### Book (5-tab booking hub)
 - Location selector (Norrköping / Östermalm dropdown)
-- Category pills: Watch, Eat & Drink, Happenings, Party & Events, Play
-- Guest inputs (tap to type) + total guests badge
-- 5-day calendar with "Pick other date"
-- 8 live matches from olearys.com (SHL, Premier League, Serie A, NHL)
+- Category tabs: Watch, Eat & Drink, Happenings, Party & Events, Play
+- Guest inputs (adults + kids) + total guests badge
+- 5-day calendar with "Pick other date" (full calendar modal with green availability bars)
+- Back navigation from sub-pages preserves active tab state
 
-### Match Booking (4-phase flow)
-1. Select Activities — activity list with prices
-2. Activity Detail — time grid, duration picker, price calc
-3. Checkout — cart, cancellation insurance, pre-pay 5% toggle
-4. Confirmation — reference number, venue contact
+#### Watch tab
+- 8 live matches (SHL, Premier League, Serie A, NHL) with team logo circles, time, league badge
+- Green gradient background behind match cards
+- "Book a table" → Match Booking flow
+
+#### Eat & Drink tab
+- Popular Packages: Dinner & Bowling, Dinner & 5 Game Challenge, After Work (real O'Learys images)
+- Available table times → SelectActivities ("Would you like to book anything else?")
+- Green gradient behind packages, white below
+
+#### Happenings tab
+- Popular events scroll (Champions League Night, Music Quiz, O'Learys By Night) with real images
+- "See all" → All Events page (grouped by month, filterable: All/Quiz/Nightlife/Sports)
+- Date-filtered events for selected day with "Book" button
+- Events from olearys.com/norrkoeping/events (Music Quiz weekly, O'Learys By Night Club)
+
+#### Party & Events tab
+- "Always at O'Learys" 2x2 grid: Kidsparty, Birthdays, Team Building, Date Night (real images)
+- "See all" → full list view
+- Each detail page: hero image, packages with real prices (EUR→SEK from olearys.com/gent), guest picker, date picker, inquiry flow
+
+#### Play tab
+- Popular Packages: Bowling & Dinner, 3-kamp & Dinner (real images)
+- Activity pills (selectable, filter time slots): Bowling, Shuffleboard, Interaktiv Dart, Blacklight Minigolf, Karaokerum, Biljard, 3-kamp, Arkadhall
+- Available activity times → activity detail page with pre-selected time
+
+### Package Detail (shared flow for Eat & Play packages)
+- Hero image from package, multi-step time selection (e.g. 1. Dinner time, 2. Bowling time)
+- Dinner steps always 2h with next slot highlighted
+- Time blocking between steps (selected slots greyed in other grids)
+- "Often combined with" addons (dinner + activities for play, activities for eat)
+- Addon modal: guest picker, time grid, duration, price
+- "Add to booking" → checkout flow
+
+### Happening Detail
+- Hero with green gradient, event info, seating time pill
+- Description with More/Less, guest/date bar, special requests
+- "Often combined with" activities (time slots blocked by 2h seating)
+- "Add to booking" → checkout flow
+
+### Match Booking (multi-phase flow)
+1. Select Activities — "Would you like to book anything else?" with activity list
+2. Activity Detail — time grid with duration highlighting, price calc
+3. Checkout — cart, cancellation insurance (+49 kr), pre-pay 5% toggle, editable guests
+4. Payment (if pre-pay & total > 0) — saved card, Apple Pay, Klarna, new card form
+5. Booking Request (if 8+ guests) — request sent with 24h response time
+6. Confirmation — reference number, venue contact
+- Activities with real prices from olearys.com/norrkoeping: Bowling (449 kr/lane), Shuffleboard (349 kr/board), Blacklight Minigolf (99 kr/person), Interaktiv Dart (299 kr/board), Karaokerum (699 kr/room), Biljard (299 kr/table), 3-kamp (279 kr/person), Arkadhall (token-based)
 
 ### My Bookings
-- Luleå HF vs Färjestad BK (confirmed)
-- Leave a comment, modify guests, cancel booking
+- Upcoming / Requests tabs with count badges
+- Upcoming: Luleå HF vs Färjestad BK (confirmed, green badge)
+- Requests: Birthday Party for 10 people (pending, amber badge)
+- Leave a comment, modify guests, cancel/withdraw
 
 ### Already Here?
 - O'LEARYS header + location selector
