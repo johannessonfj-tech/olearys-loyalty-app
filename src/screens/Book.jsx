@@ -351,7 +351,7 @@ export default function Book() {
   return (
     <div className="pb-2">
       {/* Top bar: My bookings + centered location */}
-      <div className="px-4 pt-4 flex items-center justify-between">
+      <div className="px-4 pt-14 flex items-center justify-between">
         <button onClick={() => navigate('/my-bookings')} className="px-3 py-1.5 rounded-full border border-brand-gray-300 text-xs font-medium text-brand-black cursor-pointer" aria-label="My bookings">
           My bookings
         </button>
