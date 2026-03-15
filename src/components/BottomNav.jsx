@@ -1,23 +1,12 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-
-const DiamondIcon = ({ filled, size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path
-      d="M12 3L21 12L12 21L3 12L12 3Z"
-      fill={filled ? '#2d9b87' : 'none'}
-      stroke={filled ? '#2d9b87' : '#9e9e9e'}
-      strokeWidth="1.8"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
+import { Home, CalendarDays, Trophy, Wallet } from 'lucide-react'
 
 const tabs = [
-  { path: '/', label: 'Home' },
-  { path: '/book', label: 'Book' },
+  { path: '/', label: 'Home', icon: Home },
+  { path: '/book', label: 'Book', icon: CalendarDays },
   { path: '/here', label: 'Already Here?', center: true },
-  { path: '/challenges', label: 'Challenges' },
-  { path: '/wallet', label: 'Wallet' },
+  { path: '/challenges', label: 'Challenges', icon: Trophy },
+  { path: '/wallet', label: 'Wallet', icon: Wallet },
 ]
 
 export default function BottomNav() {
@@ -76,7 +65,7 @@ export default function BottomNav() {
             aria-label={tab.label}
             aria-current={isActive ? 'page' : undefined}
           >
-            <DiamondIcon filled={isActive} />
+            <tab.icon size={22} className={isActive ? 'text-green-primary' : 'text-brand-gray-500'} strokeWidth={isActive ? 2.2 : 1.5} />
             <span className={`text-[10px] font-medium ${isActive ? 'text-green-primary' : 'text-brand-gray-500'}`}>
               {tab.label}
             </span>

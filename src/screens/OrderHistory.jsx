@@ -144,34 +144,31 @@ export default function OrderHistory() {
                   <p className="text-sm font-bold text-brand-black">{order.total} kr</p>
                 </div>
 
+                {/* Always-visible stats */}
+                <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2">
+                  <div className="flex items-center gap-1">
+                    <TrendingUp size={11} className="text-green-primary" />
+                    <p className="text-[10px] text-green-primary font-semibold">+{order.pointsEarned} pts earned</p>
+                  </div>
+                  {order.pointsSpent > 0 && (
+                    <div className="flex items-center gap-1">
+                      <TrendingDown size={11} className="text-red-500" />
+                      <p className="text-[10px] text-red-500 font-semibold">-{order.pointsSpent} pts redeemed</p>
+                    </div>
+                  )}
+                  {order.discount > 0 && (
+                    <div className="flex items-center gap-1">
+                      <Coins size={11} className="text-brand-yellow" />
+                      <p className="text-[10px] text-brand-black font-semibold">-{order.discount} kr discount</p>
+                    </div>
+                  )}
+                </div>
+
                 {isExpanded && (
                   <div className="mt-3 pt-3 border-t border-brand-gray-100">
-                    {/* Items */}
-                    <div className="mb-3">
-                      {order.items.map((item, i) => (
-                        <p key={i} className="text-xs text-brand-gray-500 mb-0.5">{item}</p>
-                      ))}
-                    </div>
-
-                    {/* Stats row */}
-                    <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-                      <div className="flex items-center gap-1">
-                        <TrendingUp size={12} className="text-green-primary" />
-                        <p className="text-[11px] text-green-primary font-semibold">+{order.pointsEarned} pts</p>
-                      </div>
-                      {order.pointsSpent > 0 && (
-                        <div className="flex items-center gap-1">
-                          <TrendingDown size={12} className="text-brand-black" />
-                          <p className="text-[11px] text-brand-black font-semibold">-{order.pointsSpent} pts</p>
-                        </div>
-                      )}
-                      {order.discount > 0 && (
-                        <div className="flex items-center gap-1">
-                          <Coins size={12} className="text-brand-yellow" />
-                          <p className="text-[11px] text-brand-black font-semibold">-{order.discount} kr discount</p>
-                        </div>
-                      )}
-                    </div>
+                    {order.items.map((item, i) => (
+                      <p key={i} className="text-xs text-brand-gray-500 mb-0.5">{item}</p>
+                    ))}
                   </div>
                 )}
               </button>

@@ -56,6 +56,94 @@ const GIFT_CARDS = [
   },
 ]
 
+function CardBack() {
+  return (
+    <div className="h-full flex flex-col p-3.5 relative">
+      {/* Header row */}
+      <div className="flex items-start gap-2.5 mb-2">
+        <div className="w-16 h-16 rounded-md overflow-hidden flex-shrink-0 border border-[#c4a87a]">
+          <img src="/images/player-card-baseball.png" alt="Player card" className="w-full h-full object-cover" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between">
+            <p className="text-[9px] font-bold text-[#c4382a] uppercase tracking-wider">O'Learys</p>
+            <span className="bg-[#2d9b87] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-sm">47</span>
+          </div>
+          <p className="text-sm font-extrabold text-[#3c3c3c] leading-tight">Daniel Svantesson</p>
+          <p className="text-[9px] text-[#8a7a5a] mt-0.5">Member since: 2024 &bull; Tier: All Star</p>
+          <p className="text-[9px] text-[#8a7a5a]">Location: Norrköping &bull; Visits: 47</p>
+        </div>
+      </div>
+
+      {/* Stats table */}
+      <div className="border border-[#c4a87a] rounded-sm overflow-hidden mb-2">
+        <div className="bg-[#2d9b87] px-2 py-1">
+          <p className="text-[8px] font-bold text-white uppercase tracking-wider text-center">Season Performance Record</p>
+        </div>
+        <table className="w-full text-[8px] text-[#3c3c3c]">
+          <thead>
+            <tr className="bg-[#d4c49a]">
+              <th className="py-0.5 px-1.5 text-left font-bold">YEAR</th>
+              <th className="py-0.5 px-1 text-center font-bold">VIS</th>
+              <th className="py-0.5 px-1 text-center font-bold">PTS</th>
+              <th className="py-0.5 px-1 text-center font-bold">WINS</th>
+              <th className="py-0.5 px-1 text-center font-bold">SPT</th>
+              <th className="py-0.5 px-1 text-center font-bold">RDM</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-t border-[#d4c49a]">
+              <td className="py-0.5 px-1.5 font-semibold">2024</td>
+              <td className="py-0.5 px-1 text-center">23</td>
+              <td className="py-0.5 px-1 text-center">24.1K</td>
+              <td className="py-0.5 px-1 text-center">5</td>
+              <td className="py-0.5 px-1 text-center">6.2K</td>
+              <td className="py-0.5 px-1 text-center">2.1K</td>
+            </tr>
+            <tr className="border-t border-[#d4c49a] bg-[#f0e4c8]">
+              <td className="py-0.5 px-1.5 font-semibold">2025</td>
+              <td className="py-0.5 px-1 text-center">18</td>
+              <td className="py-0.5 px-1 text-center">22.4K</td>
+              <td className="py-0.5 px-1 text-center">5</td>
+              <td className="py-0.5 px-1 text-center">4.8K</td>
+              <td className="py-0.5 px-1 text-center">1.8K</td>
+            </tr>
+            <tr className="border-t border-[#c4a87a] bg-[#d4c49a]">
+              <td className="py-0.5 px-1.5 font-bold">2026</td>
+              <td className="py-0.5 px-1 text-center font-bold">6</td>
+              <td className="py-0.5 px-1 text-center font-bold">11.7K</td>
+              <td className="py-0.5 px-1 text-center font-bold">2</td>
+              <td className="py-0.5 px-1 text-center font-bold">1.4K</td>
+              <td className="py-0.5 px-1 text-center font-bold">420</td>
+            </tr>
+            <tr className="border-t border-[#c4a87a] bg-[#c4a87a]/30">
+              <td className="py-0.5 px-1.5 font-extrabold">TOT</td>
+              <td className="py-0.5 px-1 text-center font-extrabold">47</td>
+              <td className="py-0.5 px-1 text-center font-extrabold">58.2K</td>
+              <td className="py-0.5 px-1 text-center font-extrabold">12</td>
+              <td className="py-0.5 px-1 text-center font-extrabold">12.4K</td>
+              <td className="py-0.5 px-1 text-center font-extrabold">4.3K</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {/* Bio text */}
+      <p className="text-[8px] text-[#6b5d45] leading-relaxed italic">
+        A dedicated All Star member known for his competitive spirit in bowling and trivia nights.
+        Daniel has been a regular at O'Learys Norrköping since 2024, earning his way up from Starter tier.
+        His impressive 58K point total and 12 game wins make him one of the top performers in the region.
+      </p>
+
+      {/* Footer */}
+      <div className="mt-auto flex items-center justify-between pt-1.5">
+        <p className="text-[7px] text-[#8a7a5a] font-semibold">O'LEARYS LOYALTY &bull; NORRKÖPING</p>
+        <p className="text-[7px] text-[#b0a080]">Tap to flip back</p>
+      </div>
+    </div>
+  )
+}
+
 function QRModal({ onClose }) {
   useEffect(() => {
     document.body.classList.add('modal-open')
@@ -128,6 +216,7 @@ function CardIcon({ name, size = 20, className = '' }) {
 export default function Wallet() {
   const [showQR, setShowQR] = useState(false)
   const [flipped, setFlipped] = useState(false)
+  const [showCardModal, setShowCardModal] = useState(false)
   const navigate = useNavigate()
 
   return (
@@ -136,7 +225,14 @@ export default function Wallet() {
       <div
         className="cursor-pointer"
         style={{ perspective: 1000 }}
-        onClick={() => setFlipped(!flipped)}
+        onClick={() => {
+          if (!flipped) {
+            setFlipped(true)
+            setTimeout(() => setShowCardModal(true), 350)
+          } else {
+            setFlipped(false)
+          }
+        }}
       >
         <div
           className="relative w-full"
@@ -182,43 +278,22 @@ export default function Wallet() {
             </div>
           </div>
 
-          {/* Back — baseball player card */}
+          {/* Back — vintage Topps baseball card */}
           <div
             className="rounded-2xl absolute inset-0 overflow-hidden"
             style={{
-              background: 'linear-gradient(145deg, #1a1a1a 0%, #3c3c3c 100%)',
+              background: '#e8d5b0',
               backfaceVisibility: 'hidden',
               transform: 'rotateY(180deg)',
             }}
           >
-            <div className="flex flex-col items-center justify-center h-full relative px-5 py-5">
-              <svg width="56" height="56" viewBox="0 0 56 56" fill="none" className="mb-2">
-                <circle cx="28" cy="14" r="7" fill="rgba(255,255,255,0.8)" />
-                <path d="M20 26C20 26 23 23 28 23C33 23 36 26 36 26L38 42H18L20 26Z" fill="rgba(255,255,255,0.8)" />
-                <path d="M36 20L46 11" stroke="#ffdc1e" strokeWidth="3" strokeLinecap="round" />
-                <path d="M44 9L48 6" stroke="#ffdc1e" strokeWidth="3" strokeLinecap="round" />
-              </svg>
-              <p className="text-white font-bold text-base text-center">Daniel Svantesson</p>
-              <p className="text-white/40 text-[10px] mt-0.5 uppercase tracking-wider">O'Learys All Star</p>
-              <div className="flex gap-5 mt-3">
-                <div className="text-center">
-                  <p className="text-brand-yellow text-sm font-bold">58K</p>
-                  <p className="text-white/30 text-[9px]">PTS</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-brand-yellow text-sm font-bold">47</p>
-                  <p className="text-white/30 text-[9px]">VISITS</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-brand-yellow text-sm font-bold">12</p>
-                  <p className="text-white/30 text-[9px]">WINS</p>
-                </div>
-              </div>
-              <p className="text-white/20 text-[8px] mt-3">Tap to flip back</p>
-            </div>
+            <CardBack />
           </div>
         </div>
       </div>
+      {!flipped && (
+        <p className="text-[10px] text-brand-gray-500 text-center mt-1.5">Tap card to flip</p>
+      )}
 
       {/* Show QR Code */}
       <button
@@ -361,6 +436,66 @@ export default function Wallet() {
       </section>
 
       {showQR && <QRModal onClose={() => setShowQR(false)} />}
+
+      {/* Enlarged card back modal — same as inline, just bigger */}
+      {showCardModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ maxWidth: 390, margin: '0 auto' }}
+          onClick={() => {
+            setShowCardModal(false)
+            setFlipped(false)
+          }}
+        >
+          <div className="absolute inset-0 bg-black/60" />
+          <div
+            className="relative rounded-2xl overflow-hidden mx-3 w-full shadow-2xl"
+            style={{
+              background: '#e8d5b0',
+              animation: 'cardPopIn 300ms ease-out',
+              transform: 'scale(1.1)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <style>{`
+              @keyframes cardPopIn {
+                from { transform: scale(0.7); opacity: 0; }
+                to { transform: scale(1.1); opacity: 1; }
+              }
+            `}</style>
+            <div className="flex flex-col p-5 relative">
+              {/* Header row */}
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-24 h-24 rounded-md overflow-hidden flex-shrink-0 border border-[#c4a87a]">
+                  <img src="/images/player-card-baseball.png" alt="Player card" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] font-bold text-[#c4382a] uppercase tracking-wider">O'Learys</p>
+                    <span className="bg-[#2d9b87] text-white text-[9px] font-bold px-2 py-0.5 rounded-sm">47</span>
+                  </div>
+                  <p className="text-lg font-extrabold text-[#3c3c3c] leading-tight mt-0.5">Daniel Svantesson</p>
+                  <p className="text-[10px] text-[#8a7a5a] mt-0.5">Member since: 2024 &bull; Tier: All Star</p>
+                  <p className="text-[10px] text-[#8a7a5a]">Location: Norrköping &bull; Visits: 47</p>
+                </div>
+              </div>
+
+              {/* Bio text */}
+              <p className="text-xs text-[#6b5d45] leading-relaxed italic mb-3">
+                A dedicated All Star member known for his competitive spirit in bowling and trivia nights.
+                Daniel has been a regular at O'Learys Norrköping since 2024, earning his way up from Starter tier.
+                His impressive 58K point total and 12 game wins make him one of the top performers in the region.
+              </p>
+
+              {/* Footer */}
+              <div className="flex items-center justify-between pt-1">
+                <p className="text-[8px] text-[#8a7a5a] font-semibold">O'LEARYS LOYALTY &bull; NORRKÖPING</p>
+                <p className="text-[8px] text-[#b0a080]">Tap outside to close</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
