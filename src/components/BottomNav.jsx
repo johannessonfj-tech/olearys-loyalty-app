@@ -33,7 +33,7 @@ export default function BottomNav() {
             <button
               key={tab.path}
               onClick={() => navigate(tab.path)}
-              className="flex flex-col items-center -mt-5 cursor-pointer"
+              className="flex flex-col items-center -mt-3 cursor-pointer"
               aria-label="Already Here?"
               aria-current={isActive ? 'page' : undefined}
             >
