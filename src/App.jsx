@@ -45,7 +45,7 @@ export default function App() {
 
   return (
     <TeamsProvider>
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <BrowserRouter>
       {/* Desktop: center the phone on a gray bg */}
       <div className="h-screen bg-black flex items-center justify-center overflow-hidden">
         {/* iPhone shell */}
