@@ -25,6 +25,9 @@ import PartyDetail from './screens/PartyDetail'
 import HappeningDetail from './screens/HappeningDetail'
 import Highscore from './screens/Highscore'
 import SettingsScreen from './screens/Settings'
+import PackageDetail from './screens/PackageDetail'
+import AllEvents from './screens/AllEvents'
+import AllParties from './screens/AllParties'
 
 export default function App() {
   const phoneW = 393
@@ -43,7 +46,7 @@ export default function App() {
     <TeamsProvider>
     <BrowserRouter>
       {/* Desktop: center the phone on a gray bg */}
-      <div className="h-screen bg-[#e8e8e8] flex items-center justify-center overflow-hidden">
+      <div className="h-screen bg-black flex items-center justify-center overflow-hidden">
         {/* iPhone shell */}
         <div
           className="relative bg-black rounded-[50px] shadow-2xl overflow-hidden flex flex-col"
@@ -67,8 +70,12 @@ export default function App() {
                 <Route path="/wallet/history" element={<OrderHistory />} />
                 <Route path="/wallet/:type/:id" element={<WalletCardDetail />} />
                 <Route path="/benefits" element={<TierBenefits />} />
+                <Route path="/book/events" element={<AllEvents />} />
+                <Route path="/book/parties" element={<AllParties />} />
                 <Route path="/book/happening/:happeningId" element={<HappeningDetail />} />
                 <Route path="/book/party/:partyType" element={<PartyDetail />} />
+                <Route path="/book/package/:packageId" element={<PackageDetail />} />
+                <Route path="/book/package-checkout" element={<MatchBooking />} />
                 <Route path="/book/:matchId" element={<MatchBooking />} />
                 <Route path="/play" element={<PlayGame />} />
                 <Route path="/play/:id" element={<GameDetail />} />
