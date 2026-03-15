@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, User, Lock, MapPin, Bell, Mail, FileText, Shield, Trash2, LogOut, CreditCard } from 'lucide-react'
+import { ChevronLeft, ChevronRight, User, Lock, MapPin, Bell, Mail, FileText, Shield, Trash2, LogOut, CreditCard, Heart, Check } from 'lucide-react'
+import { useTeams } from '../context/TeamsContext'
 
 const VENUES = ['Norrköping', 'Östermalm', 'Täby', 'Luleå', 'Göteborg', 'Malmö']
 
@@ -275,12 +276,60 @@ function DeleteConfirm({ onClose }) {
   )
 }
 
+function TeamsSheet({ onClose }) {
+  const { selectedTeams, toggleTeam, AVAILABLE_TEAMS } = useTeams()
+  const sports = [...new Set(AVAILABLE_TEAMS.map((t) => t.sport))]
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center" onClick={onClose}>
+      <div className="bg-white rounded-t-2xl w-full max-w-[393px] pb-8 max-h-[75vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-center pt-3 pb-4">
+          <div className="w-10 h-1 rounded-full bg-brand-gray-300" />
+        </div>
+        <div className="px-5 overflow-y-auto">
+          <h3 className="text-lg font-bold text-brand-black mb-1">My Teams</h3>
+          <p className="text-xs text-brand-gray-500 mb-4">Select the teams you support</p>
+          {sports.map((sport) => (
+            <div key={sport} className="mb-4">
+              <p className="text-xs font-semibold text-brand-gray-500 uppercase tracking-wide mb-2">{sport}</p>
+              <div className="flex flex-col gap-1">
+                {AVAILABLE_TEAMS.filter((t) => t.sport === sport).map((team) => {
+                  const isSelected = selectedTeams.includes(team.id)
+                  return (
+                    <button
+                      key={team.id}
+                      onClick={() => toggleTeam(team.id)}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium cursor-pointer transition-colors duration-150 ${
+                        isSelected ? 'bg-green-primary/10 text-green-primary font-semibold' : 'text-brand-black active:bg-brand-gray-100'
+                      }`}
+                    >
+                      <img
+                        src={team.logo}
+                        alt={team.name}
+                        className="w-6 h-6 object-contain"
+                        onError={(e) => { e.target.style.display = 'none' }}
+                      />
+                      <span className="flex-1 text-left">{team.name}</span>
+                      {isSelected && <Check size={16} className="text-green-primary" />}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Settings() {
   const navigate = useNavigate()
+  const { getSelectedTeamObjects } = useTeams()
   const [pushNotifs, setPushNotifs] = useState(true)
   const [emailNotifs, setEmailNotifs] = useState(true)
   const [venue, setVenue] = useState('Norrköping')
-  const [sheet, setSheet] = useState(null) // 'profile' | 'password' | 'venue' | 'payment' | 'delete'
+  const [sheet, setSheet] = useState(null) // 'profile' | 'password' | 'venue' | 'payment' | 'delete' | 'teams'
 
   return (
     <div className="pb-4">
@@ -311,6 +360,16 @@ export default function Settings() {
           label="Payment Method"
           onClick={() => setSheet('payment')}
           right={<span className="text-xs text-brand-gray-500 mr-1">•••• 4289</span>}
+        />
+        <SettingsRow
+          icon={Heart}
+          label="My Teams"
+          onClick={() => setSheet('teams')}
+          right={
+            <span className="text-xs text-brand-gray-500 mr-1">
+              {getSelectedTeamObjects().length === 0 ? 'None' : getSelectedTeamObjects().map((t) => t.name).join(', ')}
+            </span>
+          }
         />
       </div>
 
@@ -359,6 +418,7 @@ export default function Settings() {
       {sheet === 'venue' && <VenueSheet onClose={() => setSheet(null)} venue={venue} setVenue={setVenue} />}
       {sheet === 'payment' && <PaymentSheet onClose={() => setSheet(null)} />}
       {sheet === 'delete' && <DeleteConfirm onClose={() => setSheet(null)} />}
+      {sheet === 'teams' && <TeamsSheet onClose={() => setSheet(null)} />}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { TeamsProvider } from './context/TeamsContext'
 import BottomNav from './components/BottomNav'
 import Home from './screens/Home'
 import Book from './screens/Book'
@@ -39,6 +40,7 @@ export default function App() {
   }, [])
 
   return (
+    <TeamsProvider>
     <BrowserRouter>
       {/* Desktop: center the phone on a gray bg */}
       <div className="h-screen bg-[#e8e8e8] flex items-center justify-center overflow-hidden">
@@ -95,5 +97,6 @@ export default function App() {
         </div>
       </div>
     </BrowserRouter>
+    </TeamsProvider>
   )
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { X, QrCode, Coins, Gift, Sun, PartyPopper, Heart, ChevronRight, Receipt } from 'lucide-react'
+import { useTeams } from '../context/TeamsContext'
 
 const VOUCHERS = [
   { id: 1, title: '25 kr off', sub: 'Valid until 31 Mar 2026', dark: false },
@@ -57,6 +58,9 @@ const GIFT_CARDS = [
 ]
 
 function CardBack() {
+  const { getSelectedTeamObjects } = useTeams()
+  const teams = getSelectedTeamObjects()
+
   return (
     <div className="h-full flex flex-col p-3.5 relative">
       {/* Header row */}
@@ -134,6 +138,21 @@ function CardBack() {
         Daniel has been a regular at O'Learys Norrköping since 2024, earning his way up from Starter tier.
         His impressive 58K point total and 12 game wins make him one of the top performers in the region.
       </p>
+
+      {/* My Teams */}
+      {teams.length > 0 && (
+        <div className="mt-1.5">
+          <p className="text-[7px] font-bold text-[#8a7a5a] uppercase tracking-wider mb-1">Supports</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            {teams.map((team) => (
+              <div key={team.id} className="flex items-center gap-1 bg-[#d4c49a]/50 rounded-sm px-1.5 py-0.5">
+                <img src={team.logo} alt={team.name} className="w-3 h-3 object-contain" onError={(e) => { e.target.style.display = 'none' }} />
+                <span className="text-[7px] font-semibold text-[#3c3c3c]">{team.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <div className="mt-auto flex items-center justify-between pt-1.5">
@@ -218,6 +237,8 @@ export default function Wallet() {
   const [flipped, setFlipped] = useState(false)
   const [showCardModal, setShowCardModal] = useState(false)
   const navigate = useNavigate()
+  const { getSelectedTeamObjects } = useTeams()
+  const teams = getSelectedTeamObjects()
 
   return (
     <div className="px-4 pt-10 pb-4">
@@ -486,6 +507,21 @@ export default function Wallet() {
                 Daniel has been a regular at O'Learys Norrköping since 2024, earning his way up from Starter tier.
                 His impressive 58K point total and 12 game wins make him one of the top performers in the region.
               </p>
+
+              {/* My Teams */}
+              {teams.length > 0 && (
+                <div className="mb-3">
+                  <p className="text-[9px] font-bold text-[#8a7a5a] uppercase tracking-wider mb-1.5">Supports</p>
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    {teams.map((team) => (
+                      <div key={team.id} className="flex items-center gap-1.5 bg-[#d4c49a]/50 rounded-sm px-2 py-1">
+                        <img src={team.logo} alt={team.name} className="w-4 h-4 object-contain" onError={(e) => { e.target.style.display = 'none' }} />
+                        <span className="text-[9px] font-semibold text-[#3c3c3c]">{team.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Footer */}
               <div className="flex items-center justify-between pt-1">
