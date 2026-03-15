@@ -311,14 +311,23 @@ export default function Home() {
           </div>
         </div>
 
-        {/* See your benefits button */}
-        <button
-          onClick={() => navigate('/benefits')}
-          className="w-full mt-3 py-2.5 rounded-full border-2 border-green-primary text-green-primary font-semibold text-sm cursor-pointer transition-transform duration-200 active:scale-[0.97]"
-          aria-label="See your benefits"
-        >
-          See your benefits
-        </button>
+        {/* See your benefits + Loyalty explained */}
+        <div className="flex gap-2 mt-3">
+          <button
+            onClick={() => navigate('/benefits')}
+            className="flex-1 py-2.5 rounded-full border-2 border-green-primary text-green-primary font-semibold text-sm cursor-pointer transition-transform duration-200 active:scale-[0.97]"
+            aria-label="See your benefits"
+          >
+            See your benefits
+          </button>
+          <button
+            onClick={() => navigate('/loyalty-explained')}
+            className="flex-1 py-2.5 rounded-full border-2 border-green-primary text-green-primary font-semibold text-sm cursor-pointer transition-transform duration-200 active:scale-[0.97]"
+            aria-label="Loyalty explained"
+          >
+            Loyalty explained
+          </button>
+        </div>
       </div>
 
       {/* Divider */}

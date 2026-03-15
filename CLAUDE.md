@@ -38,6 +38,7 @@ Builds/
 ```
 /               → Home
 /benefits       → Tier Benefits (comparison table)
+/loyalty-explained → Loyalty Explained (how the program works: earn, tiers, spend)
 /deals          → All Deals (grid)
 /deals/:id      → Deal Detail + activate
 /rewards        → All Rewards (grid)

@@ -261,7 +261,7 @@ export default function Challenges() {
   return (
     <div className="pb-4">
       {/* Tabs */}
-      <div className="flex border-b border-brand-gray-300 px-4 pt-4 gap-1 overflow-x-auto no-scrollbar">
+      <div className="flex border-b border-brand-gray-300 px-4 pt-14 gap-1 overflow-x-auto no-scrollbar">
         {TABS.map((t) => (
           <button
             key={t.id}

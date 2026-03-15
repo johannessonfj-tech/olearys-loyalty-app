@@ -28,6 +28,7 @@ import SettingsScreen from './screens/Settings'
 import PackageDetail from './screens/PackageDetail'
 import AllEvents from './screens/AllEvents'
 import AllParties from './screens/AllParties'
+import LoyaltyExplained from './screens/LoyaltyExplained'
 
 export default function App() {
   const phoneW = 393
@@ -88,6 +89,7 @@ export default function App() {
                 <Route path="/rewards" element={<AllRewards />} />
                 <Route path="/rewards/:rewardId" element={<ClaimReward />} />
                 <Route path="/highscore" element={<Highscore />} />
+                <Route path="/loyalty-explained" element={<LoyaltyExplained />} />
                 <Route path="/settings" element={<SettingsScreen />} />
               </Routes>
             </div>
