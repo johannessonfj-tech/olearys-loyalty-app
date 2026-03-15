@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Star, Gift, Share2, Trophy, Percent, TrendingUp, Crown, Utensils, CalendarCheck, Ticket } from 'lucide-react'
 
@@ -93,12 +94,17 @@ const BENEFITS = [
   },
 ]
 
+const COL_W = 130
+const LABEL_W = 160
+const GAP = 12
+
 function TierCard({ tier }) {
   const isLight = tier.id === 'regular' || tier.id === 'starter'
   return (
     <div
-      className="flex-shrink-0 w-[180px] h-[110px] rounded-2xl p-4 relative overflow-hidden flex flex-col justify-between"
+      className="flex-shrink-0 h-[110px] rounded-2xl p-4 relative overflow-hidden flex flex-col justify-between"
       style={{
+        width: COL_W,
         background: `linear-gradient(135deg, ${tier.bgFrom} 0%, ${tier.bgTo} 100%)`,
       }}
     >
@@ -134,11 +140,30 @@ function TierCard({ tier }) {
 
 export default function TierBenefits() {
   const navigate = useNavigate()
+  const cardsRef = useRef(null)
+  const tableRef = useRef(null)
+  const syncing = useRef(false)
+
+  const syncScroll = useCallback((source, target) => {
+    if (syncing.current) return
+    syncing.current = true
+    if (target.current) {
+      // Map scroll positions proportionally since widths differ
+      const sourceEl = source.current
+      const targetEl = target.current
+      const sourceMax = sourceEl.scrollWidth - sourceEl.clientWidth
+      const targetMax = targetEl.scrollWidth - targetEl.clientWidth
+      if (sourceMax > 0) {
+        targetEl.scrollLeft = (sourceEl.scrollLeft / sourceMax) * targetMax
+      }
+    }
+    requestAnimationFrame(() => { syncing.current = false })
+  }, [])
 
   return (
-    <div className="min-h-dvh flex flex-col bg-white">
-      {/* Green header */}
-      <div className="bg-green-primary px-4 pt-12 pb-5">
+    <div className="min-h-dvh flex flex-col bg-green-primary">
+      {/* Green header — flush to top */}
+      <div className="px-4 pt-12 pb-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/')}
@@ -151,24 +176,34 @@ export default function TierBenefits() {
         </div>
       </div>
 
-      {/* Tier cards — horizontal scroll */}
-      <div className="bg-green-primary pb-6 -mb-4">
-        <div className="flex gap-3 px-4 overflow-x-auto no-scrollbar pb-2">
-          {TIERS.map((tier) => (
-            <TierCard key={tier.id} tier={tier} />
-          ))}
+      {/* Tier cards — horizontal scroll, synced with table */}
+      <div className="pb-6">
+        <div
+          ref={cardsRef}
+          onScroll={() => syncScroll(cardsRef, tableRef)}
+          className="overflow-x-auto no-scrollbar"
+        >
+          <div className="flex gap-3 px-4" style={{ paddingLeft: LABEL_W + 16 }}>
+            {TIERS.map((tier) => (
+              <TierCard key={tier.id} tier={tier} />
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Benefits comparison — horizontally scrollable */}
-      <div className="flex-1 bg-white rounded-t-3xl -mt-2 pt-6">
-        <div className="overflow-x-auto no-scrollbar">
-          <table className="w-full" style={{ minWidth: 700 }}>
+      {/* Benefits comparison table — synced scroll */}
+      <div className="flex-1 bg-white rounded-t-3xl pt-2">
+        <div
+          ref={tableRef}
+          onScroll={() => syncScroll(tableRef, cardsRef)}
+          className="overflow-x-auto no-scrollbar"
+        >
+          <table style={{ minWidth: LABEL_W + TIERS.length * (COL_W + GAP) }}>
             <thead>
               <tr className="border-b border-brand-gray-300">
-                <th className="w-[160px] min-w-[160px] px-4 pb-3 text-left" />
+                <th className="px-4 pb-3 text-left" style={{ width: LABEL_W, minWidth: LABEL_W }} />
                 {TIERS.map((tier) => (
-                  <th key={tier.id} className="w-[130px] min-w-[130px] px-2 pb-3 text-center">
+                  <th key={tier.id} className="px-1.5 pb-3 text-center" style={{ width: COL_W, minWidth: COL_W }}>
                     <span className={`text-sm font-bold ${tier.current ? 'text-green-primary' : 'text-brand-black'}`}>
                       {tier.name}
                     </span>
@@ -179,14 +214,14 @@ export default function TierBenefits() {
             <tbody>
               {BENEFITS.map((b, idx) => (
                 <tr key={idx} className="border-b border-brand-gray-100">
-                  <td className="px-4 py-4">
+                  <td className="px-4 py-4" style={{ width: LABEL_W, minWidth: LABEL_W }}>
                     <div className="flex items-start gap-2">
                       <b.Icon size={18} className="text-green-primary flex-shrink-0 mt-0.5" />
                       <span className="text-xs text-brand-black leading-snug">{b.label}</span>
                     </div>
                   </td>
                   {b.values.map((val, i) => (
-                    <td key={i} className="px-2 py-4 text-center">
+                    <td key={i} className="px-1.5 py-4 text-center" style={{ width: COL_W, minWidth: COL_W }}>
                       <span
                         className={`text-sm font-semibold ${
                           val === '—' ? 'text-brand-gray-300' :
