@@ -23,6 +23,7 @@ import ClaimReward from './screens/ClaimReward'
 import PartyDetail from './screens/PartyDetail'
 import HappeningDetail from './screens/HappeningDetail'
 import Highscore from './screens/Highscore'
+import SettingsScreen from './screens/Settings'
 
 export default function App() {
   const phoneW = 393
@@ -46,9 +47,8 @@ export default function App() {
           className="relative bg-black rounded-[50px] shadow-2xl overflow-hidden flex flex-col"
           style={{ width: phoneW, height: phoneH, border: '8px solid #1a1a1a', transform: `scale(${scale})`, transformOrigin: 'center center' }}
         >
-          {/* Status bar area */}
-          <div className="h-12 bg-white flex items-end justify-center pb-1 relative z-20">
-            {/* Dynamic Island */}
+          {/* Dynamic Island — overlaid so pages can bleed color underneath */}
+          <div className="absolute top-0 left-0 right-0 h-12 flex items-end justify-center pb-1 z-20 pointer-events-none">
             <div className="w-[120px] h-[32px] bg-black rounded-full absolute top-1" />
           </div>
 
@@ -79,6 +79,7 @@ export default function App() {
                 <Route path="/rewards" element={<AllRewards />} />
                 <Route path="/rewards/:rewardId" element={<ClaimReward />} />
                 <Route path="/highscore" element={<Highscore />} />
+                <Route path="/settings" element={<SettingsScreen />} />
               </Routes>
             </div>
           </main>

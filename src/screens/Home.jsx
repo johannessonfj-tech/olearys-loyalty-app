@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronRight, Plus, Star, Shield, Trophy, Award, Upload, RefreshCw, Check } from 'lucide-react'
+import { ChevronRight, Plus, Star, Shield, Trophy, Award, Upload, RefreshCw, Check, Settings } from 'lucide-react'
 
 const SPORTS = [
   { id: 'hockey', label: 'Hockey' },
@@ -14,8 +14,8 @@ const SPORTS = [
 ]
 
 const TIERS = [
-  { name: 'Regular', pct: 10, Icon: Award },
-  { name: 'Starter', pct: 33, Icon: Shield },
+  { name: 'Regular', pct: 5, Icon: Award },
+  { name: 'Starter', pct: 30, Icon: Shield },
   { name: 'All Star', pct: 62, Icon: Trophy },
   { name: 'MVP', pct: 95, Icon: Star },
 ]
@@ -47,11 +47,11 @@ function ProgressBar() {
         {/* Track line — thick, runs between first and last icon centers */}
         <div
           className="absolute h-[5px] bg-brand-gray-300 rounded-full"
-          style={{ left: `${firstPct}%`, right: `${100 - lastPct}%`, top: 24 }}
+          style={{ left: `${firstPct - 3}%`, right: `${100 - lastPct}%`, top: 24 }}
         />
         <div
           className="absolute h-[5px] bg-green-primary rounded-full transition-all duration-300"
-          style={{ left: `${firstPct}%`, width: `${filledPct * (lastPct - firstPct) / 100}%`, top: 24 }}
+          style={{ left: `${firstPct - 3}%`, width: `${(filledPct * (lastPct - firstPct) / 100) + 3}%`, top: 24 }}
         />
 
         {/* Tier icons */}
@@ -253,12 +253,21 @@ export default function Home() {
   return (
     <div className="pb-4">
       {/* Top section */}
-      <div className="px-5 pt-12">
+      <div className="px-5 pt-14">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <p className="text-base text-brand-gray-500">Good evening,</p>
-            <h1 className="text-[28px] font-bold mt-0.5 text-brand-black leading-tight">Daniel Svantesson</h1>
-            <div className="flex items-center gap-1.5 mt-3">
+            <div className="flex items-center gap-2 mb-1">
+              <p className="text-base text-brand-gray-500">Good evening,</p>
+              <button
+                onClick={() => navigate('/settings')}
+                className="w-7 h-7 rounded-full bg-brand-gray-100 flex items-center justify-center cursor-pointer transition-transform duration-200 active:scale-90"
+                aria-label="Settings"
+              >
+                <Settings size={14} className="text-brand-gray-500" />
+              </button>
+            </div>
+            <h1 className="text-[28px] font-bold text-brand-black leading-tight">Daniel Svantesson</h1>
+            <div className="flex items-center gap-1.5 mt-2">
               <Star size={16} className="text-green-primary" fill="#2d9b87" />
               <span className="text-lg font-semibold text-brand-black">
                 {POINTS.toLocaleString('sv-SE')} Bonus Points
@@ -267,7 +276,7 @@ export default function Home() {
           </div>
 
           {/* Highscore + Player card */}
-          <div className="flex-shrink-0 flex flex-col items-center gap-2 mt-1">
+          <div className="flex-shrink-0 flex flex-col items-center gap-2">
             <button
               onClick={() => navigate('/highscore')}
               className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-brand-gray-100 cursor-pointer transition-transform duration-200 active:scale-95"
