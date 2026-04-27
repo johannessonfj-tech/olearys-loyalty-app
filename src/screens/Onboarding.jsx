@@ -405,16 +405,18 @@ function StepPlayerCard({ onBack, onNext, onSkip, userName, selectedTeams: follo
   const fileRef = useRef(null)
   const [photo, setPhoto] = useState(null)
   const [currentKit, setCurrentKit] = useState(null)
+  const [kitSearch, setKitSearch] = useState('')
 
   const allTeams = Object.values(TEAMS).flatMap(s => s.sections.flatMap(sec => sec.teams))
   const followedSet = new Set(followedTeams || [])
-  // Followed teams first, then the rest
-  const orderedTeams = [
-    ...allTeams.filter(t => followedSet.has(t.id)),
-    ...allTeams.filter(t => !followedSet.has(t.id)),
-  ].slice(0, 18)
+  // Show only followed teams by default, fall back to all if none followed
+  const baseTeams = followedTeams?.length > 0
+    ? allTeams.filter(t => followedSet.has(t.id))
+    : allTeams.slice(0, 12)
+  const ks = kitSearch.trim().toLowerCase()
+  const displayTeams = ks ? allTeams.filter(t => t.name.toLowerCase().includes(ks)) : baseTeams
 
-  const kit = currentKit || orderedTeams[0]
+  const kit = currentKit || displayTeams[0]
 
   const handleFile = (e) => {
     const f = e.target.files?.[0]
@@ -463,33 +465,31 @@ function StepPlayerCard({ onBack, onNext, onSkip, userName, selectedTeams: follo
         </div>
       </div>
 
-      {/* jersey picker — followed teams first */}
+      {/* jersey picker with search */}
       <div className="relative z-10 flex-shrink-0 pb-3">
-        <div className="px-5 mb-2 flex items-center justify-between">
-          <h3 className="text-xs font-bold tracking-wider text-brand-gray-500 uppercase">Choose kit</h3>
-          {followedTeams?.length > 0 && <span className="text-[10px] font-semibold text-green-primary">★ Following first</span>}
+        <div className="px-5 mb-2">
+          <h3 className="text-xs font-bold tracking-wider text-brand-gray-500 uppercase mb-2">Choose kit</h3>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/80 border border-brand-gray-200">
+            <Search size={14} className="text-brand-gray-400" />
+            <input value={kitSearch} onChange={(e) => setKitSearch(e.target.value)} placeholder="Search teams..."
+              className="w-full text-xs font-medium text-brand-black placeholder-brand-gray-400 outline-none bg-transparent" />
+            {kitSearch && <button onClick={() => setKitSearch('')} className="cursor-pointer"><X size={12} className="text-brand-gray-400" /></button>}
+          </div>
         </div>
         <div className="overflow-x-auto no-scrollbar">
           <div className="flex gap-2 px-5 pb-1" style={{ width: 'max-content' }}>
-            {orderedTeams.map((t) => {
+            {displayTeams.map((t) => {
               const sel = kit?.id === t.id
-              const followed = followedSet.has(t.id)
               return (
                 <button key={t.id} onClick={() => setCurrentKit(t)}
                   className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl active:scale-95 transition-all relative flex-shrink-0 cursor-pointer"
                   style={{ backgroundColor: sel ? '#fff' : 'transparent', border: sel ? '2px solid #2d9b87' : '2px solid transparent', minWidth: 64 }}>
-                  <div className="relative">
-                    <img src={t.logo} alt={t.name} className="w-9 h-9 object-contain rounded-full" onError={(e) => { e.target.style.display = 'none' }} />
-                    {followed && (
-                      <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-green-primary flex items-center justify-center">
-                        <Check size={9} className="text-white" strokeWidth={4} />
-                      </div>
-                    )}
-                  </div>
+                  <img src={t.logo} alt={t.name} className="w-9 h-9 object-contain rounded-full" onError={(e) => { e.target.style.display = 'none' }} />
                   <span className="text-[10px] font-semibold text-brand-black truncate max-w-[60px] text-center leading-tight">{t.name.split(' ')[0]}</span>
                 </button>
               )
             })}
+            {displayTeams.length === 0 && <span className="text-xs text-brand-gray-500 px-2 py-4">No teams match "{kitSearch}"</span>}
           </div>
         </div>
       </div>
