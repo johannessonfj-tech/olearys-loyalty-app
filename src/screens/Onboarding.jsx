@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { ChevronLeft, User, Mail, Cake, Lock, Check, MapPin, Search, X, Trophy, Upload, Users, UserPlus } from 'lucide-react'
+import PlayerCardComponent, { JERSEYS } from '../components/PlayerCard'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import TEAMS from '../data/teams'
@@ -445,53 +446,20 @@ function StepPlayerCard({ onBack, onNext, onSkip, userName, selectedTeams: follo
         <p className="text-[10px] font-semibold tracking-wider text-brand-gray-500 mt-2">STEP 3 OF 6 · OPTIONAL</p>
       </div>
 
-      {/* card preview — vintage style */}
+      {/* card preview — vintage Topps style */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-start pt-4 pb-2 overflow-hidden">
         <div className="text-center mb-2 px-6">
           <h2 className="text-[22px] font-bold text-brand-black leading-tight" style={{ fontFamily: 'Georgia, serif' }}>Your player card</h2>
           <p className="text-xs text-brand-gray-500 mt-1">Pick a kit, drop in a photo. We'll mint it on signup.</p>
         </div>
         <div style={{ transform: 'rotate(-2deg)' }}>
-          <div className="relative flex-shrink-0 rounded-lg overflow-hidden" style={{
-            width: 220, height: 308, backgroundColor: '#f4ead2',
-            border: '3px solid #c9b378',
-            boxShadow: '0 8px 30px rgba(0,0,0,0.25), inset 0 0 0 2px rgba(255,255,255,0.4)',
-          }}>
-            {/* Photo area */}
-            <div className="absolute" style={{ left: 8, right: 8, top: 8, bottom: '35%', borderRadius: 4, overflow: 'hidden', backgroundColor: '#bfd9e8' }}>
-              {photo ? (
-                <img src={photo} alt="You" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center" style={{ background: 'linear-gradient(to bottom, #bfd9e8 0%, #e8d4a8 65%, #5a8c4a 65.1%, #5a8c4a 100%)' }}>
-                  <User size={60} className="text-brand-gray-400/50" style={{ marginTop: -20 }} />
-                </div>
-              )}
-            </div>
-            {/* Number disc */}
-            <div className="absolute flex items-center justify-center" style={{
-              right: 14, top: '40%', width: 36, height: 36, borderRadius: '50%',
-              backgroundColor: '#fff', border: '2px solid #1a1a1a',
-              fontFamily: 'Arial', fontWeight: 900, fontSize: 18, color: '#1a1a1a',
-            }}>10</div>
-            {/* Bottom banner */}
-            <div className="absolute left-0 right-0 bottom-0 flex flex-col items-center justify-center px-3" style={{ height: '32%', backgroundColor: '#2d9b87' }}>
-              <span className="text-white font-bold text-lg leading-tight" style={{ fontFamily: 'Georgia, serif', textShadow: '1px 1px 0 rgba(0,0,0,0.3)' }}>
-                {userName || 'YOUR NAME'}
-              </span>
-              <span className="text-white/70 text-[10px] font-semibold tracking-widest mt-0.5">O'LEARYS · 2026</span>
-            </div>
-            {/* Team badge */}
-            {kit && (
-              <div className="absolute" style={{ left: 14, top: '40%' }}>
-                <img src={kit.logo} alt="" className="w-8 h-8 object-contain rounded-full bg-white/80 p-0.5" />
-              </div>
-            )}
-            {/* Wear overlay */}
-            <div className="absolute inset-0 pointer-events-none" style={{
-              backgroundImage: 'radial-gradient(circle at 90% 10%, rgba(80,50,20,0.2) 0%, transparent 30%), radial-gradient(circle at 5% 95%, rgba(80,50,20,0.15) 0%, transparent 30%)',
-              mixBlendMode: 'multiply',
-            }} />
-          </div>
+          <PlayerCardComponent
+            name={userName || 'Your Name'}
+            jerseyId={kit?.id || 'arsenal'}
+            sport={Object.entries(TEAMS).find(([, s]) => s.sections.some(sec => sec.teams.some(t => t.id === kit?.id)))?.[0] === 'hockey' ? 'hockey' : 'football'}
+            photo={photo}
+            number="10"
+          />
         </div>
       </div>
 
