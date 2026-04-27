@@ -262,8 +262,11 @@ function StepTeams({ onBack, onNext, selectedTeams, setSelectedTeams }) {
 // Step 4: Pick Venue
 function StepVenue({ onBack, onNext, selectedVenue, setSelectedVenue }) {
   const [query, setQuery] = useState('')
+  const [showAll, setShowAll] = useState(false)
   const q = query.trim().toLowerCase()
-  const venues = q ? VENUES.filter(v => v.name.toLowerCase().includes(q)) : VENUES
+  const allVenues = q ? VENUES.filter(v => v.name.toLowerCase().includes(q)) : VENUES
+  const venues = (showAll || q) ? allVenues : allVenues.slice(0, 4)
+  const hasMore = !showAll && !q && allVenues.length > 4
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-white">
@@ -282,7 +285,7 @@ function StepVenue({ onBack, onNext, selectedVenue, setSelectedVenue }) {
         <p className="mt-3 text-sm text-brand-gray-500">We'll show its matches, deals, and events first. You can change it any time.</p>
         <div className="mt-5 flex items-center gap-2 px-4 py-3 rounded-xl border border-brand-gray-300 focus-within:border-green-primary transition-colors">
           <Search size={18} className="text-brand-gray-500" />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search city or address"
+          <input value={query} onChange={(e) => { setQuery(e.target.value); if (e.target.value) setShowAll(true) }} placeholder="Search city or address"
             className="w-full text-sm font-medium text-brand-black placeholder-brand-gray-400 outline-none" />
           {query && <button onClick={() => setQuery('')} className="text-xs text-brand-gray-500 font-semibold cursor-pointer">Clear</button>}
         </div>
@@ -310,6 +313,12 @@ function StepVenue({ onBack, onNext, selectedVenue, setSelectedVenue }) {
             </button>
           )
         })}
+        {hasMore && (
+          <button onClick={() => setShowAll(true)}
+            className="w-full py-3 text-sm font-semibold text-green-primary cursor-pointer active:scale-[0.98] transition-transform">
+            Show all {allVenues.length} venues
+          </button>
+        )}
       </div>
 
       <div className="px-6 pt-4 pb-8">
