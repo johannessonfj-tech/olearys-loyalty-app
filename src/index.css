@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: #f5f5f5;
+  background-color: #ffffff;
   font-family: 'Jost', sans-serif;
   color: #3c3c3c;
   margin: 0;
@@ -56,4 +56,89 @@ body.modal-open {
 }
 .animate-slide-up {
   animation: slideUp 0.3s ease-out;
+}
+
+/* ---------- Check-in pulse dot ---------- */
+.checkin-pulse-dot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  opacity: 0.5;
+  animation: checkin-pulse-dot 2s ease-out infinite;
+}
+@keyframes checkin-pulse-dot {
+  0% { transform: scale(1); opacity: 0.5; }
+  70% { transform: scale(2.4); opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* ---------- Check-in celebration ---------- */
+.checkin-celebration { animation: checkinCeleFade 3400ms ease-out forwards; }
+@keyframes checkinCeleFade {
+  0%, 80% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+.checkin-cele-bg { animation: checkinCeleBg 3400ms ease-out forwards; }
+@keyframes checkinCeleBg {
+  0% { background-color: rgba(45,155,135,0); }
+  8% { background-color: rgba(45,155,135,0.92); }
+  85% { background-color: rgba(45,155,135,0.92); }
+  100% { background-color: rgba(45,155,135,0); }
+}
+.checkin-cele-ball {
+  position: absolute;
+  left: 50%; top: 60%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: checkinCeleBall 3000ms cubic-bezier(0.18, 0.9, 0.4, 1.0) forwards;
+}
+@keyframes checkinCeleBall {
+  0% { transform: translate(-50%, 80%) scale(0.2) rotate(0deg); opacity: 0; }
+  12% { transform: translate(-50%, -50%) scale(1.15) rotate(180deg); opacity: 1; }
+  24% { transform: translate(-50%, -50%) scale(1.0) rotate(360deg); opacity: 1; }
+  75% { transform: translate(-50%, -50%) scale(1.0) rotate(540deg); opacity: 1; }
+  100% { transform: translate(-50%, -260%) scale(0.4) rotate(900deg); opacity: 0; }
+}
+.checkin-cele-ring {
+  position: absolute; left: 50%; top: 60%;
+  width: 8px; height: 8px;
+  border-radius: 9999px;
+  border: 2px solid rgba(255,220,30,0.9);
+  transform: translate(-50%, -50%);
+  animation: checkinCeleRing 2000ms ease-out forwards;
+  animation-delay: 400ms;
+  opacity: 0;
+}
+@keyframes checkinCeleRing {
+  0% { width: 8px; height: 8px; opacity: 0.9; border-width: 4px; }
+  100% { width: 320px; height: 320px; opacity: 0; border-width: 1px; }
+}
+.checkin-cele-confetti {
+  position: absolute; left: 50%; top: 60%;
+  width: 10px; height: 14px;
+  transform-origin: center;
+  opacity: 0;
+  animation: checkinCeleConfetti 2400ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  animation-delay: 500ms;
+  border-radius: 2px;
+}
+@keyframes checkinCeleConfetti {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(0deg) scale(0.4); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: var(--cele-end) rotate(720deg) scale(1); }
+}
+.checkin-cele-text {
+  position: absolute; left: 0; right: 0; top: 60%;
+  text-align: center;
+  transform: translateY(110px);
+  opacity: 0;
+  animation: checkinCeleText 2800ms ease-out forwards;
+  animation-delay: 500ms;
+}
+@keyframes checkinCeleText {
+  0% { opacity: 0; transform: translateY(120px); }
+  25% { opacity: 1; transform: translateY(80px); }
+  85% { opacity: 1; transform: translateY(80px); }
+  100% { opacity: 0; transform: translateY(60px); }
 }

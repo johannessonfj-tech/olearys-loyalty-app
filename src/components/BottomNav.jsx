@@ -1,10 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Home, CalendarDays, Trophy, Wallet } from 'lucide-react'
+import { Home, CalendarDays, Trophy, Wallet, MapPin } from 'lucide-react'
 
 const tabs = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/book', label: 'Book', icon: CalendarDays },
-  { path: '/here', label: 'Already Here?', center: true },
+  { path: '/here', label: "I'm here", center: true },
   { path: '/challenges', label: 'Challenges', icon: Trophy },
   { path: '/wallet', label: 'Wallet', icon: Wallet },
 ]
@@ -22,38 +22,29 @@ export default function BottomNav() {
             <button
               key={tab.path}
               onClick={() => navigate(tab.path)}
-              className="flex flex-col items-center -mt-3 cursor-pointer"
-              aria-label="Already Here?"
+              className="flex flex-col items-center cursor-pointer"
+              style={{ marginTop: -22 }}
+              aria-label="I'm here"
               aria-current={isActive ? 'page' : undefined}
             >
               <div
-                className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg text-center leading-tight relative overflow-hidden"
+                className={`w-14 h-14 rounded-full flex items-center justify-center ${isActive ? 'bg-green-primary' : 'bg-white border border-brand-gray-300'}`}
                 style={{
-                  background: 'radial-gradient(circle at 35% 30%, #fff 0%, #f5efe6 50%, #e0d6c6 100%)',
-                  border: '2.5px solid #3c3c3c',
+                  boxShadow: isActive
+                    ? '0 8px 22px rgba(45,155,135,0.35)'
+                    : '0 4px 10px rgba(0,0,0,0.08)',
                 }}
               >
-                {/* Baseball stitching — kept minimal, pushed to edges */}
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 64 64" fill="none">
-                  {/* Left seam */}
-                  <path d="M12 10 C7 22, 7 42, 12 54" stroke="#c4382a" strokeWidth="1.5" fill="none" />
-                  <line x1="9" y1="16" x2="13" y2="18" stroke="#c4382a" strokeWidth="1" />
-                  <line x1="8" y1="25" x2="12" y2="25.5" stroke="#c4382a" strokeWidth="1" />
-                  <line x1="8" y1="34" x2="12" y2="34" stroke="#c4382a" strokeWidth="1" />
-                  <line x1="8" y1="43" x2="12" y2="42.5" stroke="#c4382a" strokeWidth="1" />
-                  <line x1="9" y1="49" x2="13" y2="47" stroke="#c4382a" strokeWidth="1" />
-                  {/* Right seam */}
-                  <path d="M52 10 C57 22, 57 42, 52 54" stroke="#c4382a" strokeWidth="1.5" fill="none" />
-                  <line x1="55" y1="16" x2="51" y2="18" stroke="#c4382a" strokeWidth="1" />
-                  <line x1="56" y1="25" x2="52" y2="25.5" stroke="#c4382a" strokeWidth="1" />
-                  <line x1="56" y1="34" x2="52" y2="34" stroke="#c4382a" strokeWidth="1" />
-                  <line x1="56" y1="43" x2="52" y2="42.5" stroke="#c4382a" strokeWidth="1" />
-                  <line x1="55" y1="49" x2="51" y2="47" stroke="#c4382a" strokeWidth="1" />
-                </svg>
-                <span className="relative z-10 text-[10px] font-extrabold leading-tight text-[#3c3c3c]" style={{ textShadow: '0 0 3px rgba(255,255,255,0.8)' }}>
-                  Already<br />Here?
-                </span>
+                <MapPin
+                  size={22}
+                  className={isActive ? 'text-white' : 'text-brand-gray-500'}
+                  fill={isActive ? 'rgba(255,255,255,0.15)' : 'none'}
+                  strokeWidth={1.8}
+                />
               </div>
+              <span className={`text-[10px] font-semibold mt-0.5 ${isActive ? 'text-green-primary' : 'text-brand-gray-500'}`}>
+                {tab.label}
+              </span>
             </button>
           )
         }
