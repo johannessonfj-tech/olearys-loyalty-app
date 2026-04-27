@@ -399,13 +399,21 @@ function StepSuccess({ onFinish, userName }) {
   )
 }
 
-// Step: Player Card
-function StepPlayerCard({ onBack, onNext, onSkip, userName }) {
+// Step: Player Card — vintage Topps-style card builder (from design spec)
+function StepPlayerCard({ onBack, onNext, onSkip, userName, selectedTeams: followedTeams }) {
   const fileRef = useRef(null)
   const [photo, setPhoto] = useState(null)
-  const [selectedTeam, setSelectedTeam] = useState(null)
+  const [currentKit, setCurrentKit] = useState(null)
 
-  const allTeams = Object.values(TEAMS).flatMap(s => s.sections.flatMap(sec => sec.teams)).slice(0, 12)
+  const allTeams = Object.values(TEAMS).flatMap(s => s.sections.flatMap(sec => sec.teams))
+  const followedSet = new Set(followedTeams || [])
+  // Followed teams first, then the rest
+  const orderedTeams = [
+    ...allTeams.filter(t => followedSet.has(t.id)),
+    ...allTeams.filter(t => !followedSet.has(t.id)),
+  ].slice(0, 18)
+
+  const kit = currentKit || orderedTeams[0]
 
   const handleFile = (e) => {
     const f = e.target.files?.[0]
@@ -417,10 +425,12 @@ function StepPlayerCard({ onBack, onNext, onSkip, userName }) {
 
   return (
     <div className="min-h-[100dvh] flex flex-col relative" style={{ backgroundColor: '#f4f0e8' }}>
+      {/* paper texture */}
       <div className="absolute inset-0 pointer-events-none opacity-30" style={{
         backgroundImage: 'radial-gradient(circle at 30% 20%, #e8dec0 0%, transparent 50%), radial-gradient(circle at 80% 80%, #d4c89e 0%, transparent 50%)'
       }} />
 
+      {/* header */}
       <div className="relative z-10 px-5 pt-14 pb-2 flex items-center justify-between flex-shrink-0">
         <button onClick={onBack} className="w-10 h-10 rounded-full bg-white border border-brand-gray-200 flex items-center justify-center active:scale-90 transition-transform cursor-pointer shadow-sm">
           <ChevronLeft size={20} className="text-brand-black" />
@@ -429,50 +439,85 @@ function StepPlayerCard({ onBack, onNext, onSkip, userName }) {
         <button onClick={onSkip} className="px-4 py-2 rounded-full bg-white border border-brand-gray-200 text-sm font-semibold text-brand-black shadow-sm cursor-pointer">Skip</button>
       </div>
 
+      {/* progress */}
       <div className="relative z-10 px-6 mt-2">
         <ProgressBar step={3} total={6} />
         <p className="text-[10px] font-semibold tracking-wider text-brand-gray-500 mt-2">STEP 3 OF 6 · OPTIONAL</p>
       </div>
 
+      {/* card preview — vintage style */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-start pt-4 pb-2 overflow-hidden">
-        <div className="text-center mb-4 px-6">
+        <div className="text-center mb-2 px-6">
           <h2 className="text-[22px] font-bold text-brand-black leading-tight" style={{ fontFamily: 'Georgia, serif' }}>Your player card</h2>
           <p className="text-xs text-brand-gray-500 mt-1">Pick a kit, drop in a photo. We'll mint it on signup.</p>
         </div>
-
-        {/* Card preview */}
-        <div className="w-[240px] rounded-2xl overflow-hidden shadow-2xl" style={{ transform: 'rotate(-2deg)' }}>
-          <div className="aspect-[3/4] bg-gradient-to-br from-green-primary to-green-dark relative flex flex-col items-center justify-center p-4">
-            {photo ? (
-              <img src={photo} alt="Your photo" className="w-24 h-24 rounded-full object-cover border-4 border-white/30 mb-3" />
-            ) : (
-              <div className="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center mb-3">
-                <User size={40} className="text-white/60" />
+        <div style={{ transform: 'rotate(-2deg)' }}>
+          <div className="relative flex-shrink-0 rounded-lg overflow-hidden" style={{
+            width: 220, height: 308, backgroundColor: '#f4ead2',
+            border: '3px solid #c9b378',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.25), inset 0 0 0 2px rgba(255,255,255,0.4)',
+          }}>
+            {/* Photo area */}
+            <div className="absolute" style={{ left: 8, right: 8, top: 8, bottom: '35%', borderRadius: 4, overflow: 'hidden', backgroundColor: '#bfd9e8' }}>
+              {photo ? (
+                <img src={photo} alt="You" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center" style={{ background: 'linear-gradient(to bottom, #bfd9e8 0%, #e8d4a8 65%, #5a8c4a 65.1%, #5a8c4a 100%)' }}>
+                  <User size={60} className="text-brand-gray-400/50" style={{ marginTop: -20 }} />
+                </div>
+              )}
+            </div>
+            {/* Number disc */}
+            <div className="absolute flex items-center justify-center" style={{
+              right: 14, top: '40%', width: 36, height: 36, borderRadius: '50%',
+              backgroundColor: '#fff', border: '2px solid #1a1a1a',
+              fontFamily: 'Arial', fontWeight: 900, fontSize: 18, color: '#1a1a1a',
+            }}>10</div>
+            {/* Bottom banner */}
+            <div className="absolute left-0 right-0 bottom-0 flex flex-col items-center justify-center px-3" style={{ height: '32%', backgroundColor: '#2d9b87' }}>
+              <span className="text-white font-bold text-lg leading-tight" style={{ fontFamily: 'Georgia, serif', textShadow: '1px 1px 0 rgba(0,0,0,0.3)' }}>
+                {userName || 'YOUR NAME'}
+              </span>
+              <span className="text-white/70 text-[10px] font-semibold tracking-widest mt-0.5">O'LEARYS · 2026</span>
+            </div>
+            {/* Team badge */}
+            {kit && (
+              <div className="absolute" style={{ left: 14, top: '40%' }}>
+                <img src={kit.logo} alt="" className="w-8 h-8 object-contain rounded-full bg-white/80 p-0.5" />
               </div>
             )}
-            <p className="text-white font-bold text-lg">{userName || 'Your Name'}</p>
-            <p className="text-white/70 text-xs mt-1">O'Learys All Star</p>
-            {selectedTeam && (
-              <img src={selectedTeam.logo} alt="" className="w-8 h-8 object-contain mt-3 rounded-full bg-white/20 p-1" />
-            )}
+            {/* Wear overlay */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+              backgroundImage: 'radial-gradient(circle at 90% 10%, rgba(80,50,20,0.2) 0%, transparent 30%), radial-gradient(circle at 5% 95%, rgba(80,50,20,0.15) 0%, transparent 30%)',
+              mixBlendMode: 'multiply',
+            }} />
           </div>
         </div>
       </div>
 
-      {/* Team picker */}
+      {/* jersey picker — followed teams first */}
       <div className="relative z-10 flex-shrink-0 pb-3">
-        <div className="px-5 mb-2">
+        <div className="px-5 mb-2 flex items-center justify-between">
           <h3 className="text-xs font-bold tracking-wider text-brand-gray-500 uppercase">Choose kit</h3>
+          {followedTeams?.length > 0 && <span className="text-[10px] font-semibold text-green-primary">★ Following first</span>}
         </div>
         <div className="overflow-x-auto no-scrollbar">
           <div className="flex gap-2 px-5 pb-1" style={{ width: 'max-content' }}>
-            {allTeams.map((t) => {
-              const sel = selectedTeam?.id === t.id
+            {orderedTeams.map((t) => {
+              const sel = kit?.id === t.id
+              const followed = followedSet.has(t.id)
               return (
-                <button key={t.id} onClick={() => setSelectedTeam(t)}
-                  className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl active:scale-95 transition-all flex-shrink-0 cursor-pointer"
+                <button key={t.id} onClick={() => setCurrentKit(t)}
+                  className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl active:scale-95 transition-all relative flex-shrink-0 cursor-pointer"
                   style={{ backgroundColor: sel ? '#fff' : 'transparent', border: sel ? '2px solid #2d9b87' : '2px solid transparent', minWidth: 64 }}>
-                  <img src={t.logo} alt={t.name} className="w-9 h-9 object-contain rounded-full" onError={(e) => { e.target.style.display = 'none' }} />
+                  <div className="relative">
+                    <img src={t.logo} alt={t.name} className="w-9 h-9 object-contain rounded-full" onError={(e) => { e.target.style.display = 'none' }} />
+                    {followed && (
+                      <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-green-primary flex items-center justify-center">
+                        <Check size={9} className="text-white" strokeWidth={4} />
+                      </div>
+                    )}
+                  </div>
                   <span className="text-[10px] font-semibold text-brand-black truncate max-w-[60px] text-center leading-tight">{t.name.split(' ')[0]}</span>
                 </button>
               )
@@ -481,7 +526,7 @@ function StepPlayerCard({ onBack, onNext, onSkip, userName }) {
         </div>
       </div>
 
-      {/* Upload + Save */}
+      {/* upload + cta */}
       <div className="relative z-10 flex-shrink-0 px-5 pb-6 flex gap-2">
         <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
         <button onClick={() => fileRef.current?.click()}
@@ -491,7 +536,7 @@ function StepPlayerCard({ onBack, onNext, onSkip, userName }) {
         </button>
         <button onClick={onNext}
           className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-green-primary text-white font-bold text-sm active:scale-[0.98] transition-transform cursor-pointer">
-          <Check size={18} className="text-white" />
+          <Check size={18} className="text-white" strokeWidth={2.4} />
           Save card
         </button>
       </div>
@@ -499,25 +544,27 @@ function StepPlayerCard({ onBack, onNext, onSkip, userName }) {
   )
 }
 
-// Step: Friends
-const SUGGESTED_FRIENDS = [
-  { id: 'erik', name: 'Erik Lindqvist', avatar: 'EL', mutual: 3 },
-  { id: 'sara', name: 'Sara Karlsson', avatar: 'SK', mutual: 5 },
-  { id: 'sofia', name: 'Sofia Wiberg', avatar: 'SW', mutual: 2 },
-  { id: 'marcus', name: 'Marcus Holm', avatar: 'MH', mutual: 1 },
-  { id: 'anna', name: 'Anna Ström', avatar: 'AS', mutual: 4 },
-  { id: 'oskar', name: 'Oskar Nordin', avatar: 'ON', mutual: 2 },
+// Step: Friends — from design spec (crew up with benefit chips, mini cards, invite section)
+const FRIEND_SUGGESTIONS = [
+  { id: 'sofia', name: 'Sofia Lindberg', tier: 'Pro', mutual: 4, note: 'Hockey buddy · Frölunda', hue: 320 },
+  { id: 'erik', name: 'Erik Bergqvist', tier: 'Starter', mutual: 7, note: 'Bowling rival · 247 high', hue: 200 },
+  { id: 'amelia', name: 'Amelia Norén', tier: 'Pro', mutual: 3, note: 'Saturday regular', hue: 30 },
+  { id: 'johan', name: 'Johan Söderberg', tier: 'Regular', mutual: 2, note: 'Arsenal fan · prediction king', hue: 145 },
+  { id: 'maja', name: 'Maja Holm', tier: 'Starter', mutual: 5, note: 'Quiz night co-captain', hue: 270 },
+  { id: 'oscar', name: 'Oscar Wikander', tier: 'Pro', mutual: 1, note: 'Beats you at darts', hue: 10 },
 ]
 
 function StepFriends({ onBack, onNext, onSkip, selectedFriends, setSelectedFriends }) {
-  const [search, setSearch] = useState('')
-  const q = search.trim().toLowerCase()
-  const friends = q ? SUGGESTED_FRIENDS.filter(f => f.name.toLowerCase().includes(q)) : SUGGESTED_FRIENDS
+  const [query, setQuery] = useState('')
+  const q = query.trim().toLowerCase()
+  const list = q ? FRIEND_SUGGESTIONS.filter(f => f.name.toLowerCase().includes(q)) : FRIEND_SUGGESTIONS
+  const selected = FRIEND_SUGGESTIONS.filter(f => selectedFriends.includes(f.id))
 
   const toggle = (id) => setSelectedFriends(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id])
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-white">
+    <div className="min-h-[100dvh] flex flex-col bg-white relative overflow-hidden">
+      {/* header */}
       <div className="px-5 pt-14 pb-2 flex items-center justify-between flex-shrink-0">
         <button onClick={onBack} className="w-10 h-10 rounded-full bg-white border border-brand-gray-200 flex items-center justify-center active:scale-90 transition-transform cursor-pointer shadow-sm">
           <ChevronLeft size={20} className="text-brand-black" />
@@ -526,52 +573,121 @@ function StepFriends({ onBack, onNext, onSkip, selectedFriends, setSelectedFrien
         <button onClick={onSkip} className="px-4 py-2 rounded-full bg-white border border-brand-gray-200 text-sm font-semibold text-brand-black shadow-sm cursor-pointer">Skip</button>
       </div>
 
-      <div className="px-6 mt-2">
+      {/* progress */}
+      <div className="px-6 mt-2 flex-shrink-0">
         <ProgressBar step={4} total={6} />
         <p className="text-[10px] font-semibold tracking-wider text-brand-gray-500 mt-2">STEP 4 OF 6 · OPTIONAL</p>
       </div>
 
-      <div className="px-6 pt-8 pb-4">
-        <h1 className="text-[28px] font-bold text-brand-black leading-tight">Crew up</h1>
-        <p className="mt-3 text-sm text-brand-gray-500">Add friends to compare highscores, share bookings, and compete on leaderboards.</p>
-
-        <div className="mt-5 flex items-center gap-2 px-4 py-3 rounded-xl border border-brand-gray-300 focus-within:border-green-primary transition-colors">
-          <Search size={18} className="text-brand-gray-500" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name..."
-            className="w-full text-sm font-medium text-brand-black placeholder-brand-gray-400 outline-none" />
-          {search && <button onClick={() => setSearch('')} className="text-xs text-brand-gray-500 font-semibold cursor-pointer">Clear</button>}
+      {/* hero */}
+      <div className="px-5 pt-5 pb-3 flex-shrink-0">
+        <h1 className="text-[26px] font-bold text-brand-black leading-[1.1]">Crew up.</h1>
+        <p className="mt-2 text-[13px] text-brand-gray-500 leading-relaxed">
+          Book lanes &amp; tables together, climb the prediction leaderboard, and brag about your bowling highscore.
+        </p>
+        {/* benefit chips */}
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {[{ icon: '📅', label: 'Bookings' }, { icon: '🏆', label: 'Predictions' }, { icon: '🎳', label: 'Highscores' }].map(c => (
+            <div key={c.label} className="flex items-center gap-1 px-2.5 py-1.5 rounded-full" style={{ backgroundColor: 'rgba(45,155,135,0.08)' }}>
+              <span className="text-[13px] leading-none">{c.icon}</span>
+              <span className="text-[11px] font-semibold text-brand-black whitespace-nowrap">{c.label}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="px-6 flex-1 overflow-y-auto no-scrollbar">
-        <p className="text-xs font-semibold text-brand-gray-500 uppercase tracking-wider mb-3">Suggested</p>
-        <div className="space-y-2">
-          {friends.map((f) => {
-            const added = selectedFriends.includes(f.id)
+      {/* search */}
+      <div className="px-5 mb-3 flex-shrink-0">
+        <div className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-brand-gray-100">
+          <Search size={16} className="text-brand-gray-500" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name or phone"
+            className="w-full text-sm font-medium text-brand-black placeholder-brand-gray-400 outline-none bg-transparent" />
+          {query && <button onClick={() => setQuery('')} className="w-5 h-5 rounded-full bg-brand-gray-300 flex items-center justify-center flex-shrink-0 cursor-pointer">
+            <X size={11} className="text-white" strokeWidth={3} />
+          </button>}
+        </div>
+      </div>
+
+      {/* list */}
+      <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-32">
+        {!q && (
+          <div className="flex items-baseline justify-between mb-2 px-1">
+            <h3 className="text-[13px] font-bold text-brand-black">Suggested for you</h3>
+            <span className="text-[11px] text-brand-gray-500">{FRIEND_SUGGESTIONS.length} on O'Learys</span>
+          </div>
+        )}
+        <div className="space-y-1.5">
+          {list.map(f => {
+            const sel = selectedFriends.includes(f.id)
             return (
-              <div key={f.id} className="flex items-center gap-3 p-3 rounded-2xl bg-brand-gray-100">
-                <div className="w-11 h-11 rounded-full bg-green-primary/15 flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm font-bold text-green-primary">{f.avatar}</span>
+              <div key={f.id} onClick={() => toggle(f.id)}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-2xl cursor-pointer active:scale-[0.99] transition-all"
+                style={{ backgroundColor: sel ? 'rgba(45,155,135,0.06)' : '#fff', border: sel ? '1.5px solid #2d9b87' : '1.5px solid #f0f0f0' }}>
+                {/* Avatar with hue-based color */}
+                <div className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: `hsl(${f.hue}, 40%, 90%)` }}>
+                  <span className="text-sm font-bold" style={{ color: `hsl(${f.hue}, 50%, 40%)` }}>{f.name.split(' ').map(n => n[0]).join('')}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-brand-black text-[15px] leading-tight">{f.name}</p>
-                  <p className="text-xs text-brand-gray-500">{f.mutual} mutual friends</p>
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-semibold text-brand-black text-[14px] leading-tight truncate">{f.name}</p>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{
+                      backgroundColor: f.tier === 'Pro' ? '#1a6f60' : f.tier === 'Starter' ? '#ffdc1e' : '#f0f0f0',
+                      color: f.tier === 'Pro' ? '#fff' : '#3c3c3c',
+                    }}>{f.tier}</span>
+                  </div>
+                  <p className="text-[11px] text-brand-gray-500 truncate leading-tight mt-0.5">{f.note} · {f.mutual} mutual</p>
                 </div>
-                <button onClick={() => toggle(f.id)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-semibold active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 ${added ? 'bg-green-primary text-white' : 'bg-white text-brand-black border border-brand-gray-300'}`}>
-                  {added ? <><Check size={14} /> Added</> : <><UserPlus size={14} /> Add</>}
+                <button onClick={(e) => { e.stopPropagation(); toggle(f.id) }}
+                  className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform cursor-pointer ${sel ? 'bg-green-primary' : 'bg-brand-gray-100'}`}>
+                  {sel ? <Check size={16} className="text-white" strokeWidth={3} /> : <span className="text-lg font-light text-brand-gray-500 leading-none -mt-0.5">+</span>}
                 </button>
               </div>
             )
           })}
-          {friends.length === 0 && <p className="text-center py-8 text-sm text-brand-gray-500">No results for "{search}"</p>}
+          {list.length === 0 && <div className="text-center py-8 text-sm text-brand-gray-500">No friends match "{query}"</div>}
         </div>
+
+        {/* invite via */}
+        {!q && (
+          <div className="mt-5">
+            <h3 className="text-[13px] font-bold text-brand-black mb-2 px-1">Invite via</h3>
+            <div className="grid grid-cols-3 gap-2">
+              {[{ icon: '📱', label: 'Contacts', sub: 'Allow access' }, { icon: '🔗', label: 'Share link', sub: 'olearys.app/invite' }, { icon: '✉️', label: 'Email', sub: 'Type address' }].map(opt => (
+                <button key={opt.label} className="flex flex-col items-center justify-center py-3 px-2 rounded-2xl bg-brand-gray-100 active:scale-[0.97] transition-transform cursor-pointer">
+                  <span className="text-xl mb-1">{opt.icon}</span>
+                  <span className="text-[11px] font-bold text-brand-black">{opt.label}</span>
+                  <span className="text-[9px] text-brand-gray-500 mt-0.5">{opt.sub}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="px-6 pt-4 pb-8 flex-shrink-0">
+      {/* bottom CTA with stacked mini avatars */}
+      <div className="absolute left-0 right-0 bottom-0 px-5 pb-6 pt-3 flex-shrink-0" style={{ background: 'linear-gradient(to top, #fff 60%, rgba(255,255,255,0))' }}>
+        {selected.length > 0 && (
+          <div className="mb-3 flex items-center gap-2.5">
+            <div className="flex">
+              {selected.slice(0, 4).map((f, i) => (
+                <div key={f.id} className="w-7 h-7 rounded-full flex items-center justify-center border-2 border-white"
+                  style={{ marginLeft: i === 0 ? 0 : -8, backgroundColor: `hsl(${f.hue}, 40%, 85%)`, zIndex: 4 - i }}>
+                  <span className="text-[8px] font-bold" style={{ color: `hsl(${f.hue}, 50%, 35%)` }}>{f.name[0]}</span>
+                </div>
+              ))}
+              {selected.length > 4 && (
+                <div className="w-7 h-7 rounded-full bg-brand-black text-white flex items-center justify-center text-[10px] font-bold border-2 border-white" style={{ marginLeft: -8 }}>+{selected.length - 4}</div>
+              )}
+            </div>
+            <span className="text-[12px] font-semibold text-brand-black">
+              {selected.length === 1 ? `${selected[0].name.split(' ')[0]} added` : `${selected.length} friends added`}
+            </span>
+          </div>
+        )}
         <button onClick={onNext}
-          className="w-full py-4 rounded-2xl font-bold text-base bg-green-primary text-white active:scale-[0.98] transition-all cursor-pointer">
-          {selectedFriends.length > 0 ? `Continue · ${selectedFriends.length} friend${selectedFriends.length > 1 ? 's' : ''}` : 'Continue'}
+          className="w-full py-4 rounded-2xl font-bold text-base bg-green-primary text-white active:scale-[0.98] transition-transform cursor-pointer shadow-[0_4px_20px_rgba(45,155,135,0.3)]">
+          {selected.length > 0 ? `Continue with ${selected.length}` : 'Continue without friends'}
         </button>
       </div>
     </div>
@@ -660,7 +776,7 @@ export default function Onboarding({ onDemoComplete }) {
     case 'login': return <LoginInline onBack={() => setStep('welcome')} />
     case 'profile': return <StepProfile demoMode={demoMode} onBack={() => setStep('welcome')} onNext={(firstName) => { setUserName(firstName); setStep('teams') }} />
     case 'teams': return <StepTeams onBack={() => setStep('profile')} onNext={() => setStep('card')} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams} />
-    case 'card': return <StepPlayerCard onBack={() => setStep('teams')} onNext={() => setStep('friends')} onSkip={() => setStep('friends')} userName={userName} />
+    case 'card': return <StepPlayerCard onBack={() => setStep('teams')} onNext={() => setStep('friends')} onSkip={() => setStep('friends')} userName={userName} selectedTeams={selectedTeams} />
     case 'friends': return <StepFriends onBack={() => setStep('card')} onNext={() => setStep('venue')} onSkip={() => setStep('venue')} selectedFriends={selectedFriends} setSelectedFriends={setSelectedFriends} />
     case 'venue': return <StepVenue onBack={() => setStep('friends')} onNext={() => setStep('success')} selectedVenue={selectedVenue} setSelectedVenue={setSelectedVenue} />
     case 'success': return <StepSuccess userName={userName || 'there'} onFinish={finishOnboarding} />
