@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { ChevronLeft, User, Mail, Cake, Lock, Check, MapPin, Search, X, Trophy } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { ChevronLeft, User, Mail, Cake, Lock, Check, MapPin, Search, X, Trophy, Upload, Users, UserPlus } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import TEAMS from '../data/teams'
@@ -107,11 +107,11 @@ function StepProfile({ onBack, onNext, demoMode }) {
         <button onClick={onBack} className="w-10 h-10 -ml-2 flex items-center justify-center text-brand-black active:scale-90 transition-transform cursor-pointer">
           <ChevronLeft size={24} className="text-brand-black" />
         </button>
-        <span className="text-xs font-semibold text-brand-gray-500">STEP 1 OF 4</span>
+        <span className="text-xs font-semibold text-brand-gray-500">STEP 1 OF 6</span>
         <div className="w-10" />
       </div>
 
-      <div className="px-6 mt-3"><ProgressBar step={1} total={4} /></div>
+      <div className="px-6 mt-3"><ProgressBar step={1} total={6} /></div>
 
       <div className="px-6 pt-10 pb-8 flex-1 flex flex-col">
         <h1 className="text-[28px] font-bold text-brand-black leading-tight">Tell us about<br />yourself</h1>
@@ -195,8 +195,8 @@ function StepTeams({ onBack, onNext, selectedTeams, setSelectedTeams }) {
       </div>
 
       <div className="px-6 mt-2">
-        <ProgressBar step={2} total={4} />
-        <p className="text-[10px] font-semibold tracking-wider text-brand-gray-500 mt-2">STEP 2 OF 4 · OPTIONAL</p>
+        <ProgressBar step={2} total={6} />
+        <p className="text-[10px] font-semibold tracking-wider text-brand-gray-500 mt-2">STEP 2 OF 6 · OPTIONAL</p>
       </div>
 
       {/* Sport toggle — only Football and Ice Hockey */}
@@ -270,11 +270,11 @@ function StepVenue({ onBack, onNext, selectedVenue, setSelectedVenue }) {
         <button onClick={onBack} className="w-10 h-10 -ml-2 flex items-center justify-center active:scale-90 transition-transform cursor-pointer">
           <ChevronLeft size={24} className="text-brand-black" />
         </button>
-        <span className="text-xs font-semibold text-brand-gray-500">STEP 3 OF 4</span>
+        <span className="text-xs font-semibold text-brand-gray-500">STEP 5 OF 6</span>
         <div className="w-10" />
       </div>
 
-      <div className="px-6 mt-3"><ProgressBar step={3} total={4} /></div>
+      <div className="px-6 mt-3"><ProgressBar step={5} total={6} /></div>
 
       <div className="px-6 pt-10 pb-4">
         <h1 className="text-[28px] font-bold text-brand-black leading-tight">Pick your home<br />O'Learys</h1>
@@ -399,6 +399,185 @@ function StepSuccess({ onFinish, userName }) {
   )
 }
 
+// Step: Player Card
+function StepPlayerCard({ onBack, onNext, onSkip, userName }) {
+  const fileRef = useRef(null)
+  const [photo, setPhoto] = useState(null)
+  const [selectedTeam, setSelectedTeam] = useState(null)
+
+  const allTeams = Object.values(TEAMS).flatMap(s => s.sections.flatMap(sec => sec.teams)).slice(0, 12)
+
+  const handleFile = (e) => {
+    const f = e.target.files?.[0]
+    if (!f) return
+    const reader = new FileReader()
+    reader.onload = () => setPhoto(reader.result)
+    reader.readAsDataURL(f)
+  }
+
+  return (
+    <div className="min-h-[100dvh] flex flex-col relative" style={{ backgroundColor: '#f4f0e8' }}>
+      <div className="absolute inset-0 pointer-events-none opacity-30" style={{
+        backgroundImage: 'radial-gradient(circle at 30% 20%, #e8dec0 0%, transparent 50%), radial-gradient(circle at 80% 80%, #d4c89e 0%, transparent 50%)'
+      }} />
+
+      <div className="relative z-10 px-5 pt-14 pb-2 flex items-center justify-between flex-shrink-0">
+        <button onClick={onBack} className="w-10 h-10 rounded-full bg-white border border-brand-gray-200 flex items-center justify-center active:scale-90 transition-transform cursor-pointer shadow-sm">
+          <ChevronLeft size={20} className="text-brand-black" />
+        </button>
+        <span className="text-base font-bold text-brand-black">Player card</span>
+        <button onClick={onSkip} className="px-4 py-2 rounded-full bg-white border border-brand-gray-200 text-sm font-semibold text-brand-black shadow-sm cursor-pointer">Skip</button>
+      </div>
+
+      <div className="relative z-10 px-6 mt-2">
+        <ProgressBar step={3} total={6} />
+        <p className="text-[10px] font-semibold tracking-wider text-brand-gray-500 mt-2">STEP 3 OF 6 · OPTIONAL</p>
+      </div>
+
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-start pt-4 pb-2 overflow-hidden">
+        <div className="text-center mb-4 px-6">
+          <h2 className="text-[22px] font-bold text-brand-black leading-tight" style={{ fontFamily: 'Georgia, serif' }}>Your player card</h2>
+          <p className="text-xs text-brand-gray-500 mt-1">Pick a kit, drop in a photo. We'll mint it on signup.</p>
+        </div>
+
+        {/* Card preview */}
+        <div className="w-[240px] rounded-2xl overflow-hidden shadow-2xl" style={{ transform: 'rotate(-2deg)' }}>
+          <div className="aspect-[3/4] bg-gradient-to-br from-green-primary to-green-dark relative flex flex-col items-center justify-center p-4">
+            {photo ? (
+              <img src={photo} alt="Your photo" className="w-24 h-24 rounded-full object-cover border-4 border-white/30 mb-3" />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center mb-3">
+                <User size={40} className="text-white/60" />
+              </div>
+            )}
+            <p className="text-white font-bold text-lg">{userName || 'Your Name'}</p>
+            <p className="text-white/70 text-xs mt-1">O'Learys All Star</p>
+            {selectedTeam && (
+              <img src={selectedTeam.logo} alt="" className="w-8 h-8 object-contain mt-3 rounded-full bg-white/20 p-1" />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Team picker */}
+      <div className="relative z-10 flex-shrink-0 pb-3">
+        <div className="px-5 mb-2">
+          <h3 className="text-xs font-bold tracking-wider text-brand-gray-500 uppercase">Choose kit</h3>
+        </div>
+        <div className="overflow-x-auto no-scrollbar">
+          <div className="flex gap-2 px-5 pb-1" style={{ width: 'max-content' }}>
+            {allTeams.map((t) => {
+              const sel = selectedTeam?.id === t.id
+              return (
+                <button key={t.id} onClick={() => setSelectedTeam(t)}
+                  className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl active:scale-95 transition-all flex-shrink-0 cursor-pointer"
+                  style={{ backgroundColor: sel ? '#fff' : 'transparent', border: sel ? '2px solid #2d9b87' : '2px solid transparent', minWidth: 64 }}>
+                  <img src={t.logo} alt={t.name} className="w-9 h-9 object-contain rounded-full" onError={(e) => { e.target.style.display = 'none' }} />
+                  <span className="text-[10px] font-semibold text-brand-black truncate max-w-[60px] text-center leading-tight">{t.name.split(' ')[0]}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Upload + Save */}
+      <div className="relative z-10 flex-shrink-0 px-5 pb-6 flex gap-2">
+        <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
+        <button onClick={() => fileRef.current?.click()}
+          className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white border border-brand-gray-300 active:scale-[0.98] transition-transform cursor-pointer">
+          <Upload size={18} className="text-brand-black" />
+          <span className="font-semibold text-sm text-brand-black">{photo ? 'Change photo' : 'Upload photo'}</span>
+        </button>
+        <button onClick={onNext}
+          className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-green-primary text-white font-bold text-sm active:scale-[0.98] transition-transform cursor-pointer">
+          <Check size={18} className="text-white" />
+          Save card
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// Step: Friends
+const SUGGESTED_FRIENDS = [
+  { id: 'erik', name: 'Erik Lindqvist', avatar: 'EL', mutual: 3 },
+  { id: 'sara', name: 'Sara Karlsson', avatar: 'SK', mutual: 5 },
+  { id: 'sofia', name: 'Sofia Wiberg', avatar: 'SW', mutual: 2 },
+  { id: 'marcus', name: 'Marcus Holm', avatar: 'MH', mutual: 1 },
+  { id: 'anna', name: 'Anna Ström', avatar: 'AS', mutual: 4 },
+  { id: 'oskar', name: 'Oskar Nordin', avatar: 'ON', mutual: 2 },
+]
+
+function StepFriends({ onBack, onNext, onSkip, selectedFriends, setSelectedFriends }) {
+  const [search, setSearch] = useState('')
+  const q = search.trim().toLowerCase()
+  const friends = q ? SUGGESTED_FRIENDS.filter(f => f.name.toLowerCase().includes(q)) : SUGGESTED_FRIENDS
+
+  const toggle = (id) => setSelectedFriends(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id])
+
+  return (
+    <div className="min-h-[100dvh] flex flex-col bg-white">
+      <div className="px-5 pt-14 pb-2 flex items-center justify-between flex-shrink-0">
+        <button onClick={onBack} className="w-10 h-10 rounded-full bg-white border border-brand-gray-200 flex items-center justify-center active:scale-90 transition-transform cursor-pointer shadow-sm">
+          <ChevronLeft size={20} className="text-brand-black" />
+        </button>
+        <span className="text-base font-bold text-brand-black">Add friends</span>
+        <button onClick={onSkip} className="px-4 py-2 rounded-full bg-white border border-brand-gray-200 text-sm font-semibold text-brand-black shadow-sm cursor-pointer">Skip</button>
+      </div>
+
+      <div className="px-6 mt-2">
+        <ProgressBar step={4} total={6} />
+        <p className="text-[10px] font-semibold tracking-wider text-brand-gray-500 mt-2">STEP 4 OF 6 · OPTIONAL</p>
+      </div>
+
+      <div className="px-6 pt-8 pb-4">
+        <h1 className="text-[28px] font-bold text-brand-black leading-tight">Crew up</h1>
+        <p className="mt-3 text-sm text-brand-gray-500">Add friends to compare highscores, share bookings, and compete on leaderboards.</p>
+
+        <div className="mt-5 flex items-center gap-2 px-4 py-3 rounded-xl border border-brand-gray-300 focus-within:border-green-primary transition-colors">
+          <Search size={18} className="text-brand-gray-500" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name..."
+            className="w-full text-sm font-medium text-brand-black placeholder-brand-gray-400 outline-none" />
+          {search && <button onClick={() => setSearch('')} className="text-xs text-brand-gray-500 font-semibold cursor-pointer">Clear</button>}
+        </div>
+      </div>
+
+      <div className="px-6 flex-1 overflow-y-auto no-scrollbar">
+        <p className="text-xs font-semibold text-brand-gray-500 uppercase tracking-wider mb-3">Suggested</p>
+        <div className="space-y-2">
+          {friends.map((f) => {
+            const added = selectedFriends.includes(f.id)
+            return (
+              <div key={f.id} className="flex items-center gap-3 p-3 rounded-2xl bg-brand-gray-100">
+                <div className="w-11 h-11 rounded-full bg-green-primary/15 flex items-center justify-center flex-shrink-0">
+                  <span className="text-sm font-bold text-green-primary">{f.avatar}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-brand-black text-[15px] leading-tight">{f.name}</p>
+                  <p className="text-xs text-brand-gray-500">{f.mutual} mutual friends</p>
+                </div>
+                <button onClick={() => toggle(f.id)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-semibold active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 ${added ? 'bg-green-primary text-white' : 'bg-white text-brand-black border border-brand-gray-300'}`}>
+                  {added ? <><Check size={14} /> Added</> : <><UserPlus size={14} /> Add</>}
+                </button>
+              </div>
+            )
+          })}
+          {friends.length === 0 && <p className="text-center py-8 text-sm text-brand-gray-500">No results for "{search}"</p>}
+        </div>
+      </div>
+
+      <div className="px-6 pt-4 pb-8 flex-shrink-0">
+        <button onClick={onNext}
+          className="w-full py-4 rounded-2xl font-bold text-base bg-green-primary text-white active:scale-[0.98] transition-all cursor-pointer">
+          {selectedFriends.length > 0 ? `Continue · ${selectedFriends.length} friend${selectedFriends.length > 1 ? 's' : ''}` : 'Continue'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // Simple login (from "I already have an account")
 function LoginInline({ onBack }) {
   const { signIn } = useAuth()
@@ -451,6 +630,7 @@ export default function Onboarding({ onDemoComplete }) {
   const { user, updateProfile } = useAuth()
   const [step, setStep] = useState('welcome')
   const [selectedTeams, setSelectedTeams] = useState([])
+  const [selectedFriends, setSelectedFriends] = useState([])
   const [selectedVenue, setSelectedVenue] = useState('')
   const [userName, setUserName] = useState('')
 
@@ -458,7 +638,6 @@ export default function Onboarding({ onDemoComplete }) {
 
   async function finishOnboarding() {
     if (demoMode) {
-      // Demo mode: just mark complete via localStorage
       onDemoComplete()
       return
     }
@@ -480,8 +659,10 @@ export default function Onboarding({ onDemoComplete }) {
     case 'welcome': return <StepWelcome onGetStarted={() => setStep('profile')} onSignIn={() => setStep('login')} />
     case 'login': return <LoginInline onBack={() => setStep('welcome')} />
     case 'profile': return <StepProfile demoMode={demoMode} onBack={() => setStep('welcome')} onNext={(firstName) => { setUserName(firstName); setStep('teams') }} />
-    case 'teams': return <StepTeams onBack={() => setStep('profile')} onNext={() => setStep('venue')} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams} />
-    case 'venue': return <StepVenue onBack={() => setStep('teams')} onNext={() => setStep('success')} selectedVenue={selectedVenue} setSelectedVenue={setSelectedVenue} />
+    case 'teams': return <StepTeams onBack={() => setStep('profile')} onNext={() => setStep('card')} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams} />
+    case 'card': return <StepPlayerCard onBack={() => setStep('teams')} onNext={() => setStep('friends')} onSkip={() => setStep('friends')} userName={userName} />
+    case 'friends': return <StepFriends onBack={() => setStep('card')} onNext={() => setStep('venue')} onSkip={() => setStep('venue')} selectedFriends={selectedFriends} setSelectedFriends={setSelectedFriends} />
+    case 'venue': return <StepVenue onBack={() => setStep('friends')} onNext={() => setStep('success')} selectedVenue={selectedVenue} setSelectedVenue={setSelectedVenue} />
     case 'success': return <StepSuccess userName={userName || 'there'} onFinish={finishOnboarding} />
     default: return <StepWelcome onGetStarted={() => setStep('profile')} onSignIn={() => setStep('login')} />
   }

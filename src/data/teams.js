@@ -6,17 +6,17 @@ const TEAMS = {
         title: 'National Teams',
         teams: [
           { id: 'nt-sweden', name: 'Sweden', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/6/63/Sweden_national_football_team_seal.svg/50px-Sweden_national_football_team_seal.svg.png' },
-          { id: 'nt-england', name: 'England', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Flag_of_England.svg/50px-Flag_of_England.svg.png' },
-          { id: 'nt-germany', name: 'Germany', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/50px-Flag_of_Germany.svg.png' },
-          { id: 'nt-france', name: 'France', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/50px-Flag_of_France.svg.png' },
-          { id: 'nt-spain', name: 'Spain', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bandera_de_Espa%C3%B1a.svg/50px-Bandera_de_Espa%C3%B1a.svg.png' },
-          { id: 'nt-italy', name: 'Italy', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/50px-Flag_of_Italy.svg.png' },
-          { id: 'nt-netherlands', name: 'Netherlands', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/50px-Flag_of_the_Netherlands.svg.png' },
-          { id: 'nt-portugal', name: 'Portugal', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Portugal.svg/50px-Flag_of_Portugal.svg.png' },
-          { id: 'nt-brazil', name: 'Brazil', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Flag_of_Brazil.svg/50px-Flag_of_Brazil.svg.png' },
-          { id: 'nt-argentina', name: 'Argentina', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/50px-Flag_of_Argentina.svg.png' },
-          { id: 'nt-norway', name: 'Norway', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Norway.svg/50px-Flag_of_Norway.svg.png' },
-          { id: 'nt-denmark', name: 'Denmark', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Flag_of_Denmark.svg/50px-Flag_of_Denmark.svg.png' },
+          { id: 'nt-england', name: 'England', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/5a/England_football_badge.svg/50px-England_football_badge.svg.png' },
+          { id: 'nt-germany', name: 'Germany', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/DFBEagle.svg/50px-DFBEagle.svg.png' },
+          { id: 'nt-france', name: 'France', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/12/French_Football_Federation_logo.svg/50px-French_Football_Federation_logo.svg.png' },
+          { id: 'nt-spain', name: 'Spain', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/13/Royal_Spanish_Football_Federation_logo.svg/50px-Royal_Spanish_Football_Federation_logo.svg.png' },
+          { id: 'nt-italy', name: 'Italy', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Federazione_Italiana_Giuoco_Calcio_logo.svg/50px-Federazione_Italiana_Giuoco_Calcio_logo.svg.png' },
+          { id: 'nt-netherlands', name: 'Netherlands', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/5e/KNVB_Logo.svg/50px-KNVB_Logo.svg.png' },
+          { id: 'nt-portugal', name: 'Portugal', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/7/77/Portuguese_Football_Federation_logo.svg/50px-Portuguese_Football_Federation_logo.svg.png' },
+          { id: 'nt-brazil', name: 'Brazil', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/ff/Brazilian_Football_Confederation_logo.svg/50px-Brazilian_Football_Confederation_logo.svg.png' },
+          { id: 'nt-argentina', name: 'Argentina', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c1/Argentina_national_football_team_logo.svg/50px-Argentina_national_football_team_logo.svg.png' },
+          { id: 'nt-norway', name: 'Norway', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Football_Association_of_Norway_logo.svg/50px-Football_Association_of_Norway_logo.svg.png' },
+          { id: 'nt-denmark', name: 'Denmark', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Danish_Football_Association_logo.svg/50px-Danish_Football_Association_logo.svg.png' },
         ],
       },
       {
@@ -48,6 +48,17 @@ const TEAMS = {
   hockey: {
     label: 'Ice Hockey',
     sections: [
+      {
+        title: 'National Teams',
+        teams: [
+          { id: 'nt-hockey-sweden', name: 'Sweden', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/87/Swedish_Ice_Hockey_Association_logo.svg/50px-Swedish_Ice_Hockey_Association_logo.svg.png' },
+          { id: 'nt-hockey-finland', name: 'Finland', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/1e/Suomen_J%C3%A4%C3%A4kiekkoliitto_logo.svg/50px-Suomen_J%C3%A4%C3%A4kiekkoliitto_logo.svg.png' },
+          { id: 'nt-hockey-canada', name: 'Canada', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Hockey_Canada_Logo.svg/50px-Hockey_Canada_Logo.svg.png' },
+          { id: 'nt-hockey-usa', name: 'USA', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/43/USA_Hockey.svg/50px-USA_Hockey.svg.png' },
+          { id: 'nt-hockey-czech', name: 'Czech Republic', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e6/Czech_Ice_Hockey_Association_logo.svg/50px-Czech_Ice_Hockey_Association_logo.svg.png' },
+          { id: 'nt-hockey-russia', name: 'Russia', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/3/3c/Ice_Hockey_Federation_of_Russia_logo.svg/50px-Ice_Hockey_Federation_of_Russia_logo.svg.png' },
+        ],
+      },
       {
         title: 'SHL',
         teams: [
