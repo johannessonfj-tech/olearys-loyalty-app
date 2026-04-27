@@ -33,6 +33,7 @@ import LoyaltyExplained from './screens/LoyaltyExplained'
 import Login from './screens/Login'
 import Register from './screens/Register'
 import Onboarding from './screens/Onboarding'
+import QRScreen from './screens/QRScreen'
 
 function AppContent() {
   const { user, profile, loading } = useAuth()
@@ -97,6 +98,7 @@ function AppContent() {
               <Route path="/rewards" element={<AllRewards />} />
               <Route path="/rewards/:rewardId" element={<ClaimReward />} />
               <Route path="/highscore" element={<Highscore />} />
+              <Route path="/qr" element={<QRScreen />} />
               <Route path="/loyalty-explained" element={<LoyaltyExplained />} />
               <Route path="/settings" element={<SettingsScreen />} />
             </Routes>

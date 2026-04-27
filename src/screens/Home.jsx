@@ -291,7 +291,7 @@ export default function Home() {
         {/* Quick action buttons */}
         <div className="mt-6 flex justify-center">
           <button
-            onClick={() => navigate('/wallet')}
+            onClick={() => navigate('/qr')}
             className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-gray-100 cursor-pointer transition-all duration-200 active:scale-95"
           >
             <QrCode size={18} className="text-green-primary" />
