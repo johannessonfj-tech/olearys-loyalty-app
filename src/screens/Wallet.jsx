@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { X, QrCode, Coins, Gift, Sun, PartyPopper, Heart, ChevronRight, Receipt } from 'lucide-react'
 import { useTeams } from '../context/TeamsContext'
+import { useAuth } from '../context/AuthContext'
 
 const VOUCHERS = [
   { id: 1, title: '25 kr off', sub: 'Valid until 31 Mar 2026', dark: false },
@@ -59,7 +60,9 @@ const GIFT_CARDS = [
 
 function CardBack() {
   const { getSelectedTeamObjects } = useTeams()
+  const { profile } = useAuth()
   const teams = getSelectedTeamObjects()
+  const userName = profile?.name || 'Member'
 
   return (
     <div className="h-full flex flex-col p-3.5 relative">
@@ -73,7 +76,7 @@ function CardBack() {
             <p className="text-[9px] font-bold text-[#c4382a] uppercase tracking-wider">O'Learys</p>
             <span className="bg-[#2d9b87] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-sm">47</span>
           </div>
-          <p className="text-sm font-extrabold text-[#3c3c3c] leading-tight">Daniel Svantesson</p>
+          <p className="text-sm font-extrabold text-[#3c3c3c] leading-tight">{userName}</p>
           <p className="text-[9px] text-[#8a7a5a] mt-0.5">Member since: 2024 &bull; Tier: All Star</p>
           <p className="text-[9px] text-[#8a7a5a]">Location: Norrköping &bull; Visits: 47</p>
         </div>
@@ -164,6 +167,8 @@ function CardBack() {
 }
 
 function QRModal({ onClose }) {
+  const { profile } = useAuth()
+  const userName = profile?.name || 'Member'
   useEffect(() => {
     document.body.classList.add('modal-open')
     return () => document.body.classList.remove('modal-open')
@@ -172,7 +177,7 @@ function QRModal({ onClose }) {
   return (
     <div
       className="fixed inset-0 z-50 flex flex-col bg-white"
-      style={{ maxWidth: 390, margin: '0 auto' }}
+      style={{ maxWidth: 430, margin: '0 auto' }}
       role="dialog"
       aria-modal="true"
       aria-label="QR code for scanning"
@@ -208,7 +213,7 @@ function QRModal({ onClose }) {
           </div>
         </div>
         <div className="mt-6 text-center">
-          <p className="font-bold text-base text-brand-black">Daniel Svantesson</p>
+          <p className="font-bold text-base text-brand-black">{userName}</p>
           <span className="mt-1 px-3 py-1 rounded-full text-xs font-semibold text-white bg-green-primary inline-block">
             All Star
           </span>
@@ -238,7 +243,9 @@ export default function Wallet() {
   const [showCardModal, setShowCardModal] = useState(false)
   const navigate = useNavigate()
   const { getSelectedTeamObjects } = useTeams()
+  const { profile } = useAuth()
   const teams = getSelectedTeamObjects()
+  const userName = profile?.name || 'Member'
 
   return (
     <div className="px-4 pt-10 pb-4">
@@ -276,7 +283,7 @@ export default function Wallet() {
             <div className="absolute -right-2 top-8 w-20 h-20 rounded-full bg-white/10" />
             <div className="relative">
               <p className="text-white/70 text-xs font-medium uppercase tracking-widest">O'Learys</p>
-              <h2 className="text-white text-xl font-bold mt-1">Daniel Svantesson</h2>
+              <h2 className="text-white text-xl font-bold mt-1">{userName}</h2>
               <div className="flex items-center gap-2 mt-1">
                 <span className="bg-brand-yellow text-xs font-bold px-2.5 py-0.5 rounded-full text-brand-black">
                   All Star
@@ -462,7 +469,7 @@ export default function Wallet() {
       {showCardModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ maxWidth: 390, margin: '0 auto' }}
+          style={{ maxWidth: 430, margin: '0 auto' }}
           onClick={() => {
             setShowCardModal(false)
             setFlipped(false)
@@ -495,7 +502,7 @@ export default function Wallet() {
                     <p className="text-[10px] font-bold text-[#c4382a] uppercase tracking-wider">O'Learys</p>
                     <span className="bg-[#2d9b87] text-white text-[9px] font-bold px-2 py-0.5 rounded-sm">47</span>
                   </div>
-                  <p className="text-lg font-extrabold text-[#3c3c3c] leading-tight mt-0.5">Daniel Svantesson</p>
+                  <p className="text-lg font-extrabold text-[#3c3c3c] leading-tight mt-0.5">{userName}</p>
                   <p className="text-[10px] text-[#8a7a5a] mt-0.5">Member since: 2024 &bull; Tier: All Star</p>
                   <p className="text-[10px] text-[#8a7a5a]">Location: Norrköping &bull; Visits: 47</p>
                 </div>

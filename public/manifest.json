@@ -1,0 +1,9 @@
+{
+  "name": "O'Learys Loyalty",
+  "short_name": "O'Learys",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2d9b87",
+  "icons": []
+}

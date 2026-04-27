@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronRight, Plus, Star, Shield, Trophy, Award, Upload, RefreshCw, Check, Settings } from 'lucide-react'
+import { ChevronRight, Plus, Star, Shield, Trophy, Award, Upload, RefreshCw, Check, Settings, QrCode, BookOpen, Users } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 const SPORTS = [
   { id: 'hockey', label: 'Hockey' },
@@ -36,25 +37,22 @@ const REDEEM = [
 ]
 
 function ProgressBar() {
-  // Icon centers are at these % positions; the track runs between the first and last
   const firstPct = TIERS[0].pct
   const lastPct = TIERS[TIERS.length - 1].pct
   const filledPct = Math.min(((PROGRESS_PCT - firstPct) / (lastPct - firstPct)) * 100, 100)
 
   return (
-    <div className="mt-6 mb-2 overflow-visible">
-      <div className="relative overflow-visible" style={{ height: 90 }}>
-        {/* Track line — thick, runs between first and last icon centers */}
+    <div className="overflow-visible">
+      <div className="relative overflow-visible" style={{ height: 110 }}>
         <div
-          className="absolute h-[5px] bg-brand-gray-300 rounded-full"
-          style={{ left: `${firstPct - 3}%`, right: `${100 - lastPct}%`, top: 24 }}
+          className="absolute h-1 bg-gradient-to-r from-brand-gray-300 to-brand-gray-300 rounded-full"
+          style={{ left: `${firstPct - 3}%`, right: `${100 - lastPct}%`, top: 32 }}
         />
         <div
-          className="absolute h-[5px] bg-green-primary rounded-full transition-all duration-300"
-          style={{ left: `${firstPct - 3}%`, width: `${(filledPct * (lastPct - firstPct) / 100) + 3}%`, top: 24 }}
+          className="absolute h-1 bg-gradient-to-r from-green-primary to-green-dark rounded-full transition-all duration-500"
+          style={{ left: `${firstPct - 3}%`, width: `${(filledPct * (lastPct - firstPct) / 100) + 3}%`, top: 32 }}
         />
 
-        {/* Tier icons */}
         {TIERS.map((tier) => {
           const reached = PROGRESS_PCT >= tier.pct
           const isCurrent = tier.name === CURRENT_TIER
@@ -65,25 +63,25 @@ function ProgressBar() {
               style={{ left: `${tier.pct}%`, transform: 'translateX(-50%)', top: 0 }}
             >
               <div
-                className="rounded-full flex items-center justify-center"
+                className="rounded-full flex items-center justify-center shadow-lg transition-all duration-300"
                 style={{
-                  width: isCurrent ? 52 : 40,
-                  height: isCurrent ? 52 : 40,
-                  backgroundColor: reached ? 'rgba(45,155,135,0.12)' : '#f0f0f0',
-                  border: isCurrent ? '2px solid #2d9b87' : 'none',
-                  marginTop: isCurrent ? -3 : 3,
+                  width: isCurrent ? 72 : 56,
+                  height: isCurrent ? 72 : 56,
+                  backgroundColor: isCurrent ? '#ffffff' : (reached ? 'rgba(45,155,135,0.1)' : '#ffffff'),
+                  border: isCurrent ? '3px solid #2d9b87' : (reached ? '2px solid #2d9b87' : '2px solid #e0e0e0'),
+                  boxShadow: isCurrent ? '0 4px 12px rgba(45,155,135,0.2)' : (reached ? '0 2px 6px rgba(45,155,135,0.1)' : '0 1px 3px rgba(0,0,0,0.05)'),
                 }}
               >
                 <tier.Icon
-                  size={isCurrent ? 26 : 20}
+                  size={isCurrent ? 36 : 28}
                   className={reached ? 'text-green-primary' : 'text-brand-gray-500'}
                   fill={reached ? '#2d9b87' : 'none'}
                   strokeWidth={1.5}
                 />
               </div>
               <span
-                className={`mt-1.5 whitespace-nowrap ${
-                  isCurrent ? 'text-xs font-bold text-green-primary' : 'text-[10px] font-medium text-brand-gray-500'
+                className={`mt-3.5 whitespace-nowrap font-semibold transition-all duration-300 ${
+                  isCurrent ? 'text-sm text-green-primary' : 'text-xs text-brand-gray-500'
                 }`}
               >
                 {tier.name}
@@ -248,26 +246,18 @@ function PlayerCardModal({ onClose }) {
 
 export default function Home() {
   const navigate = useNavigate()
+  const { profile } = useAuth()
   const [showCardModal, setShowCardModal] = useState(false)
 
   return (
     <div className="pb-4">
       {/* Top section */}
-      <div className="px-5 pt-14">
-        <div className="flex items-start justify-between">
+      <div className="px-5 pt-16">
+        <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <p className="text-base text-brand-gray-500">Good evening,</p>
-              <button
-                onClick={() => navigate('/settings')}
-                className="w-7 h-7 rounded-full bg-brand-gray-100 flex items-center justify-center cursor-pointer transition-transform duration-200 active:scale-90"
-                aria-label="Settings"
-              >
-                <Settings size={14} className="text-brand-gray-500" />
-              </button>
-            </div>
-            <h1 className="text-[28px] font-bold text-brand-black leading-tight">Daniel Svantesson</h1>
-            <div className="flex items-center gap-1.5 mt-2">
+            <p className="text-base text-brand-gray-500 mb-2">Good evening,</p>
+            <h1 className="text-[28px] font-bold text-brand-black leading-tight mb-3">{profile?.name || 'Member'}</h1>
+            <div className="flex items-center gap-1.5">
               <Star size={16} className="text-green-primary" fill="#2d9b87" />
               <span className="text-lg font-semibold text-brand-black">
                 {POINTS.toLocaleString('sv-SE')} Bonus Points
@@ -275,74 +265,78 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Highscore + Player card */}
-          <div className="flex-shrink-0 flex flex-col items-center gap-2">
+          {/* Settings + Player card */}
+          <div className="flex-shrink-0 flex flex-col items-center gap-2.5">
             <button
-              onClick={() => navigate('/highscore')}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-brand-gray-100 cursor-pointer transition-transform duration-200 active:scale-95"
+              onClick={() => navigate('/settings')}
+              className="w-8 h-8 rounded-full bg-brand-gray-100 flex items-center justify-center cursor-pointer transition-transform duration-200 active:scale-90"
+              aria-label="Settings"
             >
-              <Trophy size={12} className="text-green-primary" />
-              <span className="text-[11px] font-semibold text-brand-black">Highscore</span>
+              <Settings size={16} className="text-brand-gray-500" />
             </button>
             <button
               onClick={() => setShowCardModal(true)}
-              className="w-[72px] rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform duration-200 active:scale-95"
+              className="w-[88px] rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform duration-200 active:scale-95"
             >
               <img src="/images/player-card-baseball.png" alt="Player card" className="w-full h-auto" />
             </button>
           </div>
         </div>
 
-        {/* Progress bar with tier icons */}
-        <ProgressBar />
-
-        {/* Benefits — plain text with checkmarks like wireframe */}
-        <div className="mt-1">
-          <p className="text-sm font-semibold text-brand-black mb-1.5">Your benefits:</p>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-1.5">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9.5L7 14L15 4" stroke="#2d9b87" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              <span className="text-sm font-bold text-brand-black">5% DISCOUNT</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9.5L7 14L15 4" stroke="#2d9b87" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              <span className="text-sm font-bold text-brand-black">Earn 1.5x ON POINTS</span>
-            </div>
-          </div>
+        {/* Progress bar */}
+        <div className="mt-8">
+          <ProgressBar />
         </div>
 
-        {/* See your benefits + Loyalty explained */}
-        <div className="flex gap-2 mt-3">
+        {/* Quick action buttons */}
+        <div className="mt-6 flex justify-center">
           <button
-            onClick={() => navigate('/benefits')}
-            className="flex-1 py-2.5 rounded-full border-2 border-green-primary text-green-primary font-semibold text-sm cursor-pointer transition-transform duration-200 active:scale-[0.97]"
-            aria-label="See your benefits"
+            onClick={() => navigate('/wallet')}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-gray-100 cursor-pointer transition-all duration-200 active:scale-95"
           >
-            See your benefits
+            <QrCode size={18} className="text-green-primary" />
+            <span className="text-xs font-semibold text-brand-black">My QR</span>
           </button>
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-2 justify-center">
           <button
             onClick={() => navigate('/loyalty-explained')}
-            className="flex-1 py-2.5 rounded-full border-2 border-green-primary text-green-primary font-semibold text-sm cursor-pointer transition-transform duration-200 active:scale-[0.97]"
-            aria-label="Loyalty explained"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-gray-100 cursor-pointer transition-all duration-200 active:scale-95"
           >
-            Loyalty explained
+            <BookOpen size={18} className="text-green-primary" />
+            <span className="text-xs font-semibold text-brand-black">Loyalty explained</span>
+          </button>
+          <button
+            onClick={() => navigate('/wallet')}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-gray-100 cursor-pointer transition-all duration-200 active:scale-95"
+          >
+            <Users size={18} className="text-green-primary" />
+            <span className="text-xs font-semibold text-brand-black">Friends</span>
+          </button>
+          <button
+            onClick={() => navigate('/highscore')}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-gray-100 cursor-pointer transition-all duration-200 active:scale-95"
+          >
+            <Trophy size={14} className="text-green-primary" />
+            <span className="text-xs font-semibold text-brand-black">My Highscores</span>
           </button>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="h-[1px] bg-brand-gray-300 mx-5 mt-5" />
+      <div className="h-[1px] bg-brand-gray-300 mx-5 mt-8" />
 
       {/* Deals */}
-      <section className="mt-5 px-5">
-        <div className="flex items-center justify-between mb-3">
+      <section className="mt-8 px-5">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-bold text-brand-black">Deal</h2>
           <button onClick={() => navigate('/deals')} className="flex items-center gap-0.5 text-sm text-green-primary cursor-pointer" aria-label="See all deals">
             See all <ChevronRight size={14} />
           </button>
         </div>
         <div className="-mx-5 px-5">
-          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+          <div className="flex gap-4 overflow-x-auto no-scrollbar pb-1">
             {DEALS.map((d) => (
               <DealCard key={d.id} deal={d} onClick={() => navigate(`/deals/${d.id}`)} />
             ))}
@@ -351,14 +345,14 @@ export default function Home() {
       </section>
 
       {/* Redeem with points */}
-      <section className="mt-7 px-5">
-        <div className="flex items-center justify-between mb-3">
+      <section className="mt-10 px-5 pb-2">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-bold text-brand-black">Redeem with points</h2>
           <button onClick={() => navigate('/rewards')} className="flex items-center gap-0.5 text-sm text-green-primary cursor-pointer" aria-label="See all rewards">
             See all <ChevronRight size={14} />
           </button>
         </div>
-        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-1">
           {REDEEM.map((r) => (
             <RedeemCard key={r.id} reward={r} onClick={() => navigate(`/rewards/${r.id}`)} />
           ))}

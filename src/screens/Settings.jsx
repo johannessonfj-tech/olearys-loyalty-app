@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, User, Lock, MapPin, Bell, Mail, FileText, Shield, Trash2, LogOut, CreditCard, Heart, Check } from 'lucide-react'
 import { useTeams } from '../context/TeamsContext'
-
-const VENUES = ['Norrköping', 'Östermalm', 'Täby', 'Luleå', 'Göteborg', 'Malmö']
+import { useAuth } from '../context/AuthContext'
+import VENUES from '../data/venues'
 
 function Toggle({ checked, onChange }) {
   return (
@@ -36,14 +36,26 @@ function SettingsRow({ icon: Icon, label, onClick, right, danger }) {
   )
 }
 
-function EditProfileSheet({ onClose }) {
-  const [name, setName] = useState('Daniel Svantesson')
-  const [email, setEmail] = useState('daniel.svantesson@email.com')
-  const [phone, setPhone] = useState('+46 70 123 45 67')
+function EditProfileSheet({ onClose, profile, onSave }) {
+  const [name, setName] = useState(profile?.name || '')
+  const [email, setEmail] = useState(profile?.email || '')
+  const [saving, setSaving] = useState(false)
+
+  async function handleSave() {
+    setSaving(true)
+    try {
+      await onSave({ name })
+      onClose()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setSaving(false)
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center" onClick={onClose}>
-      <div className="bg-white rounded-t-2xl w-full max-w-[393px] pb-8" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-t-2xl w-full max-w-[430px] pb-8" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-center pt-3 pb-4">
           <div className="w-10 h-1 rounded-full bg-brand-gray-300" />
         </div>
@@ -58,29 +70,21 @@ function EditProfileSheet({ onClose }) {
               className="w-full px-4 py-3 rounded-xl bg-brand-gray-100 text-sm text-brand-black outline-none focus:ring-2 focus:ring-green-primary"
             />
           </label>
-          <label className="block mb-3">
+          <label className="block mb-5">
             <span className="text-xs font-semibold text-brand-gray-500 mb-1 block">Email</span>
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-brand-gray-100 text-sm text-brand-black outline-none focus:ring-2 focus:ring-green-primary"
-            />
-          </label>
-          <label className="block mb-5">
-            <span className="text-xs font-semibold text-brand-gray-500 mb-1 block">Phone</span>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-brand-gray-100 text-sm text-brand-black outline-none focus:ring-2 focus:ring-green-primary"
+              readOnly
+              className="w-full px-4 py-3 rounded-xl bg-brand-gray-100 text-sm text-brand-gray-500 outline-none"
             />
           </label>
           <button
-            onClick={onClose}
-            className="w-full py-3 rounded-full bg-green-primary text-white text-sm font-semibold cursor-pointer transition-transform duration-200 active:scale-[0.97]"
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full py-3 rounded-full bg-green-primary text-white text-sm font-semibold cursor-pointer transition-transform duration-200 active:scale-[0.97] disabled:opacity-50"
           >
-            Save Changes
+            {saving ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </div>
@@ -91,7 +95,7 @@ function EditProfileSheet({ onClose }) {
 function ChangePasswordSheet({ onClose }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center" onClick={onClose}>
-      <div className="bg-white rounded-t-2xl w-full max-w-[393px] pb-8" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-t-2xl w-full max-w-[430px] pb-8" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-center pt-3 pb-4">
           <div className="w-10 h-1 rounded-full bg-brand-gray-300" />
         </div>
@@ -136,22 +140,22 @@ function ChangePasswordSheet({ onClose }) {
 function VenueSheet({ onClose, venue, setVenue }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center" onClick={onClose}>
-      <div className="bg-white rounded-t-2xl w-full max-w-[393px] pb-8" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-t-2xl w-full max-w-[430px] pb-8 max-h-[75vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-center pt-3 pb-4">
           <div className="w-10 h-1 rounded-full bg-brand-gray-300" />
         </div>
-        <div className="px-5">
+        <div className="px-5 overflow-y-auto">
           <h3 className="text-lg font-bold text-brand-black mb-4">Preferred Venue</h3>
           <div className="flex flex-col gap-1">
             {VENUES.map((v) => (
               <button
-                key={v}
-                onClick={() => { setVenue(v); onClose() }}
+                key={v.id}
+                onClick={() => { setVenue(v.id); onClose() }}
                 className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium cursor-pointer transition-colors duration-150 ${
-                  venue === v ? 'bg-green-primary/10 text-green-primary font-semibold' : 'text-brand-black active:bg-brand-gray-100'
+                  venue === v.id ? 'bg-green-primary/10 text-green-primary font-semibold' : 'text-brand-black active:bg-brand-gray-100'
                 }`}
               >
-                {v}
+                {v.name}
               </button>
             ))}
           </div>
@@ -168,7 +172,7 @@ function PaymentSheet({ onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center" onClick={onClose}>
-      <div className="bg-white rounded-t-2xl w-full max-w-[393px] pb-8" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-t-2xl w-full max-w-[430px] pb-8" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-center pt-3 pb-4">
           <div className="w-10 h-1 rounded-full bg-brand-gray-300" />
         </div>
@@ -282,7 +286,7 @@ function TeamsSheet({ onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center" onClick={onClose}>
-      <div className="bg-white rounded-t-2xl w-full max-w-[393px] pb-8 max-h-[75vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-t-2xl w-full max-w-[430px] pb-8 max-h-[75vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-center pt-3 pb-4">
           <div className="w-10 h-1 rounded-full bg-brand-gray-300" />
         </div>
@@ -326,10 +330,18 @@ function TeamsSheet({ onClose }) {
 export default function Settings() {
   const navigate = useNavigate()
   const { getSelectedTeamObjects } = useTeams()
+  const { profile, signOut, updateProfile } = useAuth()
   const [pushNotifs, setPushNotifs] = useState(true)
   const [emailNotifs, setEmailNotifs] = useState(true)
-  const [venue, setVenue] = useState('Norrköping')
+  const [venue, setVenue] = useState(profile?.favorite_restaurant || '')
   const [sheet, setSheet] = useState(null) // 'profile' | 'password' | 'venue' | 'payment' | 'delete' | 'teams'
+
+  const venueName = VENUES.find((v) => v.id === venue)?.name || venue || 'Not set'
+
+  async function handleSetVenue(venueId) {
+    setVenue(venueId)
+    await updateProfile({ favorite_restaurant: venueId })
+  }
 
   return (
     <div className="pb-4">
@@ -353,7 +365,7 @@ export default function Settings() {
           icon={MapPin}
           label="Preferred Venue"
           onClick={() => setSheet('venue')}
-          right={<span className="text-xs text-brand-gray-500 mr-1">{venue}</span>}
+          right={<span className="text-xs text-brand-gray-500 mr-1">{venueName}</span>}
         />
         <SettingsRow
           icon={CreditCard}
@@ -406,16 +418,16 @@ export default function Settings() {
       {/* Danger zone */}
       <div>
         <SettingsRow icon={Trash2} label="Delete Account" onClick={() => setSheet('delete')} danger />
-        <SettingsRow icon={LogOut} label="Log Out" onClick={() => {}} danger />
+        <SettingsRow icon={LogOut} label="Log Out" onClick={() => signOut()} danger />
       </div>
 
       {/* App version */}
       <p className="text-center text-xs text-brand-gray-500 mt-6">O'Learys App v1.0.0</p>
 
       {/* Sheets */}
-      {sheet === 'profile' && <EditProfileSheet onClose={() => setSheet(null)} />}
+      {sheet === 'profile' && <EditProfileSheet onClose={() => setSheet(null)} profile={profile} onSave={updateProfile} />}
       {sheet === 'password' && <ChangePasswordSheet onClose={() => setSheet(null)} />}
-      {sheet === 'venue' && <VenueSheet onClose={() => setSheet(null)} venue={venue} setVenue={setVenue} />}
+      {sheet === 'venue' && <VenueSheet onClose={() => setSheet(null)} venue={venue} setVenue={handleSetVenue} />}
       {sheet === 'payment' && <PaymentSheet onClose={() => setSheet(null)} />}
       {sheet === 'delete' && <DeleteConfirm onClose={() => setSheet(null)} />}
       {sheet === 'teams' && <TeamsSheet onClose={() => setSheet(null)} />}

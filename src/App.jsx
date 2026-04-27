@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { TeamsProvider } from './context/TeamsContext'
+import { useAuth } from './context/AuthContext'
 import BottomNav from './components/BottomNav'
 import Home from './screens/Home'
 import Book from './screens/Book'
@@ -29,83 +30,94 @@ import PackageDetail from './screens/PackageDetail'
 import AllEvents from './screens/AllEvents'
 import AllParties from './screens/AllParties'
 import LoyaltyExplained from './screens/LoyaltyExplained'
+import Login from './screens/Login'
+import Register from './screens/Register'
+import Onboarding from './screens/Onboarding'
 
-export default function App() {
-  const phoneW = 393
-  const phoneH = 852
+function AppContent() {
+  const { user, profile, loading } = useAuth()
+  const [authView, setAuthView] = useState('login') // 'login' | 'register'
 
-  const getScale = () => Math.min(1, (window.innerHeight - 32) / phoneH, (window.innerWidth - 32) / phoneW)
-  const [scale, setScale] = useState(getScale)
+  // Splash / loading state while checking session
+  if (loading) {
+    return (
+      <div className="min-h-[100dvh] bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-green-primary tracking-widest">O'LEARYS</h1>
+          <p className="text-sm text-brand-gray-500 mt-2">Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
-  useEffect(() => {
-    const onResize = () => setScale(getScale())
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
+  // Not logged in → auth screens
+  if (!user) {
+    if (authView === 'register') {
+      return <Register onSwitchToLogin={() => setAuthView('login')} />
+    }
+    return <Login onSwitchToRegister={() => setAuthView('register')} />
+  }
 
+  // Logged in but onboarding not completed
+  if (profile && !profile.onboarding_completed) {
+    return <Onboarding />
+  }
+
+  // Logged in + onboarded → full app
   return (
     <TeamsProvider>
-    <BrowserRouter>
-      {/* Desktop: center the phone on a gray bg */}
-      <div className="h-screen bg-black flex items-center justify-center overflow-hidden">
-        {/* iPhone shell */}
-        <div
-          className="relative bg-black rounded-[50px] shadow-2xl overflow-hidden flex flex-col"
-          style={{ width: phoneW, height: phoneH, border: '8px solid #1a1a1a', transform: `scale(${scale})`, transformOrigin: 'center center' }}
-        >
-          {/* Dynamic Island — overlaid so pages can bleed color underneath */}
-          <div className="absolute top-0 left-0 right-0 h-12 flex items-end justify-center pb-1 z-20 pointer-events-none">
-            <div className="w-[120px] h-[32px] bg-black rounded-full absolute top-1" />
-          </div>
-
-          {/* Scrollable screen content */}
-          <main className="flex-1 bg-white overflow-y-auto overflow-x-hidden relative">
-            <div className="pb-20">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/book" element={<Book />} />
-                <Route path="/here" element={<AlreadyHere />} />
-                <Route path="/challenges" element={<Challenges />} />
-                <Route path="/wallet" element={<Wallet />} />
-                <Route path="/wallet/vouchers" element={<WalletCardDetail />} />
-                <Route path="/wallet/history" element={<OrderHistory />} />
-                <Route path="/wallet/:type/:id" element={<WalletCardDetail />} />
-                <Route path="/benefits" element={<TierBenefits />} />
-                <Route path="/book/events" element={<AllEvents />} />
-                <Route path="/book/parties" element={<AllParties />} />
-                <Route path="/book/happening/:happeningId" element={<HappeningDetail />} />
-                <Route path="/book/party/:partyType" element={<PartyDetail />} />
-                <Route path="/book/package/:packageId" element={<PackageDetail />} />
-                <Route path="/book/package-checkout" element={<MatchBooking />} />
-                <Route path="/book/:matchId" element={<MatchBooking />} />
-                <Route path="/play" element={<PlayGame />} />
-                <Route path="/play/:id" element={<GameDetail />} />
-                <Route path="/play/bowling-bingo" element={<BowlingBingo />} />
-                <Route path="/predict" element={<PredictMatch />} />
-                <Route path="/challenges/:id" element={<ChallengeDetail />} />
-                <Route path="/my-bookings" element={<MyBookings />} />
-                <Route path="/deals" element={<AllDeals />} />
-                <Route path="/deals/:dealId" element={<DealDetail />} />
-                <Route path="/rewards" element={<AllRewards />} />
-                <Route path="/rewards/:rewardId" element={<ClaimReward />} />
-                <Route path="/highscore" element={<Highscore />} />
-                <Route path="/loyalty-explained" element={<LoyaltyExplained />} />
-                <Route path="/settings" element={<SettingsScreen />} />
-              </Routes>
-            </div>
+      <div className="min-h-[100dvh] bg-brand-gray-100">
+        <div className="max-w-[430px] mx-auto bg-white min-h-[100dvh] relative shadow-xl">
+          <main className="pb-20">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/book" element={<Book />} />
+              <Route path="/here" element={<AlreadyHere />} />
+              <Route path="/challenges" element={<Challenges />} />
+              <Route path="/wallet" element={<Wallet />} />
+              <Route path="/wallet/vouchers" element={<WalletCardDetail />} />
+              <Route path="/wallet/history" element={<OrderHistory />} />
+              <Route path="/wallet/:type/:id" element={<WalletCardDetail />} />
+              <Route path="/benefits" element={<TierBenefits />} />
+              <Route path="/book/events" element={<AllEvents />} />
+              <Route path="/book/parties" element={<AllParties />} />
+              <Route path="/book/happening/:happeningId" element={<HappeningDetail />} />
+              <Route path="/book/party/:partyType" element={<PartyDetail />} />
+              <Route path="/book/package/:packageId" element={<PackageDetail />} />
+              <Route path="/book/package-checkout" element={<MatchBooking />} />
+              <Route path="/book/:matchId" element={<MatchBooking />} />
+              <Route path="/play" element={<PlayGame />} />
+              <Route path="/play/:id" element={<GameDetail />} />
+              <Route path="/play/bowling-bingo" element={<BowlingBingo />} />
+              <Route path="/predict" element={<PredictMatch />} />
+              <Route path="/challenges/:id" element={<ChallengeDetail />} />
+              <Route path="/my-bookings" element={<MyBookings />} />
+              <Route path="/deals" element={<AllDeals />} />
+              <Route path="/deals/:dealId" element={<DealDetail />} />
+              <Route path="/rewards" element={<AllRewards />} />
+              <Route path="/rewards/:rewardId" element={<ClaimReward />} />
+              <Route path="/highscore" element={<Highscore />} />
+              <Route path="/loyalty-explained" element={<LoyaltyExplained />} />
+              <Route path="/settings" element={<SettingsScreen />} />
+            </Routes>
           </main>
 
-          {/* Bottom nav pinned inside phone */}
-          <div className="bg-white relative z-20">
-            <BottomNav />
-            {/* Home indicator bar */}
-            <div className="flex justify-center pb-2 pt-1">
-              <div className="w-32 h-1 bg-brand-black/20 rounded-full" />
+          {/* Fixed bottom nav */}
+          <div className="fixed bottom-0 left-0 right-0 z-20">
+            <div className="max-w-[430px] mx-auto bg-white" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+              <BottomNav />
             </div>
           </div>
         </div>
       </div>
-    </BrowserRouter>
     </TeamsProvider>
+  )
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   )
 }

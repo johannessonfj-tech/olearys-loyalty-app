@@ -1,38 +1,55 @@
-import { createContext, useContext, useState } from 'react'
-
-const AVAILABLE_TEAMS = [
-  // Football
-  { id: 'arsenal', name: 'Arsenal', sport: 'Football', logo: 'https://resources.premierleague.com/premierleague/badges/50/t3.png' },
-  { id: 'liverpool', name: 'Liverpool', sport: 'Football', logo: 'https://resources.premierleague.com/premierleague/badges/50/t14.png' },
-  { id: 'man-utd', name: 'Manchester United', sport: 'Football', logo: 'https://resources.premierleague.com/premierleague/badges/50/t1.png' },
-  { id: 'man-city', name: 'Manchester City', sport: 'Football', logo: 'https://resources.premierleague.com/premierleague/badges/50/t43.png' },
-  { id: 'chelsea', name: 'Chelsea', sport: 'Football', logo: 'https://resources.premierleague.com/premierleague/badges/50/t8.png' },
-  { id: 'tottenham', name: 'Tottenham', sport: 'Football', logo: 'https://resources.premierleague.com/premierleague/badges/50/t6.png' },
-  { id: 'barcelona', name: 'FC Barcelona', sport: 'Football', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/50px-FC_Barcelona_%28crest%29.svg.png' },
-  { id: 'real-madrid', name: 'Real Madrid', sport: 'Football', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/56/Real_Madrid_CF.svg/50px-Real_Madrid_CF.svg.png' },
-  // Hockey
-  { id: 'ny-rangers', name: 'New York Rangers', sport: 'Hockey', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/New_York_Rangers.svg/50px-New_York_Rangers.svg.png' },
-  { id: 'lulea-hf', name: 'Luleå HF', sport: 'Hockey', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/10/Lule%C3%A5_HF_logo.svg/50px-Lule%C3%A5_HF_logo.svg.png' },
-  { id: 'farjestad', name: 'Färjestad BK', sport: 'Hockey', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/F%C3%A4rjestad_BK_logo.svg/50px-F%C3%A4rjestad_BK_logo.svg.png' },
-  { id: 'toronto', name: 'Toronto Maple Leafs', sport: 'Hockey', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/b6/Toronto_Maple_Leafs_2016_logo.svg/50px-Toronto_Maple_Leafs_2016_logo.svg.png' },
-]
+import { createContext, useContext, useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
+import { ALL_TEAMS } from '../data/teams'
+import { useAuth } from './AuthContext'
 
 const TeamsContext = createContext()
 
 export function TeamsProvider({ children }) {
-  const [selectedTeams, setSelectedTeams] = useState(['arsenal', 'ny-rangers'])
+  const { user } = useAuth()
+  const [selectedTeams, setSelectedTeams] = useState([])
+  const [loaded, setLoaded] = useState(false)
 
-  const toggleTeam = (id) => {
+  // Load saved teams from Supabase on mount
+  useEffect(() => {
+    if (!user) return
+    supabase
+      .from('user_teams')
+      .select('team_id')
+      .eq('user_id', user.id)
+      .then(({ data }) => {
+        if (data) setSelectedTeams(data.map((r) => r.team_id))
+        setLoaded(true)
+      })
+  }, [user])
+
+  const toggleTeam = async (id) => {
+    const isSelected = selectedTeams.includes(id)
+    // Optimistic update
     setSelectedTeams((prev) =>
-      prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]
+      isSelected ? prev.filter((t) => t !== id) : [...prev, id]
     )
+    // Sync to Supabase
+    if (user) {
+      if (isSelected) {
+        await supabase.from('user_teams').delete().eq('user_id', user.id).eq('team_id', id)
+      } else {
+        const team = ALL_TEAMS.find((t) => t.id === id)
+        if (team) {
+          await supabase.from('user_teams').upsert(
+            { user_id: user.id, team_id: id, sport: team.sport },
+            { onConflict: 'user_id,team_id' }
+          )
+        }
+      }
+    }
   }
 
   const getSelectedTeamObjects = () =>
-    AVAILABLE_TEAMS.filter((t) => selectedTeams.includes(t.id))
+    ALL_TEAMS.filter((t) => selectedTeams.includes(t.id))
 
   return (
-    <TeamsContext.Provider value={{ selectedTeams, toggleTeam, getSelectedTeamObjects, AVAILABLE_TEAMS }}>
+    <TeamsContext.Provider value={{ selectedTeams, toggleTeam, getSelectedTeamObjects, AVAILABLE_TEAMS: ALL_TEAMS, loaded }}>
       {children}
     </TeamsContext.Provider>
   )

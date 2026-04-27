@@ -57,7 +57,7 @@ function CommentSheet({ onClose, onSend }) {
   const [msg, setMsg] = useState('')
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={onClose}>
-      <div className="bg-white w-full max-w-[393px] rounded-t-2xl p-5 pb-8 animate-[slideUp_300ms_ease-out]" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white w-full max-w-[430px] rounded-t-2xl p-5 pb-8 animate-[slideUp_300ms_ease-out]" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-base font-bold text-brand-black">Leave a comment</h3>
           <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-brand-gray-100 cursor-pointer"><X size={16} /></button>
@@ -74,7 +74,7 @@ function CommentSheet({ onClose, onSend }) {
 function CancelSheet({ booking, onClose, onConfirm }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={onClose}>
-      <div className="bg-white w-full max-w-[393px] rounded-t-2xl p-5 pb-8 animate-[slideUp_300ms_ease-out]" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white w-full max-w-[430px] rounded-t-2xl p-5 pb-8 animate-[slideUp_300ms_ease-out]" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-base font-bold text-brand-black">{booking.status === 'pending' ? 'Withdraw request' : 'Cancel booking'}</h3>
           <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-brand-gray-100 cursor-pointer"><X size={16} /></button>
@@ -106,7 +106,7 @@ function ModifySheet({ guests, onClose, onSave }) {
   const [newGuests, setNewGuests] = useState(guests)
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={onClose}>
-      <div className="bg-white w-full max-w-[393px] rounded-t-2xl p-5 pb-8 animate-[slideUp_300ms_ease-out]" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white w-full max-w-[430px] rounded-t-2xl p-5 pb-8 animate-[slideUp_300ms_ease-out]" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-base font-bold text-brand-black">Modify booking</h3>
           <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-brand-gray-100 cursor-pointer"><X size={16} /></button>
