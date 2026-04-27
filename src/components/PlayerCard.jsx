@@ -28,10 +28,18 @@ const JERSEYS = {
   __default:    { primary: '#2d9b87', sleeve: '#1a6f60', accent: '#ffdc1e', banner: '#1a6f60', text: '#fff', label: "O'LEARYS",   sub: 'LOYALTY CLUB' },
 }
 
+const SPORT_LABELS = {
+  hockey: 'CENTER', football: 'FORWARD', baseball: 'PITCHER',
+  'american-football': 'QUARTERBACK', handball: 'PLAYMAKER',
+  floorball: 'CENTER', tennis: 'SINGLES', bowling: 'STRIKER',
+}
+
 function PlayerAvatar({ jersey, photo, sport }) {
   if (photo) return <div className="absolute inset-0 overflow-hidden"><img src={photo} alt="" className="w-full h-full object-cover" /></div>
   const j = jersey
   const isHockey = sport === 'hockey'
+  // Floor surface color by sport
+  const floorColor = isHockey ? '#d4e8f0' : sport === 'bowling' ? '#c4956a' : sport === 'tennis' ? '#4a7c3f' : sport === 'baseball' ? '#c4956a' : '#5a8c4a'
   return (
     <svg viewBox="0 0 200 240" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
       <defs>
@@ -39,21 +47,33 @@ function PlayerAvatar({ jersey, photo, sport }) {
           <stop offset="0" stopColor="#bfd9e8" /><stop offset="0.6" stopColor="#e8d4a8" /><stop offset="1" stopColor="#a4794d" />
         </linearGradient>
         <pattern id="grassLines" x="0" y="0" width="20" height="6" patternUnits="userSpaceOnUse">
-          <rect width="20" height="6" fill="#5a8c4a" /><rect x="0" y="0" width="10" height="6" fill="#6ba055" />
+          <rect width="20" height="6" fill={floorColor} /><rect x="0" y="0" width="10" height="6" fill={floorColor} opacity="0.8" />
         </pattern>
       </defs>
       <rect width="200" height="240" fill="url(#skyGrad)" />
       <rect y="135" width="200" height="2" fill="#5d4220" opacity="0.4" />
       <rect y="180" width="200" height="60" fill="url(#grassLines)" />
+      {/* Head */}
       <circle cx="100" cy="78" r="20" fill="#e8c4a0" />
       <path d="M82 75 Q82 60 100 58 Q118 60 118 75 Q118 70 113 67 Q108 64 100 64 Q92 64 87 67 Q82 70 82 75 Z" fill="#3a2a1a" />
       <ellipse cx="93" cy="80" rx="1.3" ry="1.6" fill="#3a2a1a" /><ellipse cx="107" cy="80" rx="1.3" ry="1.6" fill="#3a2a1a" />
       <path d="M93 88 Q100 92 107 88" stroke="#7a4a30" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+      {/* Hockey helmet */}
       {isHockey && <>
         <path d="M78 70 Q78 52 100 50 Q122 52 122 70 L122 78 L78 78 Z" fill={j.primary} stroke="#1a1a1a" strokeWidth="0.8" />
         <rect x="80" y="76" width="40" height="3" fill="#1a1a1a" />
         <path d="M82 80 L82 92 Q82 98 90 100 L110 100 Q118 98 118 92 L118 80" fill="none" stroke="#888" strokeWidth="1" />
       </>}
+      {/* Baseball cap */}
+      {sport === 'baseball' && <path d="M76 72 Q76 55 100 52 Q124 55 124 72 L124 76 L76 76 Z" fill={j.primary} stroke="#1a1a1a" strokeWidth="0.6" />}
+      {sport === 'baseball' && <path d="M76 72 L60 70 L62 76 L76 76 Z" fill={j.primary} stroke="#1a1a1a" strokeWidth="0.6" />}
+      {/* American football helmet */}
+      {sport === 'american-football' && <>
+        <path d="M74 72 Q74 48 100 46 Q126 48 126 72 L126 82 L74 82 Z" fill={j.primary} stroke="#1a1a1a" strokeWidth="0.8" />
+        <rect x="74" y="79" width="52" height="4" fill="#1a1a1a" />
+        <path d="M80 82 L80 96 Q92 100 108 100 L108 96 Q108 94 120 82" fill="none" stroke="#ccc" strokeWidth="1.5" />
+      </>}
+      {/* Neck + jersey body */}
       <rect x="92" y="94" width="16" height="10" fill="#d4a87a" />
       <path d="M55 110 L70 100 Q80 98 92 100 Q100 105 108 100 Q120 98 130 100 L145 110 L150 145 L138 150 L138 200 L62 200 L62 150 L50 145 Z" fill={j.primary} stroke="#1a1a1a" strokeWidth="0.6" />
       <path d="M55 110 L70 100 Q80 100 86 105 L80 130 L60 138 L50 145 Z" fill={j.sleeve} stroke="#1a1a1a" strokeWidth="0.6" />
@@ -64,11 +84,19 @@ function PlayerAvatar({ jersey, photo, sport }) {
         <text x="9" y="16" textAnchor="middle" fontSize="9" fontWeight="900" fill={j.primary} fontFamily="Georgia">{j.label[0]}</text>
       </g>
       <text x="118" y="148" fontSize="22" fontWeight="900" fill={j.accent} fontFamily="Arial" stroke="#1a1a1a" strokeWidth="0.6">10</text>
+      {/* Arms */}
       <path d="M50 145 Q44 158 46 175 Q48 178 54 176 Q56 165 62 152 Z" fill="#e8c4a0" stroke="#1a1a1a" strokeWidth="0.4" />
       <path d="M150 145 Q156 158 154 175 Q152 178 146 176 Q144 165 138 152 Z" fill="#e8c4a0" stroke="#1a1a1a" strokeWidth="0.4" />
-      <rect x="62" y="200" width="76" height="32" fill={isHockey ? j.primary : '#fff'} stroke="#1a1a1a" strokeWidth="0.6" />
-      {!isHockey && <g transform="translate(120, 222)"><circle r="9" fill="#fff" stroke="#1a1a1a" strokeWidth="0.6" /><path d="M0 -9 L3 -3 L9 0 L3 3 L0 9 L-3 3 L-9 0 L-3 -3 Z" fill="#1a1a1a" /></g>}
-      {isHockey && <><rect x="42" y="155" width="3" height="80" fill="#a87045" stroke="#1a1a1a" strokeWidth="0.4" transform="rotate(-15 43 195)" /></>}
+      {/* Shorts/pants */}
+      <rect x="62" y="200" width="76" height="32" fill={isHockey || sport === 'american-football' ? j.primary : '#fff'} stroke="#1a1a1a" strokeWidth="0.6" />
+      {/* Sport-specific props */}
+      {sport === 'football' && <g transform="translate(120, 222)"><circle r="9" fill="#fff" stroke="#1a1a1a" strokeWidth="0.6" /><path d="M0 -9 L3 -3 L9 0 L3 3 L0 9 L-3 3 L-9 0 L-3 -3 Z" fill="#1a1a1a" /></g>}
+      {isHockey && <rect x="42" y="155" width="3" height="80" fill="#a87045" stroke="#1a1a1a" strokeWidth="0.4" transform="rotate(-15 43 195)" />}
+      {sport === 'baseball' && <><rect x="130" y="160" width="3" height="55" fill="#a87045" stroke="#1a1a1a" strokeWidth="0.4" transform="rotate(15 131 185)" /><circle cx="78" cy="224" r="8" fill="#fff" stroke="#c8102e" strokeWidth="1" /></>}
+      {sport === 'tennis' && <><rect x="140" y="140" width="3" height="45" fill="#a87045" stroke="#1a1a1a" strokeWidth="0.4" transform="rotate(25 141 162)" /><ellipse cx="158" cy="130" rx="14" ry="10" fill="none" stroke="#2d9b87" strokeWidth="1.5" transform="rotate(25 158 130)" /></>}
+      {sport === 'bowling' && <circle cx="130" cy="220" r="11" fill={j.primary} stroke="#1a1a1a" strokeWidth="0.6" />}
+      {sport === 'handball' && <circle cx="55" cy="168" r="8" fill="#fff" stroke="#1a1a1a" strokeWidth="0.6" />}
+      {sport === 'floorball' && <rect x="42" y="155" width="2.5" height="75" fill="#333" stroke="#1a1a1a" strokeWidth="0.3" transform="rotate(-12 43 192)" />}
     </svg>
   )
 }
@@ -77,7 +105,7 @@ export default function PlayerCard({ name, jerseyId, sport, photo, number = '10'
   const j = JERSEYS[jerseyId] || JERSEYS.__default
   const first = (name?.split(' ')[0] || 'PLAYER').toUpperCase()
   const last = (name?.split(' ').slice(1).join(' ') || '').toUpperCase()
-  const positionLabel = sport === 'hockey' ? 'CENTER' : 'FORWARD'
+  const positionLabel = SPORT_LABELS[sport] || 'FORWARD'
 
   return (
     <div className="relative" style={{ width: 260, aspectRatio: '0.72', filter: 'drop-shadow(0 14px 26px rgba(40,28,8,0.32))' }}>

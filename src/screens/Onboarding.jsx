@@ -400,16 +400,27 @@ function StepSuccess({ onFinish, userName }) {
   )
 }
 
+const CARD_SPORTS = [
+  { id: 'hockey', label: 'Hockey' },
+  { id: 'football', label: 'Football' },
+  { id: 'baseball', label: 'Baseball' },
+  { id: 'american-football', label: 'American Football' },
+  { id: 'handball', label: 'Handball' },
+  { id: 'floorball', label: 'Floorball' },
+  { id: 'tennis', label: 'Tennis' },
+  { id: 'bowling', label: 'Bowling' },
+]
+
 // Step: Player Card — vintage Topps-style card builder (from design spec)
 function StepPlayerCard({ onBack, onNext, onSkip, userName, selectedTeams: followedTeams }) {
   const fileRef = useRef(null)
   const [photo, setPhoto] = useState(null)
   const [currentKit, setCurrentKit] = useState(null)
   const [kitSearch, setKitSearch] = useState('')
+  const [selectedSport, setSelectedSport] = useState(null)
 
   const allTeams = Object.values(TEAMS).flatMap(s => s.sections.flatMap(sec => sec.teams))
   const followedSet = new Set(followedTeams || [])
-  // Show only followed teams by default, fall back to all if none followed
   const baseTeams = followedTeams?.length > 0
     ? allTeams.filter(t => followedSet.has(t.id))
     : allTeams.slice(0, 12)
@@ -417,6 +428,8 @@ function StepPlayerCard({ onBack, onNext, onSkip, userName, selectedTeams: follo
   const displayTeams = ks ? allTeams.filter(t => t.name.toLowerCase().includes(ks)) : baseTeams
 
   const kit = currentKit || displayTeams[0]
+  // Sport for the card silhouette: use explicit selection, or derive from kit
+  const cardSport = selectedSport || (Object.entries(TEAMS).find(([, s]) => s.sections.some(sec => sec.teams.some(t => t.id === kit?.id)))?.[0] === 'hockey' ? 'hockey' : 'football')
 
   const handleFile = (e) => {
     const f = e.target.files?.[0]
@@ -458,10 +471,25 @@ function StepPlayerCard({ onBack, onNext, onSkip, userName, selectedTeams: follo
           <PlayerCardComponent
             name={userName || 'Your Name'}
             jerseyId={kit?.id || 'arsenal'}
-            sport={Object.entries(TEAMS).find(([, s]) => s.sections.some(sec => sec.teams.some(t => t.id === kit?.id)))?.[0] === 'hockey' ? 'hockey' : 'football'}
+            sport={cardSport}
             photo={photo}
             number="10"
           />
+        </div>
+      </div>
+
+      {/* Sport selector */}
+      <div className="relative z-10 flex-shrink-0 px-5 mb-2">
+        <h3 className="text-xs font-bold tracking-wider text-brand-gray-500 uppercase mb-2">Sport</h3>
+        <div className="flex flex-wrap gap-1.5">
+          {CARD_SPORTS.map(s => (
+            <button key={s.id} onClick={() => setSelectedSport(s.id)}
+              className={`px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all active:scale-95 cursor-pointer ${
+                cardSport === s.id ? 'bg-green-primary text-white' : 'bg-white/80 text-brand-black border border-brand-gray-200'
+              }`}>
+              {s.label}
+            </button>
+          ))}
         </div>
       </div>
 
