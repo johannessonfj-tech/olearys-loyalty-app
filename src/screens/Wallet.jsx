@@ -62,7 +62,7 @@ function CardBack() {
   const { getSelectedTeamObjects } = useTeams()
   const { profile } = useAuth()
   const teams = getSelectedTeamObjects()
-  const userName = profile?.name || 'Member'
+  const userName = profile?.name || localStorage.getItem('demo_name') || 'Member'
 
   return (
     <div className="h-full flex flex-col p-3.5 relative">
@@ -168,7 +168,7 @@ function CardBack() {
 
 function QRModal({ onClose }) {
   const { profile } = useAuth()
-  const userName = profile?.name || 'Member'
+  const userName = profile?.name || localStorage.getItem('demo_name') || 'Member'
   useEffect(() => {
     document.body.classList.add('modal-open')
     return () => document.body.classList.remove('modal-open')
@@ -245,7 +245,7 @@ export default function Wallet() {
   const { getSelectedTeamObjects } = useTeams()
   const { profile } = useAuth()
   const teams = getSelectedTeamObjects()
-  const userName = profile?.name || 'Member'
+  const userName = profile?.name || localStorage.getItem('demo_name') || 'Member'
 
   return (
     <div className="px-4 pt-10 pb-4">

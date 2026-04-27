@@ -37,7 +37,7 @@ import QRScreen from './screens/QRScreen'
 
 function AppContent() {
   const { user, profile, loading } = useAuth()
-  const [authView, setAuthView] = useState('login') // 'login' | 'register'
+  const [demoComplete, setDemoComplete] = useState(false)
 
   // Splash / loading state while checking session
   if (loading) {
@@ -51,16 +51,13 @@ function AppContent() {
     )
   }
 
-  // Not logged in → auth screens
-  if (!user) {
-    if (authView === 'register') {
-      return <Register onSwitchToLogin={() => setAuthView('login')} />
-    }
-    return <Login onSwitchToRegister={() => setAuthView('register')} />
+  // Always show onboarding first (prototype mode) — until user taps "Explore my app"
+  if (!demoComplete && !user) {
+    return <Onboarding onDemoComplete={() => setDemoComplete(true)} />
   }
 
-  // Logged in but onboarding not completed
-  if (profile && !profile.onboarding_completed) {
+  // Real auth: logged in but onboarding not completed
+  if (user && profile && !profile.onboarding_completed) {
     return <Onboarding />
   }
 

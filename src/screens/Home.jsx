@@ -256,7 +256,7 @@ export default function Home() {
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
             <p className="text-base text-brand-gray-500 mb-2">Good evening,</p>
-            <h1 className="text-[28px] font-bold text-brand-black leading-tight mb-3">{profile?.name || 'Member'}</h1>
+            <h1 className="text-[28px] font-bold text-brand-black leading-tight mb-3">{profile?.name || localStorage.getItem('demo_name') || 'Member'}</h1>
             <div className="flex items-center gap-1.5">
               <Star size={16} className="text-green-primary" fill="#2d9b87" />
               <span className="text-lg font-semibold text-brand-black">
