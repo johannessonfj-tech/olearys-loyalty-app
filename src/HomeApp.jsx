@@ -1,6 +1,6 @@
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import Home from './screens/Home'
-import TierBenefits from './screens/TierBenefits'
+import LoyaltyExplained from './screens/LoyaltyExplained'
 import DealDetail from './screens/DealDetail'
 import AllDeals from './screens/AllDeals'
 import AllRewards from './screens/AllRewards'
@@ -17,7 +17,7 @@ export default function HomeApp() {
           <main className="flex-1 overflow-y-auto overflow-x-hidden">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/benefits" element={<TierBenefits />} />
+              <Route path="/loyalty-explained" element={<LoyaltyExplained />} />
               <Route path="/deals/:dealId" element={<DealDetail />} />
               <Route path="/deals" element={<AllDeals />} />
               <Route path="/rewards" element={<AllRewards />} />

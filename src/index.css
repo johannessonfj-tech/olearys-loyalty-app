@@ -58,6 +58,23 @@ body.modal-open {
   animation: slideUp 0.3s ease-out;
 }
 
+/* Member card flip-in (back face rotates from -180 to 0) */
+@keyframes flipIn {
+  from { opacity: 0; transform: rotateY(-180deg) scale(0.9); }
+  60%  { opacity: 1; }
+  to   { opacity: 1; transform: rotateY(0deg) scale(1); }
+}
+.flip-in {
+  animation: flipIn 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+.flip-scene { perspective: 1600px; }
+
+/* Backdrop fade */
+@keyframes backdropFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.backdrop-fade { animation: backdropFadeIn 0.25s ease-out forwards; }
+
 /* ---------- Check-in pulse dot ---------- */
 .checkin-pulse-dot::before {
   content: '';
