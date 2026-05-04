@@ -1,6 +1,17 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronRight, Plus, Star, Shield, Trophy, Award, Upload, RefreshCw, Check, Settings, QrCode, BookOpen, Users } from 'lucide-react'
+import {
+  ChevronRight,
+  Plus,
+  Trophy,
+  Settings,
+  QrCode,
+  Calendar,
+  Users,
+  Upload,
+  RefreshCw,
+  Check,
+} from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 const SPORTS = [
@@ -14,16 +25,9 @@ const SPORTS = [
   { id: 'bowling', label: 'Bowling' },
 ]
 
-const TIERS = [
-  { name: 'Regular', pct: 5, Icon: Award },
-  { name: 'Starter', pct: 30, Icon: Shield },
-  { name: 'All Star', pct: 62, Icon: Trophy },
-  { name: 'MVP', pct: 95, Icon: Star },
-]
-const CURRENT_TIER = 'All Star'
-const NEXT_TIER = 'MVP'
 const POINTS = 58231
-const PROGRESS_PCT = 72
+const POINTS_TO_GO = 11769
+const PROGRESS_PCT = 83
 
 const DEALS = [
   { id: 'sunday', image: '/images/deal-sunday.png' },
@@ -34,107 +38,353 @@ const REDEEM = [
   { id: 'bowling', name: 'Bowling', pts: 800, image: '/images/redeem-bowling.png' },
   { id: 'softdrink', name: 'Soft Drink', pts: 400, image: '/images/redeem-softdrink.png' },
   { id: 'shuffleboard', name: 'Shuffleboard', pts: 800, image: '/images/redeem-shuffleboard.png' },
+  { id: 'wings', name: 'Wings', pts: 1200, image: '/images/redeem-wings.png' },
 ]
 
-function ProgressBar() {
-  const firstPct = TIERS[0].pct
-  const lastPct = TIERS[TIERS.length - 1].pct
-  const filledPct = Math.min(((PROGRESS_PCT - firstPct) / (lastPct - firstPct)) * 100, 100)
-
+function TopBar({ navigate }) {
   return (
-    <div className="overflow-visible">
-      <div className="relative overflow-visible" style={{ height: 110 }}>
-        <div
-          className="absolute h-1 bg-gradient-to-r from-brand-gray-300 to-brand-gray-300 rounded-full"
-          style={{ left: `${firstPct - 3}%`, right: `${100 - lastPct}%`, top: 32 }}
-        />
-        <div
-          className="absolute h-1 bg-gradient-to-r from-green-primary to-green-dark rounded-full transition-all duration-500"
-          style={{ left: `${firstPct - 3}%`, width: `${(filledPct * (lastPct - firstPct) / 100) + 3}%`, top: 32 }}
-        />
+    <div className="px-5 pt-3 pb-4 flex items-center justify-between" style={{ color: '#2d9b87' }}>
+      <button
+        onClick={() => navigate('/settings')}
+        className="w-9 h-9 -ml-1 rounded-full flex items-center justify-center text-brand-gray-500"
+        aria-label="Settings"
+      >
+        <Settings size={20} />
+      </button>
+      <img src="/images/olearys-logo-green.png" alt="O'Learys" className="h-12 w-auto" />
+      <button
+        onClick={() => navigate('/loyalty-explained')}
+        className="-mr-1 px-2 py-1 rounded-md text-[10px] font-semibold text-brand-gray-600 leading-tight text-right max-w-[80px] active:opacity-70 transition"
+      >
+        Loyalty<br />Explained
+      </button>
+    </div>
+  )
+}
 
-        {TIERS.map((tier) => {
-          const reached = PROGRESS_PCT >= tier.pct
-          const isCurrent = tier.name === CURRENT_TIER
-          return (
-            <div
-              key={tier.name}
-              className="absolute flex flex-col items-center"
-              style={{ left: `${tier.pct}%`, transform: 'translateX(-50%)', top: 0 }}
-            >
-              <div
-                className="rounded-full flex items-center justify-center shadow-lg transition-all duration-300"
-                style={{
-                  width: isCurrent ? 72 : 56,
-                  height: isCurrent ? 72 : 56,
-                  backgroundColor: isCurrent ? '#ffffff' : (reached ? 'rgba(45,155,135,0.1)' : '#ffffff'),
-                  border: isCurrent ? '3px solid #2d9b87' : (reached ? '2px solid #2d9b87' : '2px solid #e0e0e0'),
-                  boxShadow: isCurrent ? '0 4px 12px rgba(45,155,135,0.2)' : (reached ? '0 2px 6px rgba(45,155,135,0.1)' : '0 1px 3px rgba(0,0,0,0.05)'),
-                }}
-              >
-                <tier.Icon
-                  size={isCurrent ? 36 : 28}
-                  className={reached ? 'text-green-primary' : 'text-brand-gray-500'}
-                  fill={reached ? '#2d9b87' : 'none'}
-                  strokeWidth={1.5}
-                />
-              </div>
-              <span
-                className={`mt-3.5 whitespace-nowrap font-semibold transition-all duration-300 ${
-                  isCurrent ? 'text-sm text-green-primary' : 'text-xs text-brand-gray-500'
-                }`}
-              >
-                {tier.name}
-              </span>
+function SectionHeader({ title, action, onAction }) {
+  return (
+    <div className="px-5 mt-7 mb-3 flex items-end justify-between">
+      <h2 className="text-[12px] uppercase tracking-[0.16em] font-semibold text-brand-gray-500 whitespace-nowrap">
+        {title}
+      </h2>
+      {action &&
+        (onAction ? (
+          <button
+            onClick={onAction}
+            className="text-[12px] font-medium text-brand-gray-700 underline-offset-2 hover:underline"
+          >
+            {action}
+          </button>
+        ) : (
+          <span className="text-[12px] font-medium text-brand-gray-500">{action}</span>
+        ))}
+    </div>
+  )
+}
+
+function HeroFront({ name, navigate, onFlip, onOpenCardModal }) {
+  const stop = (e) => e.stopPropagation()
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={onFlip}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onFlip()
+        }
+      }}
+      aria-label="Show member details"
+      className="rounded-3xl bg-white p-4 overflow-hidden border border-brand-gray-200 shadow-[0_2px_12px_rgba(0,0,0,0.04)] h-full cursor-pointer active:scale-[0.995] transition-transform"
+    >
+      <div className="relative flex items-stretch gap-4">
+        <button
+          onClick={(e) => {
+            stop(e)
+            onOpenCardModal()
+          }}
+          className="flex-shrink-0 w-[96px] rounded-2xl overflow-hidden shadow-md active:scale-95 transition-transform self-center"
+          aria-label="Player card"
+        >
+          <img
+            src="/images/player-card-baseball.png"
+            alt="Player card"
+            className="w-full h-auto block"
+          />
+        </button>
+        <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
+          <div>
+            <h1 className="text-[18px] font-bold text-brand-black leading-tight truncate">{name}</h1>
+            <div className="mt-2">
+              <p className="text-[10px] uppercase tracking-[0.16em] text-brand-gray-500 font-semibold">
+                Your points
+              </p>
+              <p className="mt-0.5 text-[28px] leading-none font-semibold tabular-nums text-brand-black">
+                {POINTS.toLocaleString('sv-SE')}
+              </p>
             </div>
-          )
-        })}
+          </div>
+          <button
+            onClick={(e) => {
+              stop(e)
+              navigate('/loyalty-explained')
+            }}
+            className="mt-2 self-start flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-primary text-white text-[12px] font-semibold whitespace-nowrap"
+          >
+            <Trophy size={12} /> All Star
+          </button>
+        </div>
+      </div>
+      <button
+        onClick={(e) => {
+          stop(e)
+          navigate('/loyalty-explained')
+        }}
+        className="relative mt-4 w-full text-left active:opacity-80 transition"
+      >
+        <div className="flex items-center justify-between text-[10.5px] text-brand-gray-500 mb-1.5">
+          <span>Progress to Champion</span>
+          <span className="tabular-nums text-brand-gray-700">
+            {POINTS_TO_GO.toLocaleString('sv-SE')} to go
+          </span>
+        </div>
+        <div className="h-1.5 rounded-full bg-brand-gray-100 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-green-primary"
+            style={{ width: `${PROGRESS_PCT}%` }}
+          />
+        </div>
+      </button>
+    </div>
+  )
+}
+
+function HeroBack({ name }) {
+  return (
+    <div
+      className="rounded-3xl p-5 h-full flex flex-col"
+      style={{
+        backgroundColor: '#fdf0d5',
+        boxShadow: '0 12px 40px -8px rgba(0,0,0,0.22), 0 4px 14px -4px rgba(0,0,0,0.10)',
+      }}
+    >
+      <div className="flex items-start gap-4">
+        <div className="flex-shrink-0 w-[88px] rounded-xl overflow-hidden shadow-md">
+          <img
+            src="/images/player-card-baseball.png"
+            alt="Player card"
+            className="w-full h-auto block"
+          />
+        </div>
+        <div className="flex-1 min-w-0 pt-0.5 relative">
+          <p className="text-[12px] font-bold tracking-[0.12em] text-green-primary">All Star</p>
+          <h2 className="text-[26px] font-bold text-brand-black leading-tight mt-0.5">{name}</h2>
+          <p className="text-[11.5px] text-brand-gray-700 mt-1.5 leading-snug">Member since: 2024</p>
+          <p className="text-[11.5px] text-brand-gray-700 leading-snug">Starred location: Norrköping</p>
+        </div>
+      </div>
+      <p className="mt-4 text-[12.5px] italic text-brand-gray-700 leading-relaxed">
+        A dedicated All Star member known for his competitive spirit in bowling and trivia
+        nights. {name.split(' ')[0]} has been a regular at O'Learys Norrköping since 2024, earning his
+        way up from Starter tier. His impressive 58K point total and 12 game wins make him one of
+        the top performers in the region.
+      </p>
+      <div className="mt-4 pt-3 flex items-end justify-between border-t border-brand-black/10">
+        <div className="flex items-center gap-2">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg"
+            alt="Arsenal"
+            className="w-7 h-7 object-contain"
+          />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/0/0c/AIK_logo.svg"
+            alt="AIK"
+            className="w-7 h-7 object-contain"
+          />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/en/c/cd/Sweden_national_football_team_logo.svg"
+            alt="Sweden"
+            className="w-7 h-7 object-contain"
+          />
+        </div>
+        <p className="text-[10px] text-brand-gray-600 italic">Tap outside to close</p>
       </div>
     </div>
   )
 }
 
-function DealCard({ deal, onClick }) {
+function HeroCard({ name, navigate, onFlip, onOpenCardModal }) {
+  return (
+    <div className="px-5">
+      <p className="text-[13px] text-brand-gray-500 mb-2 px-1">Good evening,</p>
+      <HeroFront
+        name={name}
+        navigate={navigate}
+        onFlip={onFlip}
+        onOpenCardModal={onOpenCardModal}
+      />
+    </div>
+  )
+}
+
+function MemberQRCard({ navigate }) {
   return (
     <button
-      onClick={onClick}
-      className="flex-shrink-0 w-[310px] rounded-2xl overflow-hidden cursor-pointer transition-transform duration-200 active:scale-[0.98]"
-      aria-label="View deal"
+      onClick={() => navigate('/qr')}
+      className="mx-5 mt-4 w-[calc(100%-40px)] rounded-3xl text-white p-4 flex items-center gap-4 active:scale-[0.99] transition-transform overflow-hidden relative"
+      style={{ backgroundColor: '#2d9b87' }}
     >
-      <div className="aspect-[16/9] bg-brand-gray-100">
-        <img src={deal.image} alt="Deal" className="w-full h-full object-cover rounded-2xl" />
+      <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-brand-yellow/15 blur-2xl pointer-events-none" />
+      <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-brand-black flex-shrink-0">
+        <QrCode size={28} />
+      </div>
+      <div className="flex-1 text-left relative">
+        <p className="text-[15px] font-semibold">Show Member QR</p>
+        <p className="text-[12.5px] text-white/70">Scan at checkout to earn &amp; redeem</p>
+      </div>
+      <div className="flex items-center justify-center w-9 h-9 rounded-full bg-brand-yellow text-brand-black flex-shrink-0">
+        <ChevronRight size={18} />
       </div>
     </button>
   )
 }
 
-function RedeemCard({ reward, onClick }) {
+function NextGameCard({ navigate }) {
+  const arsenalUrl = 'https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg'
+  const liverpoolUrl = 'https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg'
   return (
     <button
-      onClick={onClick}
-      className="flex-shrink-0 w-[140px] flex flex-col cursor-pointer group"
-      aria-label={`${reward.name} — ${reward.pts} points`}
+      onClick={() => navigate('/book/arsenal-liverpool')}
+      className="mx-5 w-[calc(100%-40px)] rounded-3xl bg-white p-3 flex items-center gap-3 text-left active:scale-[0.99] transition-transform"
     >
-      <div className="aspect-square rounded-2xl overflow-hidden bg-brand-gray-100 relative">
-        <img src={reward.image} alt={reward.name} className="w-full h-full object-cover" />
-        <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center transition-transform duration-200 group-active:scale-90">
-          <ChevronRight size={14} className="text-brand-black" />
+      <div className="flex-shrink-0 flex items-center">
+        <div className="w-10 h-10 flex items-center justify-center bg-white rounded-full">
+          <img src={arsenalUrl} alt="Arsenal" className="w-9 h-9 object-contain" />
+        </div>
+        <div className="w-10 h-10 -ml-2 flex items-center justify-center bg-white rounded-full ring-2 ring-white">
+          <img src={liverpoolUrl} alt="Liverpool" className="w-9 h-9 object-contain" />
         </div>
       </div>
-      <p className="font-semibold text-sm text-brand-black mt-2 text-left">{reward.name}</p>
-      <div className="flex items-center gap-0.5 mt-0.5">
-        <Plus size={12} className="text-brand-black" />
-        <span className="text-sm text-brand-black">{reward.pts}</span>
+      <div className="flex-1 min-w-0">
+        <p className="text-[14px] font-semibold text-brand-black truncate">Arsenal vs Liverpool</p>
+        <p className="text-[11.5px] text-brand-gray-500 mt-0.5 truncate">Sat · 16:30 · Premier League</p>
       </div>
+      <span className="flex-shrink-0 px-3 py-1.5 rounded-full bg-brand-black text-white text-[12px] font-semibold">
+        Book
+      </span>
     </button>
+  )
+}
+
+function UpcomingBookingsCard({ navigate }) {
+  return (
+    <div className="mx-5 w-[calc(100%-40px)] rounded-3xl bg-white p-3 flex items-center gap-3">
+      <button
+        onClick={() => navigate('/my-bookings')}
+        className="w-9 h-9 rounded-xl bg-green-primary/10 text-green-primary flex items-center justify-center flex-shrink-0"
+        aria-label="View bookings"
+      >
+        <Calendar size={18} />
+      </button>
+      <button
+        onClick={() => navigate('/my-bookings')}
+        className="flex-1 min-w-0 text-left active:opacity-80"
+      >
+        <p className="text-[14px] font-semibold text-brand-black truncate">Shuffleboard · Table 3</p>
+        <p className="text-[11.5px] text-brand-gray-500 mt-0.5 truncate">Fri · 19:00 · 4 people</p>
+      </button>
+      <button
+        onClick={() => navigate('/my-bookings')}
+        className="flex-shrink-0 px-3 py-1.5 rounded-full bg-brand-black text-white text-[12px] font-semibold"
+      >
+        Invite friends
+      </button>
+    </div>
+  )
+}
+
+function QuickLinks({ navigate }) {
+  const items = [
+    { id: 'friends', label: 'Friends', Icon: Users, to: '/friends' },
+    { id: 'highscore', label: 'My Highscores', Icon: Trophy, to: '/highscore' },
+  ]
+  return (
+    <div className="px-5 grid grid-cols-2 gap-2.5">
+      {items.map((it) => (
+        <button
+          key={it.id}
+          onClick={() => navigate(it.to)}
+          className="rounded-2xl bg-white px-3.5 py-3 flex items-center gap-2.5 text-left active:scale-[0.98] transition-transform"
+        >
+          <span className="text-green-primary flex-shrink-0">
+            <it.Icon size={16} />
+          </span>
+          <span className="text-[13px] font-semibold text-brand-black leading-tight">
+            {it.label}
+          </span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function DealCarousel({ navigate }) {
+  return (
+    <div>
+      <div className="overflow-x-auto no-scrollbar pl-5 -mr-5">
+        <div className="flex gap-4 pr-5">
+          {DEALS.map((d) => (
+            <button
+              key={d.id}
+              onClick={() => navigate(`/deals/${d.id}`)}
+              className="flex-shrink-0 w-[300px] rounded-2xl overflow-hidden active:scale-[0.99] transition-transform"
+            >
+              <div className="aspect-[16/9] bg-brand-gray-100">
+                <img src={d.image} alt="Deal" className="w-full h-full object-cover" />
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function RedeemStrip({ navigate }) {
+  return (
+    <div>
+      <div className="overflow-x-auto no-scrollbar pl-5 -mr-5">
+        <div className="flex gap-4 pr-5">
+          {REDEEM.map((r) => (
+            <button
+              key={r.id}
+              onClick={() => navigate(`/rewards/${r.id}`)}
+              className="flex-shrink-0 w-[140px] flex flex-col text-left active:scale-[0.98] transition-transform"
+            >
+              <div className="aspect-square rounded-2xl overflow-hidden bg-brand-gray-100 relative">
+                <img src={r.image} alt={r.name} className="w-full h-full object-cover" />
+                <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center">
+                  <ChevronRight size={14} className="text-brand-black" />
+                </div>
+              </div>
+              <p className="font-semibold text-[14px] text-brand-black mt-2">{r.name}</p>
+              <div className="flex items-center gap-0.5 mt-0.5 text-[13px] text-brand-black">
+                <Plus size={12} /> <span className="tabular-nums">{r.pts}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
 
 function PlayerCardModal({ onClose }) {
-  const [step, setStep] = useState('view') // view | generate | preview
+  const [step, setStep] = useState('view')
   const [selectedSport, setSelectedSport] = useState(null)
 
-  // Step 3: Preview generated card — Regenerate, Cancel, Keep
   if (step === 'preview') {
     return (
       <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center" onClick={onClose}>
@@ -169,7 +419,6 @@ function PlayerCardModal({ onClose }) {
     )
   }
 
-  // Step 2: Choose sport + upload image option
   if (step === 'generate') {
     return (
       <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center" onClick={onClose}>
@@ -178,7 +427,6 @@ function PlayerCardModal({ onClose }) {
             <h3 className="text-lg font-bold text-brand-black mb-1">Generate Player Card</h3>
             <p className="text-sm text-brand-gray-500 mb-4">Choose your sport to create a custom card</p>
 
-            {/* Upload image */}
             <button className="w-full mb-4 py-3 rounded-xl border-2 border-dashed border-brand-gray-300 flex items-center justify-center gap-2 cursor-pointer text-sm font-medium text-brand-gray-500 transition-colors duration-150 hover:border-green-primary hover:text-green-primary">
               <Upload size={16} />
               Upload your photo
@@ -219,7 +467,6 @@ function PlayerCardModal({ onClose }) {
     )
   }
 
-  // Step 1: View current card — Upload or Generate
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center" onClick={onClose}>
       <div className="relative" onClick={(e) => e.stopPropagation()}>
@@ -247,122 +494,59 @@ function PlayerCardModal({ onClose }) {
 export default function Home() {
   const navigate = useNavigate()
   const { profile } = useAuth()
+  const [flipped, setFlipped] = useState(false)
   const [showCardModal, setShowCardModal] = useState(false)
+
+  const name = profile?.name || localStorage.getItem('demo_name') || 'Daniel Svantesson'
 
   return (
     <div className="pb-4">
-      {/* Top section */}
-      <div className="px-5 pt-16">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1">
-            <p className="text-base text-brand-gray-500 mb-2">Good evening,</p>
-            <h1 className="text-[28px] font-bold text-brand-black leading-tight mb-3">{profile?.name || localStorage.getItem('demo_name') || 'Member'}</h1>
-            <div className="flex items-center gap-1.5">
-              <Star size={16} className="text-green-primary" fill="#2d9b87" />
-              <span className="text-lg font-semibold text-brand-black">
-                {POINTS.toLocaleString('sv-SE')} Bonus Points
-              </span>
+      <TopBar navigate={navigate} />
+
+      <HeroCard
+        name={name}
+        navigate={navigate}
+        onFlip={() => setFlipped(true)}
+        onOpenCardModal={() => setShowCardModal(true)}
+      />
+
+      <MemberQRCard navigate={navigate} />
+
+      <SectionHeader title="Don't miss" />
+      <NextGameCard navigate={navigate} />
+
+      <SectionHeader title="Up next" />
+      <UpcomingBookingsCard navigate={navigate} />
+
+      <SectionHeader title="Shortcuts" />
+      <QuickLinks navigate={navigate} />
+
+      <SectionHeader title="Featured deal" action="See all" onAction={() => navigate('/deals')} />
+      <DealCarousel navigate={navigate} />
+
+      <SectionHeader title="Redeem with points" action="See all" onAction={() => navigate('/rewards')} />
+      <RedeemStrip navigate={navigate} />
+
+      {flipped && (
+        <>
+          <button
+            onClick={() => setFlipped(false)}
+            aria-label="Close member card"
+            className="fixed inset-0 backdrop-fade z-30"
+            style={{ backgroundColor: 'rgba(60, 60, 60, 0.55)' }}
+          />
+          <div
+            className="fixed left-0 right-0 px-5 flip-scene z-40 max-w-[430px] mx-auto"
+            style={{ top: '40%', transform: 'translateY(-50%)' }}
+          >
+            <div className="flip-in">
+              <HeroBack name={name} />
             </div>
           </div>
-
-          {/* Settings + Player card */}
-          <div className="flex-shrink-0 flex flex-col items-center gap-2.5">
-            <button
-              onClick={() => navigate('/settings')}
-              className="w-8 h-8 rounded-full bg-brand-gray-100 flex items-center justify-center cursor-pointer transition-transform duration-200 active:scale-90"
-              aria-label="Settings"
-            >
-              <Settings size={16} className="text-brand-gray-500" />
-            </button>
-            <button
-              onClick={() => setShowCardModal(true)}
-              className="w-[88px] rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform duration-200 active:scale-95"
-            >
-              <img src="/images/player-card-baseball.png" alt="Player card" className="w-full h-auto" />
-            </button>
-          </div>
-        </div>
-
-        {/* Progress bar */}
-        <div className="mt-8">
-          <ProgressBar />
-        </div>
-
-        {/* Quick action buttons */}
-        <div className="mt-6 flex justify-center">
-          <button
-            onClick={() => navigate('/qr')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-gray-100 cursor-pointer transition-all duration-200 active:scale-95"
-          >
-            <QrCode size={18} className="text-green-primary" />
-            <span className="text-xs font-semibold text-brand-black">My QR</span>
-          </button>
-        </div>
-
-        <div className="mt-3 flex flex-wrap gap-2 justify-center">
-          <button
-            onClick={() => navigate('/loyalty-explained')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-gray-100 cursor-pointer transition-all duration-200 active:scale-95"
-          >
-            <BookOpen size={18} className="text-green-primary" />
-            <span className="text-xs font-semibold text-brand-black">Loyalty explained</span>
-          </button>
-          <button
-            onClick={() => navigate('/wallet')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-gray-100 cursor-pointer transition-all duration-200 active:scale-95"
-          >
-            <Users size={18} className="text-green-primary" />
-            <span className="text-xs font-semibold text-brand-black">Friends</span>
-          </button>
-          <button
-            onClick={() => navigate('/highscore')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-gray-100 cursor-pointer transition-all duration-200 active:scale-95"
-          >
-            <Trophy size={14} className="text-green-primary" />
-            <span className="text-xs font-semibold text-brand-black">My Highscores</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Divider */}
-      <div className="h-[1px] bg-brand-gray-300 mx-5 mt-8" />
-
-      {/* Deals */}
-      <section className="mt-8 px-5">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-bold text-brand-black">Deal</h2>
-          <button onClick={() => navigate('/deals')} className="flex items-center gap-0.5 text-sm text-green-primary cursor-pointer" aria-label="See all deals">
-            See all <ChevronRight size={14} />
-          </button>
-        </div>
-        <div className="-mx-5 px-5">
-          <div className="flex gap-4 overflow-x-auto no-scrollbar pb-1">
-            {DEALS.map((d) => (
-              <DealCard key={d.id} deal={d} onClick={() => navigate(`/deals/${d.id}`)} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Redeem with points */}
-      <section className="mt-10 px-5 pb-2">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-bold text-brand-black">Redeem with points</h2>
-          <button onClick={() => navigate('/rewards')} className="flex items-center gap-0.5 text-sm text-green-primary cursor-pointer" aria-label="See all rewards">
-            See all <ChevronRight size={14} />
-          </button>
-        </div>
-        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-1">
-          {REDEEM.map((r) => (
-            <RedeemCard key={r.id} reward={r} onClick={() => navigate(`/rewards/${r.id}`)} />
-          ))}
-        </div>
-      </section>
-
-      {/* Player Card Modal */}
-      {showCardModal && (
-        <PlayerCardModal onClose={() => setShowCardModal(false)} />
+        </>
       )}
+
+      {showCardModal && <PlayerCardModal onClose={() => setShowCardModal(false)} />}
     </div>
   )
 }

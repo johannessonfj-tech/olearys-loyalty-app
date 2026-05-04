@@ -11,7 +11,6 @@ import Challenges from './screens/Challenges'
 import Wallet from './screens/Wallet'
 import WalletCardDetail from './screens/WalletCardDetail'
 import OrderHistory from './screens/OrderHistory'
-import TierBenefits from './screens/TierBenefits'
 import PlayGame from './screens/PlayGame'
 import GameDetail from './screens/GameDetail'
 import BowlingBingo from './screens/BowlingBingo'
@@ -35,6 +34,7 @@ import Login from './screens/Login'
 import Register from './screens/Register'
 import Onboarding from './screens/Onboarding'
 import QRScreen from './screens/QRScreen'
+import Friends from './screens/Friends'
 
 function AppContent() {
   const { user, profile, loading } = useAuth()
@@ -77,7 +77,6 @@ function AppContent() {
             <Route path="/wallet/vouchers" element={<WalletCardDetail />} />
             <Route path="/wallet/history" element={<OrderHistory />} />
             <Route path="/wallet/:type/:id" element={<WalletCardDetail />} />
-            <Route path="/benefits" element={<TierBenefits />} />
             <Route path="/book/events" element={<AllEvents />} />
             <Route path="/book/parties" element={<AllParties />} />
             <Route path="/book/happening/:happeningId" element={<HappeningDetail />} />
@@ -97,6 +96,7 @@ function AppContent() {
             <Route path="/rewards/:rewardId" element={<ClaimReward />} />
             <Route path="/highscore" element={<Highscore />} />
             <Route path="/qr" element={<QRScreen />} />
+            <Route path="/friends" element={<Friends />} />
             <Route path="/loyalty-explained" element={<LoyaltyExplained />} />
             <Route path="/settings" element={<SettingsScreen />} />
           </Routes>

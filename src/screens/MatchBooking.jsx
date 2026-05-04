@@ -8,6 +8,7 @@ const MATCHES_DB = {
   'inter-atalanta': { home: 'Inter', away: 'Atalanta', league: 'Serie A', time: '15:00', date: 'SAT 14 MARCH', fullDate: '14 Mar 2026' },
   'burnley-bournemouth': { home: 'Burnley', away: 'AFC Bournemouth', league: 'Premier League', time: '16:00', date: 'SAT 14 MARCH', fullDate: '14 Mar 2026' },
   'arsenal-everton': { home: 'Arsenal FC', away: 'Everton', league: 'Premier League', time: '18:30', date: 'SAT 14 MARCH', fullDate: '14 Mar 2026' },
+  'arsenal-liverpool': { home: 'Arsenal FC', away: 'Liverpool', league: 'Premier League', time: '16:30', date: 'SAT 14 MARCH', fullDate: '14 Mar 2026' },
   'chelsea-newcastle': { home: 'Chelsea', away: 'Newcastle United', league: 'Premier League', time: '18:30', date: 'SAT 14 MARCH', fullDate: '14 Mar 2026' },
   'capitals-bruins': { home: 'Washington Capitals', away: 'Boston Bruins', league: 'NHL', time: '20:00', date: 'SAT 14 MARCH', fullDate: '14 Mar 2026' },
   'westham-city': { home: 'West Ham United', away: 'Manchester City', league: 'Premier League', time: '21:00', date: 'SAT 14 MARCH', fullDate: '14 Mar 2026' },
