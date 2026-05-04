@@ -8,10 +8,13 @@ export default {
           primary: '#2d9b87',
           dark: '#23695a',
           light: '#96beaf',
+          deep: '#1f5c50',
         },
         brand: {
           black: '#3c3c3c',
           yellow: '#ffdc1e',
+          green: '#2d9b87',
+          'green-dark': '#23695a',
           gray: {
             50: '#fafafa',
             100: '#f5f5f5',
