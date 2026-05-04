@@ -164,21 +164,31 @@ Builds/
 - Finished games greyed out (non-interactive)
 
 ### Challenges
-- Tabs: Unlocked (3), Active (2), Finished (0), Hall of Fame
-- **Unlocked**: Matchday Experience Liverpool vs Man Utd (sports/Carlsberg), Bowling King (activity), Globetrotter (activity — visit 10 O'Learys, 2000 pts)
-- **Active**: Burger Ronaldo (progress 7/15 burgers, 2000 pts), Professional Quizzer (progress 4/10 quizzes, 4000 pts)
-- Card types: Sports (hero + Join/Details), Activity (green card + icon), Progress (progress bar + achievement)
+- Tabs: Unlocked (3), Active (3), Finished (0), Hall of Fame
+- Tab is selectable via `?tab=unlocked|active|finished|fame` query param (used by Highscore "Hall of Fame" deep-link → `/challenges?tab=fame`)
+- **Unlocked**: Matchday Liverpool & Arsenal (red hero card + "FREE TO JOIN" pill + Join button), Bowling King (image card + 3 000 pts + bottle prize), Globetrotter (image card + "10 cities" pill + 2 000 pts)
+- **Active**: Matchday Experience (2/4 check-ins), Burger Ronaldo (7/15 burgers, 2 000 pts), Professional Quizzer (4/10 quizzes, 4 000 pts)
+- Active card pattern: green header with title + body, mini-bowling-pin step tracker, "ACHIEVEMENT" + prize footer, optional "YOU'RE IN THE DRAW" yellow ribbon when complete
 - Sports Join button navigates to detail page with auto-enrollment (?joined=true)
-- Challenge Detail pages with leaderboards (sports), step guides (activity), progress bars (progress)
-- Hall of Fame: Bonus + Bowling tabs, 10 entries each, gold/silver/bronze rows
+- Challenge Detail variants: Matchday (React-built red hero with Premier League pill, prize tile, numbered "How it works", black "Join challenge" CTA), Bowling-King/Globetrotter (image hero + 3-step Award row + special prize panel), Progress (green header + step tracker + achievement footer)
+- Hall of Fame: gradient hero with yellow trophy crest, sub-tabs (Bonus / Bowling / Bowling arcade / Boxing arcade), 3-up podium (gold/silver/bronze blocks), leaderboard rows below with "you" highlighted in yellow
 
 ### Wallet
-- Flippable loyalty card (front: green gradient with name/tier/points, back: baseball player card with stats)
-- "Show QR Code" → full-screen scanning modal
-- Vouchers horizontal scroll → detail pages
-- Buy Cards: Summer Card (499 kr), Family Card (349 kr) with purchase flow + "Send to a friend"
-- Gift Cards by category (Birthday, Thank You, Just Because) with amount selector
-- Order History with spending stats and expandable order details
+- Top toggle: **Wallet** / **Buy Cards**, settings cog (left) → /settings
+- **Wallet tab**:
+  - Dark Points card: Bonus Points (58 231), yellow All Star tier pill, progress bar to next tier (taps open Tier sheet); points number taps open Activity sheet
+  - Member QR row (green) → QRSheet with deterministic 21×21 QR + member number 8821 4427 0093
+  - Vouchers: max 3 perforated tickets inline ("Free starter", "Birthday treat", "2 free arcade games", etc.); "See all (N)" if >3 → AllVouchersSheet sorted by expiry
+  - Cards: 2-col grid — Gift card (250 kr, black) + VIP Nightclub card (Free entries · Jun–Aug, yellow, sparkles icon) → GiftCardSheet with member QR
+  - Redeem with points: horizontal image strip (Bowling/Soft Drink/Shuffleboard/Wings) → /rewards/:id
+  - Order history row → /wallet/history
+- **Buy Cards tab** (4-step flow in src/screens/BuyCards.jsx):
+  1. Design — live card preview, 5 themes with custom SVG art (Classic, Birthday, Sport, Celebration, Game Winner), amount chips (100/250/500/1000 + custom), 80-char message
+  2. Recipient — SMS / Email / Keep it; recipient name + contact; Send now / Schedule
+  3. Review & pay — summary, pay method radio (Apple Pay / Visa / Klarna), totals
+  4. Sent — green check, card preview, receipt, Done
+- Sheets: QR, Voucher, Gift card, Tier perks, Activity, All vouchers
+- Existing routes preserved: /wallet/vouchers, /wallet/history, /wallet/:type/:id (WalletCardDetail/OrderHistory)
 
 ### Highscore
 - Three arcade games: Bowling, Basketball Arcade, Boxing Arcade
@@ -186,6 +196,7 @@ Builds/
 - Game detail with AI scouting report, score history
 - Log new score form (score, date, venue, photo evidence, honor checkbox)
 - Player card image at bottom
+- "Hall of Fame" pill button at the bottom → `/challenges?tab=fame` (lands directly on the Hall of Fame tab)
 
 ## Loyalty tiers
 Regular → Starter → All Star → MVP
