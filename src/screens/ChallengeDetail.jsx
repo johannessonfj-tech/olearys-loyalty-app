@@ -1,39 +1,21 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { ChevronLeft, Trophy, Clock, Award, Target, MapPin, HelpCircle } from 'lucide-react'
+import { ChevronLeft, Share2, Award, MapPin, Clock, Users, Ticket } from 'lucide-react'
 
 const CHALLENGES = {
   '1': {
-    type: 'sports',
-    title: 'Matchday Experience Liverpool vs Manchester United',
-    desc: "Play 5 rounds of bowling at O'Learys for a chance to visit Liverpool and watch the game",
-    longDesc: "Iconic bowling at O'Learys + Ultimate Matchday Experience = The dream combo! And you could be part of it. Play 5 rounds of bowling at O'Learys during this challenge and you'll be entered into a draw for the chance to visit Anfield for the epic Liverpool vs. Manchester United clash on May 16, (includes flight and hotel for two). What are you waiting for?",
-    sponsor: 'Carlsberg',
-    daysLeft: 21,
-    points: 8736,
-    prize: 'Your chance to win tickets to the Liverpool vs Manchester United match',
-    leaderboard: [
-      { name: "Dato' Nafidz Razak", tier: 'GOLD', rounds: 5 },
-      { name: 'Petri Kuivamaki', tier: 'GOLD', rounds: 5 },
-      { name: 'Antonio Pimentel', tier: 'GOLD', rounds: 4 },
-      { name: 'Jani Laitinen', tier: 'GOLD', rounds: 4 },
-      { name: 'Godwin Okoko', tier: null, rounds: 4 },
-      { name: 'Iheanyi Mgobeahurike', tier: 'GOLD', rounds: 3 },
-      { name: 'Marcus Svensson', tier: 'GOLD', rounds: 3 },
-      { name: 'Chen Wei Lin', tier: null, rounds: 3 },
-      { name: 'Ahmed Al-Farsi', tier: 'GOLD', rounds: 2 },
-      { name: 'Julia Nordström', tier: null, rounds: 2 },
-      { name: 'Patrick O\'Brien', tier: 'GOLD', rounds: 2 },
-      { name: 'Leila Hamidi', tier: null, rounds: 1 },
-    ],
+    type: 'matchday',
+    title: 'Matchday Experience Liverpool & Arsenal',
   },
   '2': {
-    type: 'activity',
+    type: 'bowling-king',
     title: 'Bowling King',
-    desc: 'Play 10 bowling rounds for 3000 points and a special prize',
-    steps: ['PLAY 10 ROUNDS', 'EARN 3000 POINTS', 'CLAIM SPECIAL PRIZE'],
-    prize: "LIMITED EDITION O'LEARYS PINS WATER BOTTLE",
-    points: 3000,
+    steps: [
+      { label: 'PLAY 10\nROUNDS', done: true },
+      { label: 'EARN 3000\nPOINTS', done: true },
+      { label: 'CLAIM SPECIAL\nPRIZE', done: false },
+    ],
+    prize: "LIMITED EDITION O'LEARYS\nPINS WATER BOTTLE",
   },
   '5': {
     type: 'progress',
@@ -43,15 +25,17 @@ const CHALLENGES = {
     target: 15,
     points: 2000,
     unit: 'burgers',
+    headerColor: '#23695a',
   },
   '6': {
-    type: 'activity',
+    type: 'globetrotter',
     title: 'Globetrotter',
-    desc: "Visit 10 O'Learys locations and win 2000 points",
-    steps: ['VISIT 10 LOCATIONS', 'EARN 2000 POINTS', 'UNLOCK ACHIEVEMENT'],
-    prize: "EXCLUSIVE GLOBETROTTER BADGE + 2000 BONUS POINTS",
-    points: 2000,
-    Icon: MapPin,
+    steps: [
+      { label: 'VISIT 10\nCITIES', done: false },
+      { label: 'EARN 2000\nPOINTS', done: false },
+      { label: 'UNLOCK\nACHIEVEMENT', done: false },
+    ],
+    prize: "EXCLUSIVE GLOBETROTTER\nBADGE + 2 000 POINTS",
   },
   '7': {
     type: 'progress',
@@ -61,204 +45,325 @@ const CHALLENGES = {
     target: 10,
     points: 4000,
     unit: 'quizzes',
-    Icon: HelpCircle,
+    headerColor: 'rgb(28, 106, 92)',
   },
 }
 
-function SportsDetail({ challenge, autoJoin }) {
-  const [showMore, setShowMore] = useState(false)
-  const [tab, setTab] = useState('everyone')
-  const [joined, setJoined] = useState(autoJoin)
+function AppHeader({ title, onBack }) {
+  return (
+    <div className="px-5 pt-3 pb-3 flex items-center justify-between">
+      <button
+        onClick={onBack}
+        aria-label="Back"
+        className="w-9 h-9 -ml-1 flex items-center justify-center text-brand-black cursor-pointer"
+      >
+        <ChevronLeft size={22} />
+      </button>
+      <p className="text-[12px] uppercase tracking-[0.22em] font-bold text-brand-gray-500">{title}</p>
+      <button aria-label="Share" className="w-9 h-9 flex items-center justify-center text-brand-black cursor-pointer">
+        <Share2 size={18} />
+      </button>
+    </div>
+  )
+}
 
+function MatchdayDetail({ autoJoin, onBack }) {
+  const [joined, setJoined] = useState(autoJoin)
   useEffect(() => {
     if (autoJoin) setJoined(true)
   }, [autoJoin])
 
+  const steps = [
+    { t: 'Join the challenge', s: 'Tap join — no points, no fee' },
+    { t: 'Check in 4 times', s: "Check in via the O'Learys app at any venue over the next 60 days" },
+    { t: 'We pick a winner', s: 'Random draw across all completers when the timer ends' },
+    { t: 'Prize lands in Wallet as a digital ticket', s: 'Winners are notified within 24h' },
+  ]
+
   return (
-    <>
-      {/* Hero */}
-      <div className="mx-4 rounded-2xl overflow-hidden relative" style={{ background: 'linear-gradient(135deg, #1a3a2a 0%, #0d1f15 100%)' }}>
-        <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(ellipse at 50% 30%, #2d7a3d 0%, transparent 60%)' }} />
-        <div className="relative px-5 py-8 text-center">
-          {challenge.sponsor && (
-            <div className="inline-block bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-1.5 mb-3">
-              <p className="text-white font-bold text-sm">{challenge.sponsor}</p>
-              <p className="text-white/50 text-[8px]">0.0% Alc.</p>
-            </div>
-          )}
-        </div>
-      </div>
+    <div className="bg-white">
+      <AppHeader title="Challenge" onBack={onBack} />
 
-      <div className="px-5 mt-4">
-        <h2 className="text-xl font-bold text-brand-black leading-tight">{challenge.title}</h2>
-        <p className="text-sm text-brand-gray-500 mt-1">{challenge.desc}</p>
-
-        <button
-          onClick={() => setJoined(true)}
-          className={`w-full mt-4 py-3.5 rounded-2xl text-sm font-bold cursor-pointer transition-all duration-200 active:scale-[0.97] ${
-            joined ? 'bg-brand-gray-100 text-brand-gray-500' : 'bg-green-primary text-white'
-          }`}
+      {/* Red hero card — built in React (no baked image) */}
+      <div className="px-4">
+        <div
+          className="rounded-2xl overflow-hidden relative text-white"
+          style={{
+            background:
+              'linear-gradient(135deg, #8b1a1a 0%, #6b1414 50%, #4a0d0d 100%)',
+          }}
         >
-          {joined ? 'Joined' : 'Join'}
-        </button>
-
-        {/* Info rows */}
-        <div className="mt-5 space-y-3">
-          <div className="flex items-start gap-3">
-            <Trophy size={18} className="text-green-primary flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-brand-black">{challenge.prize}</p>
+          {/* "YOU'LL NEVER WALK ALONE" banner */}
+          <div className="absolute top-3 right-3 bg-white text-[#8b1a1a] text-[8px] font-extrabold tracking-wider px-2 py-0.5 rotate-[-2deg]">
+            YOU'LL NEVER WALK ALONE
           </div>
-          <div className="flex items-center gap-3">
-            <Clock size={18} className="text-brand-gray-500 flex-shrink-0" />
-            <p className="text-sm text-brand-black">{challenge.daysLeft} days remaining</p>
-          </div>
-        </div>
 
-        {/* Long description */}
-        {challenge.longDesc && (
-          <div className="mt-4 p-4 rounded-xl bg-brand-gray-100">
-            <p className="text-sm text-brand-black leading-relaxed">
-              {showMore ? challenge.longDesc : challenge.longDesc.substring(0, 120) + '...'}
-            </p>
-            <button onClick={() => setShowMore(!showMore)} className="text-green-primary text-sm font-medium mt-1 cursor-pointer">
-              {showMore ? 'Show less' : 'Read More'}
-            </button>
-          </div>
-        )}
-
-        {/* Leaderboard */}
-        {challenge.leaderboard && (
-          <div className="mt-6">
-            <div className="flex gap-4 border-b border-brand-gray-300 mb-3">
-              {['friends', 'everyone'].map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={`pb-2 text-sm font-medium capitalize cursor-pointer border-b-2 transition-colors ${
-                    tab === t ? 'border-green-primary text-green-primary' : 'border-transparent text-brand-gray-500'
-                  }`}
-                >
-                  {t === 'friends' ? 'Friends' : 'Everyone'}
-                </button>
-              ))}
+          <div className="px-5 pt-4 pb-5">
+            {/* Premier League pill */}
+            <div className="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-full px-2.5 py-1">
+              <span className="w-3.5 h-3.5 rounded-full bg-white/90 flex items-center justify-center">
+                <span className="text-[8px]">⚽</span>
+              </span>
+              <span className="text-[11px] font-bold">Premier League</span>
             </div>
 
-            <table className="w-full">
-              <thead>
-                <tr className="text-[10px] uppercase text-brand-gray-500 tracking-wider">
-                  <th className="text-left py-1.5 w-8">#</th>
-                  <th className="text-left py-1.5">Name</th>
-                  <th className="text-right py-1.5">Rounds</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(tab === 'everyone' ? challenge.leaderboard : challenge.leaderboard.slice(0, 2)).map((p, i) => (
-                  <tr key={i} className="border-b border-brand-gray-100">
-                    <td className="py-2.5 text-sm text-brand-black">{i + 1}.</td>
-                    <td className="py-2.5">
-                      <span className="text-sm text-brand-black">{p.name}</span>
-                      {p.tier && (
-                        <span className="ml-1.5 text-[9px] font-bold text-brand-yellow bg-brand-yellow/20 px-1.5 py-0.5 rounded">
-                          {p.tier}
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-2.5 text-right">
-                      <span className="text-sm font-semibold text-brand-black">{p.rounds}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </>
-  )
-}
+            <p className="mt-3 text-[24px] font-extrabold leading-[1.1]">
+              Win tickets to<br />Liverpool &amp; Arsenal
+            </p>
+            <p className="mt-2 text-[13px] text-white/85">Check in 4 times in 60 days</p>
 
-function ActivityDetail({ challenge }) {
-  const Icon = challenge.Icon || Target
-  return (
-    <>
-      <div className="mx-4 rounded-2xl overflow-hidden relative h-32" style={{ background: 'linear-gradient(135deg, #2d9b87 0%, #23695a 100%)' }}>
-        <div className="absolute inset-0 opacity-20" style={{ background: 'radial-gradient(circle at 50% 100%, white 0%, transparent 60%)' }} />
-        <div className="relative flex items-center justify-center h-full">
-          <Icon size={48} className="text-white/40" />
+            <div className="mt-3 flex items-center gap-4 text-[11px] text-white/85">
+              <span className="inline-flex items-center gap-1">
+                <Clock size={12} /> Ends Wed - 26 Aug
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Users size={12} /> 3 512 joined
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Prize tile */}
+        <div className="mt-3 rounded-2xl bg-white border border-brand-gray-200 px-4 py-3 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-brand-yellow flex items-center justify-center flex-shrink-0">
+            <Ticket size={20} className="text-brand-black" />
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-brand-gray-500 font-bold">Prize</p>
+            <p className="text-[14px] font-extrabold text-brand-black leading-tight">2x match tickets</p>
+          </div>
         </div>
       </div>
 
-      <div className="px-5 mt-6 text-center">
-        <h2 className="text-xl font-bold text-brand-black uppercase tracking-wide">How to be the {challenge.title}</h2>
-
-        {/* 3-step progress */}
-        <div className="flex items-center justify-between mt-6 px-2">
-          {challenge.steps.map((step, i) => (
-            <div key={i} className="flex items-center">
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-green-primary/10 flex items-center justify-center mb-2">
-                  <Award size={18} className="text-green-primary" />
-                </div>
-                <p className="text-[10px] font-bold text-brand-black text-center leading-tight max-w-[80px]">{step}</p>
+      <div className="px-5 pt-6">
+        <p className="text-[11px] uppercase tracking-[0.22em] font-bold text-brand-gray-500">How it works</p>
+        <div className="mt-3 divide-y divide-brand-gray-100">
+          {steps.map((s, i) => (
+            <div key={i} className="py-3.5 flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-brand-gray-100 text-brand-gray-700 flex items-center justify-center text-[12px] font-bold flex-shrink-0">
+                {i + 1}
               </div>
-              {i < challenge.steps.length - 1 && (
-                <div className="w-8 border-t-2 border-dashed border-brand-gray-300 mx-1 mt-[-20px]" />
-              )}
+              <div className="flex-1">
+                <p className="text-[13.5px] font-bold text-brand-black leading-tight">{s.t}</p>
+                <p className="text-[12px] text-brand-gray-600 mt-0.5 leading-snug">{s.s}</p>
+              </div>
             </div>
           ))}
         </div>
+        <p className="mt-4 text-[11px] text-brand-gray-500 leading-snug">
+          No purchase necessary. 18+. One winner per location. Season ticket transferable to a friend; not redeemable
+          for cash. Full T&Cs in Settings.
+        </p>
+        <button
+          onClick={() => setJoined((j) => !j)}
+          className={`mt-5 mb-6 w-full py-4 rounded-2xl font-bold text-[15px] transition active:scale-[0.99] cursor-pointer ${
+            joined ? 'bg-green-primary text-white' : 'bg-brand-black text-white'
+          }`}
+        >
+          {joined ? '✓ Joined — good luck!' : 'Join challenge'}
+        </button>
+      </div>
+    </div>
+  )
+}
 
-        {/* Prize */}
-        <div className="mt-8 p-5 rounded-2xl bg-brand-gray-100">
-          <p className="text-[10px] uppercase tracking-wider text-brand-gray-500 font-bold mb-2">Special Prize Unlocked</p>
-          <div className="flex items-center justify-center gap-3">
-            <Icon size={28} className="text-green-primary" />
-            <p className="text-sm font-bold text-brand-black text-left">{challenge.prize}</p>
+function StepRow({ steps }) {
+  return (
+    <div className="mt-5 flex items-center justify-between">
+      {steps.map((s, i, arr) => (
+        <div key={i} className="flex items-center flex-1 last:flex-none">
+          <div className="flex flex-col items-center text-center w-[80px] mx-auto">
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                s.done ? 'bg-green-primary/15' : 'bg-brand-gray-100'
+              }`}
+            >
+              <Award size={22} className={s.done ? 'text-green-primary' : 'text-brand-gray-400'} />
+            </div>
+            <p className="text-[10px] font-extrabold text-brand-black mt-2 leading-tight whitespace-pre-line">{s.label}</p>
           </div>
+          {i < arr.length - 1 && (
+            <div className="flex-1 border-t-2 border-dashed border-brand-gray-300 mt-[-20px]" />
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function BowlingKingDetail({ challenge }) {
+  return (
+    <div className="px-5 pb-6">
+      <div className="rounded-3xl overflow-hidden relative h-[210px]">
+        <img src="/images/challenge-bowling-king.png" alt="" className="absolute inset-0 w-full h-full object-cover" />
+      </div>
+
+      <p className="text-[18px] font-extrabold text-brand-black tracking-wide mt-5">HOW TO BE THE {challenge.title.toUpperCase()}</p>
+
+      <StepRow steps={challenge.steps} />
+
+      <div className="mt-6 rounded-2xl bg-white border border-brand-gray-200 overflow-hidden">
+        <div className="px-4 pt-4">
+          <p className="text-[10px] font-bold tracking-[0.2em] text-brand-gray-500">SPECIAL PRIZE UNLOCKED</p>
+          <p className="mt-1 text-[14px] font-extrabold text-brand-black leading-tight tracking-wide whitespace-pre-line">
+            {challenge.prize}
+          </p>
+        </div>
+        <div
+          className="mt-3 h-[220px] relative overflow-hidden"
+          style={{ background: 'linear-gradient(180deg, #f5f5f5 0%, #e6e6e6 100%)' }}
+        >
+          <img src="/images/challenge-water-bottle.png" alt="" className="absolute inset-0 w-full h-full object-contain" />
         </div>
       </div>
-    </>
+    </div>
+  )
+}
+
+function GlobetrotterDetail({ challenge }) {
+  return (
+    <div className="px-5 pb-6">
+      <div className="rounded-3xl overflow-hidden relative h-[210px]" style={{ backgroundColor: '#1f5c50' }}>
+        <img src="/images/challenge-globetrotter.png" alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute top-3 left-3 bg-white/95 text-brand-black rounded-full px-3 py-1 flex items-center gap-1.5">
+          <MapPin size={12} className="text-brand-black" />
+          <span className="text-[11px] font-bold">10 cities</span>
+        </div>
+      </div>
+
+      <p className="text-[18px] font-extrabold text-brand-black tracking-wide mt-5">HOW TO BE THE {challenge.title.toUpperCase()}</p>
+
+      <StepRow steps={challenge.steps} />
+
+      <div className="mt-6 rounded-2xl bg-white border border-brand-gray-200 overflow-hidden">
+        <div className="px-4 py-4">
+          <p className="text-[10px] font-bold tracking-[0.2em] text-brand-gray-500">SPECIAL PRIZE UNLOCKED</p>
+          <p className="mt-1 text-[14px] font-extrabold text-brand-black leading-tight tracking-wide whitespace-pre-line">
+            {challenge.prize}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const MiniPin = ({ size = 11 }) => (
+  <svg width={size} height={size * 1.4} viewBox="0 0 14 20" fill="none" aria-hidden>
+    <path
+      d="M7 1.2 C 9.6 1.2 10.6 4 10.2 6.6 C 9.8 8.6 9.4 9.6 9.4 11 C 9.4 13.5 11 15 11 17 C 11 18.6 9.4 19 7 19 C 4.6 19 3 18.6 3 17 C 3 15 4.6 13.5 4.6 11 C 4.6 9.6 4.2 8.6 3.8 6.6 C 3.4 4 4.4 1.2 7 1.2 Z"
+      fill="#ffffff"
+      stroke="#1f5c50"
+      strokeWidth="0.7"
+    />
+    <rect x="4.4" y="4.6" width="5.2" height="1.2" fill="#c8102e" />
+    <rect x="4.4" y="6.6" width="5.2" height="1.2" fill="#c8102e" />
+  </svg>
+)
+
+const TrophyOutline = ({ size = 20 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#2d9b87"
+    strokeWidth={1.6}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+    <path d="M4 22h16" />
+    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+  </svg>
+)
+
+const AwardOutline = ({ size = 20 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#3c3c3c"
+    strokeWidth={1.6}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="9" r="6" />
+    <path d="M9 14.5L7.5 22l4.5-3 4.5 3-1.5-7.5" />
+  </svg>
+)
+
+function StepTracker({ done, total }) {
+  return (
+    <div className="px-1">
+      <div className="flex items-center">
+        {Array.from({ length: total }).map((_, i) => {
+          const filled = i < done
+          return (
+            <div key={i} className="flex items-center flex-1 last:flex-none">
+              <div
+                className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-extrabold flex-shrink-0 ${
+                  filled
+                    ? 'bg-green-primary'
+                    : 'bg-brand-gray-100 text-brand-gray-400 border border-brand-gray-200'
+                }`}
+              >
+                {filled ? <MiniPin size={11} /> : i + 1}
+              </div>
+              {i < total - 1 && (
+                <div className="flex-1 h-[3px] mx-1 bg-brand-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${i < done - 1 ? 'bg-green-primary' : ''}`}
+                    style={{ width: i < done - 1 ? '100%' : '0%' }}
+                  />
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
 function ProgressDetail({ challenge }) {
-  const pct = Math.round((challenge.current / challenge.target) * 100)
-  const Icon = challenge.Icon || Trophy
   return (
-    <>
-      <div className="mx-4 rounded-2xl overflow-hidden relative" style={{ background: 'linear-gradient(135deg, #2d9b87 0%, #23695a 100%)' }}>
-        <div className="relative px-5 py-8 text-center">
-          <h2 className="text-2xl font-bold text-white uppercase">{challenge.title}</h2>
-          <p className="text-white/70 text-sm mt-1">{challenge.desc}</p>
+    <div className="px-5 pb-6">
+      <div
+        className="rounded-2xl overflow-hidden text-white text-center px-5 pt-5 pb-5"
+        style={{ backgroundColor: challenge.headerColor }}
+      >
+        <p className="text-[18px] font-extrabold tracking-wide uppercase">{challenge.title}</p>
+        <p className="text-[12px] text-white/85 mt-1 leading-snug">{challenge.desc}</p>
+      </div>
+
+      <div className="mt-5">
+        <StepTracker done={challenge.current} total={challenge.target} />
+        <div className="mt-3 flex items-center justify-between">
+          <p className="text-[11px] text-brand-gray-500 font-medium uppercase tracking-[0.14em]">Progress</p>
+          <p className="text-[13px] font-extrabold text-brand-black tabular-nums">
+            {challenge.current}
+            <span className="text-brand-gray-400 font-semibold">/{challenge.target}</span> {challenge.unit}
+          </p>
         </div>
       </div>
 
-      <div className="px-5 mt-5">
-        {/* Progress bar */}
-        <div className="relative">
-          <div className="h-3 rounded-full bg-brand-gray-100">
-            <div className="h-3 rounded-full bg-green-primary transition-all" style={{ width: `${pct}%` }} />
-          </div>
-          <div className="flex justify-between mt-1">
-            <span className="text-xs font-bold text-green-primary bg-green-primary/10 px-2 py-0.5 rounded-full">{challenge.current}</span>
-            <span className="text-xs font-bold text-brand-gray-500 bg-brand-gray-100 px-2 py-0.5 rounded-full">{challenge.target}</span>
-          </div>
-          <p className="text-center text-sm text-brand-gray-500 mt-2">{challenge.current} / {challenge.target} {challenge.unit || 'items'}</p>
+      <div className="mt-6 border-t border-brand-gray-100 pt-5 flex items-center justify-center gap-8">
+        <div className="flex items-center gap-1.5">
+          <AwardOutline size={20} />
+          <span className="text-[12px] font-bold text-brand-black tracking-wider">ACHIEVEMENT</span>
         </div>
-
-        {/* Bottom info */}
-        <div className="mt-6 flex items-center justify-center gap-8">
-          <div className="flex flex-col items-center">
-            <Award size={24} className="text-brand-gray-500 mb-1" />
-            <p className="text-xs font-bold text-brand-black">ACHIEVEMENT</p>
-          </div>
-          <div className="flex flex-col items-center">
-            <Icon size={24} className="text-green-primary mb-1" />
-            <p className="text-xs font-bold text-brand-black">{challenge.points.toLocaleString()} POINTS</p>
-          </div>
+        <div className="flex items-center gap-1.5">
+          <TrophyOutline size={20} />
+          <span className="text-[12px] font-bold text-green-primary tracking-wider whitespace-nowrap">
+            {challenge.points.toLocaleString()} POINTS
+          </span>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -271,24 +376,28 @@ export default function ChallengeDetail() {
 
   if (!challenge) {
     return (
-      <div className="min-h-dvh flex flex-col bg-white items-center justify-center">
+      <div className="min-h-dvh flex flex-col bg-white items-center justify-center pt-12">
         <p className="text-brand-gray-500">Challenge not found</p>
-        <button onClick={() => navigate(-1)} className="mt-4 text-green-primary font-medium cursor-pointer">Go back</button>
+        <button onClick={() => navigate(-1)} className="mt-4 text-green-primary font-medium cursor-pointer">
+          Go back
+        </button>
+      </div>
+    )
+  }
+
+  if (challenge.type === 'matchday') {
+    return (
+      <div className="min-h-dvh flex flex-col bg-white pb-8 pt-10">
+        <MatchdayDetail autoJoin={autoJoin} onBack={() => navigate(-1)} />
       </div>
     )
   }
 
   return (
-    <div className="min-h-dvh flex flex-col bg-white pb-8">
-      <div className="px-4 pt-4 pb-4 flex items-center gap-3">
-        <button onClick={() => navigate(-1)} className="w-11 h-11 flex items-center justify-center cursor-pointer -ml-2" aria-label="Go back">
-          <ChevronLeft size={24} className="text-brand-black" />
-        </button>
-        <h1 className="text-sm font-bold text-brand-black uppercase tracking-wide">Challenge Detail</h1>
-      </div>
-
-      {challenge.type === 'sports' && <SportsDetail challenge={challenge} autoJoin={autoJoin} />}
-      {challenge.type === 'activity' && <ActivityDetail challenge={challenge} />}
+    <div className="min-h-dvh flex flex-col bg-white pb-8 pt-10">
+      <AppHeader title="Challenge" onBack={() => navigate(-1)} />
+      {challenge.type === 'bowling-king' && <BowlingKingDetail challenge={challenge} />}
+      {challenge.type === 'globetrotter' && <GlobetrotterDetail challenge={challenge} />}
       {challenge.type === 'progress' && <ProgressDetail challenge={challenge} />}
     </div>
   )

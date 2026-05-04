@@ -1,254 +1,424 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Trophy, Target, Star, Clock, Coins, Award, MapPin, HelpCircle } from 'lucide-react'
+import { Trophy, Coins, MapPin, Check, Award } from 'lucide-react'
 
 const TABS = [
   { id: 'unlocked', label: 'Unlocked', count: 3 },
-  { id: 'active', label: 'Active', count: 2 },
+  { id: 'active', label: 'Active', count: 3 },
   { id: 'finished', label: 'Finished', count: 0 },
   { id: 'fame', label: 'Hall of Fame', count: null },
 ]
 
-const CHALLENGES = [
-  {
-    id: 1,
-    type: 'sports',
-    title: 'Matchday Experience Liverpool vs Manchester United',
-    desc: "Play 5 rounds of bowling at O'Learys for a chance to visit Liverpool and watch the game",
-    daysLeft: 21,
-    points: 8736,
-    sponsor: 'Carlsberg',
-    tab: 'unlocked',
-  },
-  {
-    id: 2,
-    type: 'activity',
-    title: 'Bowling King',
-    desc: 'Play 10 bowling rounds for 3000 points and a special prize',
-    points: 3000,
-    Icon: Target,
-    tab: 'unlocked',
-  },
-  {
-    id: 6,
-    type: 'activity',
-    title: 'Globetrotter',
-    desc: "Visit 10 O'Learys locations and win 2000 points",
-    points: 2000,
-    Icon: MapPin,
-    tab: 'unlocked',
-  },
-  {
-    id: 5,
-    type: 'progress',
-    title: 'Burger Ronaldo',
-    desc: 'Buy 15 burgers for the achievement and 2000 points',
-    current: 7,
-    target: 15,
-    points: 2000,
-    unit: 'burgers',
-    tab: 'active',
-  },
-  {
-    id: 7,
-    type: 'progress',
-    title: 'Professional Quizzer',
-    desc: 'Participate in 10 quizzes and win 4000 points',
-    current: 4,
-    target: 10,
-    points: 4000,
-    unit: 'quizzes',
-    Icon: HelpCircle,
-    tab: 'active',
-  },
-]
+const MiniPin = ({ size = 11 }) => (
+  <svg width={size} height={size * 1.4} viewBox="0 0 14 20" fill="none" aria-hidden>
+    <path
+      d="M7 1.2 C 9.6 1.2 10.6 4 10.2 6.6 C 9.8 8.6 9.4 9.6 9.4 11 C 9.4 13.5 11 15 11 17 C 11 18.6 9.4 19 7 19 C 4.6 19 3 18.6 3 17 C 3 15 4.6 13.5 4.6 11 C 4.6 9.6 4.2 8.6 3.8 6.6 C 3.4 4 4.4 1.2 7 1.2 Z"
+      fill="#ffffff"
+      stroke="#1f5c50"
+      strokeWidth="0.7"
+    />
+    <rect x="4.4" y="4.6" width="5.2" height="1.2" fill="#c8102e" />
+    <rect x="4.4" y="6.6" width="5.2" height="1.2" fill="#c8102e" />
+  </svg>
+)
 
-const HALL_OF_FAME = {
-  bonus: [
-    { name: 'Daniel Andersson', tier: 'MVP', score: '52 325', color: '#ffdc1e' },
-    { name: 'Yousef Ali', tier: 'MVP', score: '48 362', color: '#e0e0e0' },
-    { name: 'Bengt Jönsson', tier: 'MVP', score: '47 301', color: '#f4c28c' },
-    { name: 'Klara Andersson', tier: 'All-Star', score: '32 552', color: null },
-    { name: 'Erik Svensson', tier: 'All-Star', score: '29 840', color: null },
-    { name: 'Maria Lindqvist', tier: 'Starter', score: '27 115', color: null },
-    { name: 'Johan Berg', tier: 'All-Star', score: '24 990', color: null },
-    { name: 'Sara Nilsson', tier: 'Starter', score: '22 610', color: null },
-    { name: 'Andreas Holm', tier: 'MVP', score: '21 455', color: null },
-    { name: 'Lina Persson', tier: 'All-Star', score: '19 820', color: null },
-  ],
-  bowling: [
-    { name: 'Andrea Andersson', tier: 'Starter', rounds: 21, score: '300', color: '#ffdc1e' },
-    { name: 'Kabas Ali', tier: 'MVP', rounds: 19, score: '300', color: '#e0e0e0' },
-    { name: 'Klara Jönsson', tier: 'All-Star', rounds: 20, score: '275', color: '#f4c28c' },
-    { name: 'Klara Andersson', tier: 'Starter', rounds: 20, score: '270', color: null },
-    { name: 'Petri Kuivamaki', tier: 'MVP', rounds: 18, score: '265', color: null },
-    { name: 'Godwin Okoko', tier: 'All-Star', rounds: 17, score: '258', color: null },
-    { name: 'Antonio Pimentel', tier: 'Starter', rounds: 16, score: '250', color: null },
-    { name: 'Jani Laitinen', tier: 'MVP', rounds: 15, score: '245', color: null },
-    { name: 'Nafidz Razak', tier: 'All-Star', rounds: 14, score: '240', color: null },
-    { name: 'Iheanyi Mgobeahurike', tier: 'Starter', rounds: 13, score: '232', color: null },
-  ],
-}
+const TrophyOutline = ({ size = 20 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#2d9b87"
+    strokeWidth={1.6}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+    <path d="M4 22h16" />
+    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+  </svg>
+)
 
-function SportsChallengeCard({ c, onJoin, onDetails }) {
+const AwardOutline = ({ size = 20 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#3c3c3c"
+    strokeWidth={1.6}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="9" r="6" />
+    <path d="M9 14.5L7.5 22l4.5-3 4.5 3-1.5-7.5" />
+  </svg>
+)
+
+function StepTracker({ done, total }) {
   return (
-    <div className="rounded-2xl overflow-hidden border border-brand-gray-300">
-      <div className="relative h-32 flex items-center justify-center bg-[#1a2637]">
-        <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(ellipse at center, #2d5a3d 0%, #1a2637 70%)' }} />
-        <div className="relative flex items-center gap-6 px-4">
-          <Trophy size={28} className="text-white/80" />
-          {c.sponsor && (
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-1.5">
-              <p className="text-white font-bold text-sm">{c.sponsor}</p>
+    <div className="px-1">
+      <div className="flex items-center">
+        {Array.from({ length: total }).map((_, i) => {
+          const filled = i < done
+          return (
+            <div key={i} className="flex items-center flex-1 last:flex-none">
+              <div
+                className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-extrabold flex-shrink-0 ${
+                  filled
+                    ? 'bg-green-primary'
+                    : 'bg-brand-gray-100 text-brand-gray-400 border border-brand-gray-200'
+                }`}
+              >
+                {filled ? <MiniPin size={11} /> : i + 1}
+              </div>
+              {i < total - 1 && (
+                <div className="flex-1 h-[3px] mx-1 bg-brand-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${i < done - 1 ? 'bg-green-primary' : ''}`}
+                    style={{ width: i < done - 1 ? '100%' : '0%' }}
+                  />
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <div className="absolute top-3 left-3 bg-black/50 rounded-full px-2.5 py-1 flex items-center gap-1">
-          <Clock size={10} className="text-white" />
-          <span className="text-white text-[10px] font-medium">{c.daysLeft} days left</span>
-        </div>
-        <div className="absolute top-3 right-3 bg-black/50 rounded-full px-2.5 py-1 flex items-center gap-1">
-          <Coins size={10} className="text-white" />
-          <span className="text-white text-[10px] font-medium">{c.points.toLocaleString()}</span>
-        </div>
-      </div>
-      <div className="p-4 bg-white">
-        <h3 className="font-bold text-sm leading-snug text-brand-black">{c.title}</h3>
-        <p className="text-xs text-brand-gray-500 mt-1.5 leading-relaxed">{c.desc}</p>
-        <div className="flex gap-2 mt-4">
-          <button onClick={onJoin} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-green-primary cursor-pointer transition-transform duration-200 active:scale-[0.97]">Join</button>
-          <button onClick={onDetails} className="flex-1 py-2.5 rounded-lg text-sm font-semibold border border-brand-gray-300 text-brand-black cursor-pointer transition-transform duration-200 active:scale-[0.97]">Details</button>
-        </div>
+          )
+        })}
       </div>
     </div>
   )
 }
 
-function ActivityChallengeCard({ c, onClick }) {
-  const Icon = c.Icon || Star
+function MatchdayCard({ onJoin }) {
   return (
-    <div className="rounded-2xl p-5 relative overflow-hidden bg-green-primary cursor-pointer active:scale-[0.98] transition-transform" onClick={onClick}>
-      <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-white/10" />
-      <div className="absolute -right-2 -bottom-10 w-20 h-20 rounded-full bg-white/10" />
-      <div className="flex items-start justify-between">
-        <div className="flex-1 pr-4">
-          <h3 className="font-bold text-lg text-white leading-tight">{c.title}</h3>
-          <p className="text-white/80 text-xs mt-2 leading-relaxed">{c.desc}</p>
+    <div className="rounded-2xl overflow-hidden bg-white border border-brand-gray-200">
+      <div className="relative">
+        <img src="/images/matchday-card.png" alt="" className="w-full block" />
+        <div className="absolute top-3 right-3 bg-brand-yellow text-brand-black rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-md">
+          <Check size={12} strokeWidth={3} />
+          <span className="text-[11px] font-extrabold tracking-wide">FREE TO JOIN</span>
         </div>
-        <Icon size={40} className="text-white/40" />
       </div>
-      <div className="mt-3 flex items-center gap-1">
-        <Coins size={12} className="text-white/70" />
-        <span className="text-white text-xs font-semibold">{c.points.toLocaleString()} pts</span>
+      <div className="px-4 py-3">
+        <button
+          onClick={onJoin}
+          className="w-full py-3 rounded-xl bg-green-primary text-white font-bold text-[14px] cursor-pointer transition-transform active:scale-[0.98]"
+        >
+          Join
+        </button>
       </div>
     </div>
   )
 }
 
-function ProgressChallengeCard({ c, onClick }) {
-  const pct = Math.round((c.current / c.target) * 100)
+function BowlingKingCard({ onClick }) {
   return (
-    <div className="rounded-2xl overflow-hidden border border-brand-gray-300 cursor-pointer active:scale-[0.98] transition-transform" onClick={onClick}>
-      <div className="p-5 bg-green-dark text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{ background: 'radial-gradient(circle at 50% 100%, white 0%, transparent 50%)' }} />
-        <h3 className="text-xl font-bold text-white uppercase relative">{c.title}</h3>
-        <p className="text-white/70 text-xs mt-1 relative">{c.desc}</p>
+    <div
+      onClick={onClick}
+      className="rounded-2xl bg-white border border-brand-gray-200 overflow-hidden cursor-pointer transition-transform active:scale-[0.99]"
+    >
+      <div className="relative h-[180px] overflow-hidden">
+        <img src="/images/challenge-bowling-king.png" alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0) 55%)' }}
+        />
+        <div className="absolute bottom-3 left-4 right-4 text-white">
+          <p className="text-[19px] font-extrabold leading-tight">Bowling King</p>
+          <p className="text-[12px] text-white/90 mt-0.5">Play 10 rounds. 3 000 pts + a special prize.</p>
+        </div>
       </div>
-      <div className="p-4 bg-white">
-        <div className="relative">
-          <div className="h-3 rounded-full bg-brand-gray-100">
-            <div className="h-3 rounded-full bg-green-primary" style={{ width: `${pct}%` }} />
-          </div>
-          <div className="flex justify-between mt-1">
-            <span className="text-[10px] font-bold text-green-primary bg-green-primary/10 px-1.5 py-0.5 rounded-full">{c.current}</span>
-            <span className="text-[10px] font-bold text-brand-gray-500 bg-brand-gray-100 px-1.5 py-0.5 rounded-full">{c.target}</span>
-          </div>
-          <p className="text-center text-xs text-brand-gray-500 mt-1">{c.current} / {c.target} {c.unit || 'items'}</p>
-        </div>
-        <div className="mt-3 flex items-center justify-center gap-6">
-          <div className="flex items-center gap-1">
-            <Award size={14} className="text-brand-gray-500" />
-            <span className="text-[10px] font-bold text-brand-black">ACHIEVEMENT</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Trophy size={14} className="text-green-primary" />
-            <span className="text-[10px] font-bold text-brand-black">{c.points.toLocaleString()} POINTS</span>
-          </div>
-        </div>
+      <div className="px-4 py-3 flex items-center gap-2 whitespace-nowrap">
+        <Coins size={14} className="text-brand-black" />
+        <span className="text-[13px] font-extrabold text-brand-black">3 000 pts</span>
+        <span className="ml-auto text-[11px] text-brand-gray-500 font-medium">+ limited edition bottle</span>
       </div>
     </div>
   )
+}
+
+function GlobetrotterCard({ onClick }) {
+  return (
+    <div
+      onClick={onClick}
+      className="rounded-2xl bg-white border border-brand-gray-200 overflow-hidden cursor-pointer transition-transform active:scale-[0.99]"
+    >
+      <div className="relative h-[180px] overflow-hidden" style={{ backgroundColor: '#1f5c50' }}>
+        <img
+          src="/images/challenge-globetrotter.png"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ objectPosition: '50% 50%' }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 45%, rgba(0,0,0,0) 100%)' }}
+        />
+        <div className="absolute top-3 left-3 bg-white/95 text-brand-black rounded-full px-3 py-1 flex items-center gap-1.5">
+          <MapPin size={12} className="text-brand-black" />
+          <span className="text-[11px] font-bold">10 cities</span>
+        </div>
+        <div className="absolute bottom-3 left-4 right-4 text-white">
+          <p className="text-[19px] font-extrabold leading-tight">Globetrotter</p>
+          <p className="text-[12px] text-white/90 mt-0.5">Visit 10 O'Learys across the world.</p>
+        </div>
+      </div>
+      <div className="px-4 py-3 flex items-center gap-2 whitespace-nowrap">
+        <Coins size={14} className="text-brand-black" />
+        <span className="text-[13px] font-extrabold text-brand-black">2 000 pts</span>
+        <span className="ml-auto text-[11px] text-brand-gray-500 font-medium">3 of 10 visited</span>
+      </div>
+    </div>
+  )
+}
+
+function ActiveCard({ title, body, done, total, unit, prize, headerColor = '#23695a', onClick }) {
+  const isStrike = done >= total
+  return (
+    <div
+      onClick={onClick}
+      className="rounded-2xl bg-white border border-brand-gray-200 overflow-hidden cursor-pointer transition-transform active:scale-[0.99]"
+    >
+      <div className="px-5 pt-4 pb-4 text-white text-center" style={{ backgroundColor: headerColor }}>
+        <p className="text-[18px] font-extrabold tracking-wide">{title}</p>
+        <p className="text-[12px] text-white/85 mt-1 leading-snug whitespace-pre-line">{body}</p>
+      </div>
+
+      <div className="px-5 pt-5 pb-3">
+        <StepTracker done={done} total={total} />
+        <div className="mt-3 flex items-center justify-between">
+          <p className="text-[11px] text-brand-gray-500 font-medium uppercase tracking-[0.14em]">Progress</p>
+          <p className="text-[13px] font-extrabold text-brand-black tabular-nums">
+            {done}
+            <span className="text-brand-gray-400 font-semibold">/{total}</span> {unit}
+          </p>
+        </div>
+      </div>
+
+      <div className="border-t border-brand-gray-100 px-5 py-3 flex items-center justify-center gap-8">
+        <div className="flex items-center gap-1.5">
+          <AwardOutline size={20} />
+          <span className="text-[12px] font-bold text-brand-black tracking-wider">ACHIEVEMENT</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <TrophyOutline size={20} />
+          <span className="text-[12px] font-bold text-green-primary tracking-wider whitespace-nowrap">{prize}</span>
+        </div>
+      </div>
+
+      {isStrike && (
+        <div className="border-t border-brand-gray-100 px-5 py-2.5 bg-brand-yellow/30 text-center">
+          <span className="text-[11px] font-extrabold text-brand-black tracking-wider">YOU'RE IN THE DRAW</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function UnlockedTab({ navigate }) {
+  return (
+    <div className="px-5 pt-5 pb-6 space-y-4">
+      <MatchdayCard onJoin={() => navigate('/challenges/1?joined=true')} />
+      <BowlingKingCard onClick={() => navigate('/challenges/2')} />
+      <GlobetrotterCard onClick={() => navigate('/challenges/6')} />
+    </div>
+  )
+}
+
+function ActiveTab({ navigate }) {
+  return (
+    <div className="px-5 pt-5 pb-6 space-y-4">
+      <ActiveCard
+        title="MATCHDAY EXPERIENCE LIVERPOOL & ARSENAL"
+        body={'Check in 4 times in 60 days for a chance to win\n2x match tickets'}
+        done={2}
+        total={4}
+        unit="check-ins"
+        prize="MATCH TICKETS"
+        onClick={() => navigate('/challenges/1')}
+      />
+      <ActiveCard
+        title="BURGER RONALDO"
+        body="Buy 15 burgers for the achievement and 2000 points"
+        done={7}
+        total={15}
+        unit="burgers"
+        prize="2 000 POINTS"
+        onClick={() => navigate('/challenges/5')}
+      />
+      <ActiveCard
+        title="PROFESSIONAL QUIZZER"
+        body="Participate in 10 quizzes and win 4000 points"
+        done={4}
+        total={10}
+        unit="quizzes"
+        prize="4 000 POINTS"
+        headerColor="rgb(28, 106, 92)"
+        onClick={() => navigate('/challenges/7')}
+      />
+    </div>
+  )
+}
+
+function FinishedTab() {
+  return (
+    <div className="flex flex-col items-center justify-start pt-24">
+      <Trophy size={42} className="text-brand-gray-400" strokeWidth={1.4} />
+      <p className="mt-2 text-[13px] text-brand-gray-500">No challenges here yet</p>
+    </div>
+  )
+}
+
+const HALL_DATA = {
+  Bonus: {
+    podium: [
+      { rank: 2, name: 'Yousef', score: '48 362', emoji: '🥈', height: 'h-[80px]', accent: '#cfd4d8' },
+      { rank: 1, name: 'Daniel', score: '52 325', emoji: '🥇', height: 'h-[110px]', accent: '#ffdc1e' },
+      { rank: 3, name: 'Bengt', score: '47 301', emoji: '🥉', height: 'h-[60px]', accent: '#cd7f32' },
+    ],
+    rest: [
+      { rank: 4, name: 'Klara Andersson', level: 'All-Star', score: '32 552' },
+      { rank: 5, name: 'Erik Svensson', level: 'All-Star', score: '29 840' },
+      { rank: 6, name: 'Maria Lindqvist', level: 'Starter', score: '27 115' },
+      { rank: 7, name: 'Johan Berg', level: 'All-Star', score: '24 990', me: true },
+      { rank: 8, name: 'Sara Nilsson', level: 'Starter', score: '22 610' },
+    ],
+  },
+  Bowling: {
+    podium: [
+      { rank: 2, name: 'Erik', score: '298', emoji: '🥈', height: 'h-[80px]', accent: '#cfd4d8' },
+      { rank: 1, name: 'Klara', score: '300', emoji: '🥇', height: 'h-[110px]', accent: '#ffdc1e' },
+      { rank: 3, name: 'Maria', score: '289', emoji: '🥉', height: 'h-[60px]', accent: '#cd7f32' },
+    ],
+    rest: [
+      { rank: 4, name: 'Daniel Berg', level: 'All-Star', score: '276' },
+      { rank: 5, name: 'Sara Nilsson', level: 'All-Star', score: '268' },
+      { rank: 6, name: 'Yousef Ali', level: 'Starter', score: '255' },
+      { rank: 7, name: 'Johan Berg', level: 'All-Star', score: '241', me: true },
+      { rank: 8, name: 'Bengt Lund', level: 'Starter', score: '232' },
+    ],
+  },
+  'Bowling arcade': {
+    podium: [
+      { rank: 2, name: 'Yousef', score: '14 820', emoji: '🥈', height: 'h-[80px]', accent: '#cfd4d8' },
+      { rank: 1, name: 'Daniel', score: '16 405', emoji: '🥇', height: 'h-[110px]', accent: '#ffdc1e' },
+      { rank: 3, name: 'Bengt', score: '13 970', emoji: '🥉', height: 'h-[60px]', accent: '#cd7f32' },
+    ],
+    rest: [
+      { rank: 4, name: 'Klara Andersson', level: 'All-Star', score: '11 220' },
+      { rank: 5, name: 'Erik Svensson', level: 'All-Star', score: '10 480' },
+      { rank: 6, name: 'Maria Lindqvist', level: 'Starter', score: '9 615' },
+      { rank: 7, name: 'Johan Berg', level: 'All-Star', score: '8 940', me: true },
+      { rank: 8, name: 'Sara Nilsson', level: 'Starter', score: '8 105' },
+    ],
+  },
+  'Boxing arcade': {
+    podium: [
+      { rank: 2, name: 'Mikael', score: '892', emoji: '🥈', height: 'h-[80px]', accent: '#cfd4d8' },
+      { rank: 1, name: 'Ines', score: '946', emoji: '🥇', height: 'h-[110px]', accent: '#ffdc1e' },
+      { rank: 3, name: 'Tobias', score: '871', emoji: '🥉', height: 'h-[60px]', accent: '#cd7f32' },
+    ],
+    rest: [
+      { rank: 4, name: 'Anna Holm', level: 'All-Star', score: '802' },
+      { rank: 5, name: 'Lukas Persson', level: 'All-Star', score: '768' },
+      { rank: 6, name: 'Hanna Ek', level: 'Starter', score: '724' },
+      { rank: 7, name: 'Johan Berg', level: 'All-Star', score: '688', me: true },
+      { rank: 8, name: 'Olle Sjögren', level: 'Starter', score: '641' },
+    ],
+  },
 }
 
 function HallOfFame() {
-  const [sub, setSub] = useState('bonus')
-  const data = HALL_OF_FAME[sub]
-  const showRounds = sub === 'bowling'
+  const [sub, setSub] = useState('Bonus')
+  const subs = ['Bonus', 'Bowling', 'Bowling arcade', 'Boxing arcade']
+  const { podium, rest } = HALL_DATA[sub]
 
   return (
-    <div className="px-4 mt-5">
-      {/* Crest */}
-      <div className="text-center mb-4">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-gray-100 mb-2">
-          <Trophy size={28} className="text-brand-yellow" fill="#ffdc1e" />
+    <div className="pb-4">
+      {/* Hero gradient header */}
+      <div
+        className="mx-5 mt-5 rounded-3xl px-5 pt-5 pb-8 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #23695a 0%, #2d9b87 60%, #5fb3a1 100%)' }}
+      >
+        <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10" />
+        <div className="absolute -bottom-10 -left-6 w-28 h-28 rounded-full bg-white/10" />
+        <div className="relative flex flex-col items-center">
+          <div className="w-14 h-14 rounded-full bg-brand-yellow flex items-center justify-center shadow-lg">
+            <Trophy size={28} className="text-brand-black" strokeWidth={2} />
+          </div>
+          <p className="mt-2 text-[11px] font-extrabold tracking-[0.22em] text-white/90">HALL OF FAME</p>
+          <p className="mt-0.5 text-[20px] font-extrabold text-white">Meet the legends</p>
         </div>
-        <p className="text-xs font-bold uppercase tracking-wider text-brand-black">Hall of Fame</p>
+
+        {/* Sub-tabs */}
+        <div className="relative mt-4 flex flex-wrap items-center justify-center gap-2">
+          {subs.map((s) => {
+            const isActive = s === sub
+            return (
+              <button
+                key={s}
+                onClick={() => setSub(s)}
+                className={`px-4 py-1.5 rounded-full text-[12px] font-bold cursor-pointer ${
+                  isActive ? 'bg-white text-green-dark' : 'bg-white/15 text-white'
+                }`}
+              >
+                {s}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Podium */}
+        <div className="relative mt-6 flex items-end justify-center gap-2">
+          {podium.map((p) => (
+            <div key={p.rank} className="flex flex-col items-center w-[88px]">
+              <div className="text-[26px] leading-none">{p.emoji}</div>
+              <p className="text-[12px] font-extrabold text-white mt-1 truncate w-full text-center">{p.name}</p>
+              <p className="text-[10px] text-white/80 tabular-nums">{p.score}</p>
+              <div
+                className={`w-full ${p.height} mt-1.5 rounded-t-xl flex items-start justify-center pt-1.5`}
+                style={{ backgroundColor: p.accent, opacity: 0.9 }}
+              >
+                <span className="text-[16px] font-extrabold text-brand-black">#{p.rank}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Sub tabs */}
-      <div className="flex justify-center gap-8 mb-4">
-        {['bonus', 'bowling'].map((t) => (
-          <button
-            key={t}
-            onClick={() => setSub(t)}
-            className={`text-sm font-medium capitalize cursor-pointer pb-1 border-b-2 transition-colors ${
-              sub === t ? 'border-green-primary text-green-primary' : 'border-transparent text-brand-gray-500'
+      {/* Rest of leaderboard */}
+      <div className="px-5 mt-4 space-y-2">
+        {rest.map((p, i) => (
+          <div
+            key={i}
+            className={`px-3.5 py-3 rounded-2xl flex items-center gap-3 ${
+              p.me ? 'bg-brand-yellow/40 border border-brand-yellow' : 'bg-white border border-brand-gray-100'
             }`}
           >
-            {t === 'bonus' ? 'Bonus' : 'Bowling'}
-          </button>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-extrabold tabular-nums ${
+                p.me ? 'bg-brand-yellow text-brand-black' : 'bg-brand-gray-100 text-brand-gray-600'
+              }`}
+            >
+              {p.rank}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[13.5px] font-bold text-brand-black truncate">
+                {p.name}
+                {p.me && (
+                  <span className="ml-1.5 text-[10px] font-bold text-brand-gray-600 uppercase tracking-wider">
+                    · you
+                  </span>
+                )}
+              </p>
+              <p className="text-[11px] text-green-primary font-medium">Level {p.level}</p>
+            </div>
+            <p className="text-[14px] font-extrabold text-brand-black tabular-nums whitespace-nowrap">{p.score}</p>
+          </div>
         ))}
       </div>
-
-      {/* Table */}
-      <table className="w-full">
-        <thead>
-          <tr className="text-[10px] uppercase text-brand-gray-500 tracking-wider">
-            <th className="text-left py-2">#</th>
-            <th className="text-left py-2">Name</th>
-            {showRounds && <th className="text-right py-2">Rounds</th>}
-            <th className="text-right py-2">Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((p, i) => (
-            <tr key={i}>
-              <td className="py-3 w-8 px-1" style={p.color ? { backgroundColor: p.color + '40' } : undefined}>
-                <span className="text-sm font-semibold text-brand-black">{i + 1}</span>
-              </td>
-              <td className="py-3" style={p.color ? { backgroundColor: p.color + '40' } : undefined}>
-                <div className="flex items-center gap-3 px-2">
-                  <div className="w-10 h-10 rounded-lg bg-brand-gray-300 flex items-center justify-center flex-shrink-0">
-                    <Star size={16} className="text-brand-gray-500" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-brand-black">{p.name}</p>
-                    {p.tier && <p className="text-[10px] text-brand-gray-500">Level {p.tier}</p>}
-                  </div>
-                </div>
-              </td>
-              {showRounds && (
-                <td className="py-3 text-right px-2" style={p.color ? { backgroundColor: p.color + '40' } : undefined}>
-                  <span className="text-sm font-semibold text-brand-black">{p.rounds}</span>
-                </td>
-              )}
-              <td className="py-3 text-right px-2" style={p.color ? { backgroundColor: p.color + '40' } : undefined}>
-                <span className="text-sm font-bold text-brand-black">{p.score}</span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   )
 }
@@ -256,58 +426,49 @@ function HallOfFame() {
 export default function Challenges() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('unlocked')
-  const filtered = CHALLENGES.filter((c) => c.tab === activeTab)
 
   return (
-    <div className="pb-4">
-      {/* Tabs */}
-      <div className="flex border-b border-brand-gray-300 px-4 pt-14 gap-1 overflow-x-auto no-scrollbar">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setActiveTab(t.id)}
-            className={`flex-shrink-0 flex items-center gap-1.5 pb-3 px-1 text-sm font-medium border-b-2 cursor-pointer transition-colors duration-200 ${
-              activeTab === t.id ? 'border-green-primary text-green-primary' : 'border-transparent text-brand-gray-500'
-            }`}
-          >
-            {t.label}
-            {t.count !== null && (
-              <span className={`text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ${
-                activeTab === t.id ? 'bg-green-primary text-white' : 'bg-brand-gray-300 text-brand-gray-500'
-              }`}>
-                {t.count}
-              </span>
-            )}
-          </button>
-        ))}
+    <div className="pb-4 pt-12">
+      {/* Top tabs */}
+      <div className="px-5 pt-3">
+        <div className="flex items-center gap-4 border-b border-brand-gray-200">
+          {TABS.map((t) => {
+            const isActive = t.id === activeTab
+            return (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                className="relative pb-3 flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+              >
+                <span
+                  className={`text-[13px] font-semibold whitespace-nowrap ${
+                    isActive ? 'text-green-primary' : 'text-brand-gray-500'
+                  }`}
+                >
+                  {t.label}
+                </span>
+                {t.count != null && (
+                  <span
+                    className={`text-[10px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center ${
+                      isActive ? 'bg-green-primary text-white' : 'bg-brand-gray-200 text-brand-gray-600'
+                    }`}
+                  >
+                    {t.count}
+                  </span>
+                )}
+                {isActive && (
+                  <span className="absolute left-0 right-0 -bottom-px h-[2.5px] rounded-full bg-green-primary" />
+                )}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
-      {/* Content */}
-      {activeTab === 'fame' ? (
-        <HallOfFame />
-      ) : (
-        <div className="px-4 mt-5 space-y-4">
-          {filtered.length === 0 ? (
-            <div className="text-center py-16 text-brand-gray-500">
-              <Trophy size={32} className="mx-auto mb-2 text-brand-gray-300" />
-              <p className="text-sm">No challenges here yet</p>
-            </div>
-          ) : (
-            filtered.map((c) => {
-              if (c.type === 'sports') return (
-                <SportsChallengeCard
-                  key={c.id}
-                  c={c}
-                  onJoin={() => navigate(`/challenges/${c.id}?joined=true`)}
-                  onDetails={() => navigate(`/challenges/${c.id}`)}
-                />
-              )
-              if (c.type === 'progress') return <ProgressChallengeCard key={c.id} c={c} onClick={() => navigate(`/challenges/${c.id}`)} />
-              return <ActivityChallengeCard key={c.id} c={c} onClick={() => navigate(`/challenges/${c.id}`)} />
-            })
-          )}
-        </div>
-      )}
+      {activeTab === 'unlocked' && <UnlockedTab navigate={navigate} />}
+      {activeTab === 'active' && <ActiveTab navigate={navigate} />}
+      {activeTab === 'finished' && <FinishedTab />}
+      {activeTab === 'fame' && <HallOfFame />}
     </div>
   )
 }
