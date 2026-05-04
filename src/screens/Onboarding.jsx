@@ -37,11 +37,8 @@ function StepWelcome({ onGetStarted, onSignIn }) {
       <div className="absolute top-24 -left-12 w-32 h-32 rounded-full" style={{ backgroundColor: '#ffdc1e', opacity: 0.18, filter: 'blur(28px)' }} />
 
       <div className="relative z-10 flex flex-col h-full px-7 pt-20 pb-8 min-h-[100dvh]">
-        <div className="flex items-center gap-2 mt-2">
-          <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center">
-            <span className="text-green-dark font-extrabold text-lg" style={{ letterSpacing: '-0.05em' }}>O'</span>
-          </div>
-          <span className="font-bold tracking-widest text-sm">O'LEARYS</span>
+        <div className="flex items-center mt-2">
+          <img src="/images/olearys-logo-white.png" alt="O'Learys" className="h-8 w-auto" />
         </div>
 
         <div className="mt-auto">
