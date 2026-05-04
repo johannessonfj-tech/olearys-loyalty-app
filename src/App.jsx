@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { TeamsProvider } from './context/TeamsContext'
+import { CheckInProvider } from './context/CheckInContext'
 import { useAuth } from './context/AuthContext'
 import BottomNav from './components/BottomNav'
 import Home from './screens/Home'
@@ -64,6 +65,7 @@ function AppContent() {
   // Logged in + onboarded → full app
   return (
     <TeamsProvider>
+    <CheckInProvider>
       <div className="min-h-[100dvh] bg-white max-w-[430px] mx-auto relative">
         <main className="pb-20">
           <Routes>
@@ -107,6 +109,7 @@ function AppContent() {
           </div>
         </div>
       </div>
+    </CheckInProvider>
     </TeamsProvider>
   )
 }

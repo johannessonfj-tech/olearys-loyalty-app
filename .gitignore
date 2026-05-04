@@ -2,3 +2,11 @@ node_modules
 dist
 .env
 .env.local
+
+# Local Netlify folder
+.netlify
+
+# Worktrees and design bundle scratch
+.claude/worktrees
+.design-bundles
+vite.log

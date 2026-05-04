@@ -52,7 +52,7 @@ Builds/
 /book/happening/:happeningId → Happening Detail (seating time, addons, add to booking)
 /book/party/:partyType       → Party Detail (packages, guests, date picker, inquiry)
 /my-bookings    → My Bookings (Upcoming + Requests tabs)
-/here           → Already Here? (Order, Play Game, Predict Match)
+/here           → I'm here (check-in flow with venue picker, notify friends)
 /play           → Play Game (3 Kamp, 5 Kamp, Bowling Bingo)
 /play/:id       → Game Detail (setup → teams → play → results)
 /play/bowling-bingo → Bowling Bingo
@@ -147,9 +147,12 @@ Builds/
 - Requests: Birthday Party for 10 people (pending, amber badge)
 - Leave a comment, modify guests, cancel/withdraw
 
-### Already Here?
-- O'LEARYS header + location selector
-- 3 features: Order (unavailable sheet), Play Game, Predict Match
+### I'm here (check-in)
+- States: default (no venue) → location picker sheet → celebration (confetti + football) → checked-in
+- Check-in state persists across navigation via CheckInContext (survives back-nav from /predict, /play, etc.)
+- Notify guests sheet: pings friends to join, free arcade game if they check in within 60 min
+- 3 feature cards (Order, Play Game, Predict Match) gated until venue is selected
+- Bottom-nav center button: green MapPin circle labeled "I'm here" (replaced baseball stitching design)
 
 ### Play Game
 - 3 Kamp / 5 Kamp: full 4-phase game (setup → teams → play → results with confetti)
@@ -197,6 +200,6 @@ Bonus Points
 - Yellow (#ffdc1e) for booking CTAs
 - iPhone 14 Pro frame with Dynamic Island
 - No dark backgrounds except challenge/booking heroes
-- Already Here nav button styled as a baseball with red stitching
+- "I'm here" center nav button: green MapPin circle (#2d9b87)
 - Language: English
 - All icons: Lucide React SVG (no emojis)

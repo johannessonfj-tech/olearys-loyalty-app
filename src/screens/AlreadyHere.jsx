@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useCheckIn } from '../context/CheckInContext'
 import {
   MapPin, ShoppingBag, Gamepad2, Trophy, X, ChevronRight,
   QrCode, Search, Crosshair, Bell, Check, Send, Timer
@@ -498,13 +499,12 @@ function CheckInCelebration({ onComplete }) {
 /* ---------- Main component ---------- */
 export default function AlreadyHere() {
   const navigate = useNavigate()
-  const [venue, setVenue] = useState(null)
+  const { venue, setVenue, notifiedCount, setNotifiedCount } = useCheckIn()
   const [showPicker, setShowPicker] = useState(false)
   const [showOrderSheet, setShowOrderSheet] = useState(false)
   const [showQR, setShowQR] = useState(false)
   const [showNotify, setShowNotify] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
-  const [notifiedCount, setNotifiedCount] = useState(0)
 
   const v = VENUES.find((x) => x.id === venue)
 
