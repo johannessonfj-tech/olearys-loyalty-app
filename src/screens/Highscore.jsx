@@ -393,6 +393,14 @@ export default function Highscore() {
           <RankBadge rank={globalRank} total={game.leaderboard.global.length} scope="global" isHero={isGlobalChamp} />
         </div>
 
+        {/* Log score */}
+        <div className="px-5 mb-5">
+          <button onClick={() => setLogGame(selectedGame)}
+            className="w-full py-3 rounded-full bg-green-primary text-white font-semibold text-sm cursor-pointer transition-all duration-200 active:scale-[0.97] flex items-center justify-center gap-2">
+            <Plus size={16} /> Log New Score
+          </button>
+        </div>
+
         {/* AI bio */}
         <div className="mx-5 mb-5 bg-brand-gray-100 rounded-2xl p-4">
           <p className="text-[10px] font-bold text-green-primary uppercase tracking-wider mb-2">AI Scouting Report</p>
@@ -400,17 +408,9 @@ export default function Highscore() {
         </div>
 
         {/* Leaderboard */}
-        <div className="px-5 mb-5">
+        <div className="px-5 pb-8">
           <h3 className="text-sm font-bold text-brand-black mb-3">Leaderboard</h3>
           <Leaderboard local={game.leaderboard.local} global={game.leaderboard.global} />
-        </div>
-
-        {/* Log score */}
-        <div className="px-5 pb-8">
-          <button onClick={() => setLogGame(selectedGame)}
-            className="w-full py-3 rounded-full bg-green-primary text-white font-semibold text-sm cursor-pointer transition-all duration-200 active:scale-[0.97] flex items-center justify-center gap-2">
-            <Plus size={16} /> Log New Score
-          </button>
         </div>
       </div>
     )
