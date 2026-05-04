@@ -66,8 +66,9 @@ function AppContent() {
   return (
     <TeamsProvider>
     <CheckInProvider>
-      <div className="min-h-[100dvh] bg-white max-w-[430px] mx-auto relative">
-        <main className="pb-20">
+      <>
+      <div className="min-h-[100dvh] bg-white max-w-[430px] mx-auto relative overflow-x-hidden">
+        <main className="pb-20 overflow-x-hidden">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/book" element={<Book />} />
@@ -101,14 +102,15 @@ function AppContent() {
             <Route path="/settings" element={<SettingsScreen />} />
           </Routes>
         </main>
+      </div>
 
-        {/* Fixed bottom nav */}
-        <div className="fixed bottom-0 left-0 right-0 z-20">
-          <div className="max-w-[430px] mx-auto bg-white" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-            <BottomNav />
-          </div>
+      {/* Fixed bottom nav — sibling of the phone column so it spans the full viewport */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white">
+        <div className="max-w-[430px] mx-auto" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+          <BottomNav />
         </div>
       </div>
+      </>
     </CheckInProvider>
     </TeamsProvider>
   )

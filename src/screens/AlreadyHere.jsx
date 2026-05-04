@@ -579,9 +579,23 @@ export default function AlreadyHere() {
           ))}
         </div>
 
-        <p className="mt-auto pt-6 text-center text-[11px] text-brand-gray-500 leading-relaxed">
-          Lock-in: pick your venue once and we'll geofence it for the rest of your visit.
-        </p>
+        <button
+          onClick={() => navigate('/qr')}
+          className="mt-auto self-stretch mx-2 mb-2 rounded-3xl text-white p-4 flex items-center gap-4 active:scale-[0.99] transition-transform overflow-hidden relative"
+          style={{ backgroundColor: '#2d9b87' }}
+        >
+          <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-brand-yellow/15 blur-2xl pointer-events-none" />
+          <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-brand-black flex-shrink-0">
+            <QrCode size={28} />
+          </div>
+          <div className="flex-1 text-left relative">
+            <p className="text-[15px] font-semibold">Show Member QR</p>
+            <p className="text-[12.5px] text-white/70">Scan at checkout to earn &amp; redeem</p>
+          </div>
+          <div className="flex items-center justify-center w-9 h-9 rounded-full bg-brand-yellow text-brand-black flex-shrink-0">
+            <ChevronRight size={18} />
+          </div>
+        </button>
 
         {showPicker && (
           <LocationPickerSheet
