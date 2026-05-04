@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Trophy, Coins, MapPin, Check, Award } from 'lucide-react'
 
 const TABS = [
@@ -425,7 +425,9 @@ function HallOfFame() {
 
 export default function Challenges() {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState('unlocked')
+  const [searchParams] = useSearchParams()
+  const initialTab = TABS.some((t) => t.id === searchParams.get('tab')) ? searchParams.get('tab') : 'unlocked'
+  const [activeTab, setActiveTab] = useState(initialTab)
 
   return (
     <div className="pb-4 pt-12">

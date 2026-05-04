@@ -491,7 +491,7 @@ export default function Highscore() {
       {/* Hall of Fame link */}
       <div className="px-5 pb-8">
         <button
-          onClick={() => navigate('/challenges', { state: { tab: 'hallOfFame' } })}
+          onClick={() => navigate('/challenges?tab=fame')}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-full border-2 border-green-primary text-green-primary font-semibold text-sm cursor-pointer transition-transform duration-200 active:scale-[0.97]"
         >
           <Trophy size={16} />
